@@ -54,7 +54,7 @@ const INDIV_PROBLEMS = [
   "Narrow networks exclude the doctors and hospitals you actually want",
   "You travel for work or own multiple homes but your plan only works locally",
   "Your employer plan costs a fortune and still has massive deductibles",
-  "You earn too much for marketplace assistance but still deserve quality coverage",
+  "You want concierge-level coverage that does not exist on public exchanges",
   "You are tired of fighting insurance companies for basic coverage",
 ]
 
@@ -64,16 +64,16 @@ const INDIV_ADVANTAGES = [
   "Premium networks: Blue Cross, Cigna, Aetna, United Healthcare",
   "Coverage that travels with you across all 50 states",
   "Plans designed for high earners, entrepreneurs, and families",
-  "Free consultation with a licensed specialist who knows private options",
+  "Private consultation with a licensed specialist who knows the carrier-direct market",
 ]
 
 const INCOME_RANGES = [
-  "Under $20,000",
-  "$20,000 - $35,000",
-  "$35,000 - $50,000",
-  "$50,000 - $75,000",
-  "$75,000 - $100,000",
-  "Over $100,000",
+  "$150,000 - $250,000",
+  "$250,000 - $500,000",
+  "$500,000 - $1M",
+  "$1M - $5M",
+  "Over $5M",
+  "Prefer not to say",
 ]
 
 // US States
@@ -354,20 +354,8 @@ export default function HealthcareQuizPage() {
 
     baseRate *= householdMultiplier
 
-    // Income-based plan tier adjustment
-    let subsidy = 0
-    if (answers.income === "Under $20,000") subsidy = baseRate * 0.85
-    else if (answers.income === "$20,000 - $35,000") subsidy = baseRate * 0.7
-    else if (answers.income === "$35,000 - $50,000") subsidy = baseRate * 0.5
-    else if (answers.income === "$50,000 - $75,000") subsidy = baseRate * 0.3
-    else if (answers.income === "$75,000 - $100,000") subsidy = baseRate * 0.15
-
-    const afterSubsidy = Math.max(0, baseRate - subsidy)
-
     return {
       fullPrice: Math.round(baseRate),
-      subsidy: Math.round(subsidy),
-      afterSubsidy: Math.round(afterSubsidy),
     }
   }
 
@@ -488,30 +476,28 @@ export default function HealthcareQuizPage() {
                       </div>
                     </div>
 
-                    {/* Potential Subsidy Info */}
-                    {rates.subsidy > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <Card className="p-8 bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-xl">
-                          <div className="text-center space-y-4">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-sm font-medium">
-                              <Award className="w-4 h-4" />
-                              Your Plan Options Are Ready
-                            </div>
-                            <p className="text-lg leading-relaxed">
-                              Based on your profile, your specialist will present private PPO options that match your
-                              coverage needs and budget, with full network details and no surprises.
-                            </p>
-                            <p className="text-xs opacity-80">
-                              A licensed specialist will walk you through all available options on your call.
-                            </p>
+                    {/* Plan Options Ready */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <Card className="p-8 bg-gradient-to-br from-[#0A1128] to-[#1a2547] text-white shadow-xl border border-[#D4AF37]/30">
+                        <div className="text-center space-y-4">
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-sm font-medium text-[#D4AF37]">
+                            <Award className="w-4 h-4" />
+                            Your Private PPO Options Are Ready
                           </div>
-                        </Card>
-                      </motion.div>
-                    )}
+                          <p className="text-lg leading-relaxed">
+                            Your specialist is curating private PPO plans tailored to your coverage needs, preferred
+                            physicians, and lifestyle, with full network details and no surprises.
+                          </p>
+                          <p className="text-xs opacity-80">
+                            A licensed specialist will walk you through every option on your call.
+                          </p>
+                        </div>
+                      </Card>
+                    </motion.div>
 
                     {/* Timeline Section */}
                     <motion.div
@@ -722,11 +708,11 @@ export default function HealthcareQuizPage() {
                           <div className="border-t pt-4 space-y-2">
                             <h4 className="font-medium text-foreground text-sm flex items-start gap-2">
                               <span className="text-[#D4AF37]">Q:</span>
-                              <span>Is there any cost to speak with an agent?</span>
+                              <span>How is your specialist compensated?</span>
                             </h4>
                             <p className="text-sm text-muted-foreground pl-6">
-                              No! Our service is 100% free. We're compensated by insurance carriers, not you. Your rates
-                              are the same whether you use an agent or not.
+                              Your specialist is compensated directly by the carrier, never by you. Premiums are
+                              identical whether you work with us or not, you simply gain a private advisor.
                             </p>
                           </div>
 
@@ -758,7 +744,7 @@ export default function HealthcareQuizPage() {
                             <ul className="text-blue-700 space-y-1 text-xs">
                               <li>
                                 • <strong>Rates:</strong> Final premium rates are subject to change based on plan
-                                selection, exact age, location, household size, tobacco use, and income verification
+                                selection, exact age, location, household size, tobacco use, and underwriting
                               </li>
                               <li>
                                 • <strong>Estimates:</strong> Plan pricing estimates are based on national averages.
@@ -796,8 +782,8 @@ export default function HealthcareQuizPage() {
                               ))}
                             </div>
                             <p className="text-sm text-muted-foreground italic mb-3">
-                              "The agent walked me through every option and found a plan that covers all my
-                              prescriptions for $65/month. Life-changing!"
+                              "My specialist found a private PPO that kept my entire care team and added
+                              international coverage for the family. Effortless from start to finish."
                             </p>
                             <p className="text-xs font-medium text-foreground">- Maria G., Florida</p>
                           </Card>
@@ -809,8 +795,8 @@ export default function HealthcareQuizPage() {
                               ))}
                             </div>
                             <p className="text-sm text-muted-foreground italic mb-3">
-                              "I was paying $450/month. After working with them, I'm now at $89/month with better
-                              coverage. Wish I'd done this sooner."
+                              "I run two businesses and travel constantly. They built me a nationwide PPO with no
+                              referrals and direct access to specialists. Worth every dollar."
                             </p>
                             <p className="text-xs font-medium text-foreground">- Robert K., Texas</p>
                           </Card>
@@ -830,13 +816,13 @@ export default function HealthcareQuizPage() {
                             <FileText className="w-6 h-6 text-[#D4AF37]" />
                           </div>
                           <div>
-                            <h3 className="font-semibold text-foreground mb-2">Free Healthcare Guide</h3>
+                            <h3 className="font-semibold text-foreground mb-2">Private PPO Buyer's Guide</h3>
                             <p className="text-sm text-muted-foreground">
-                              While you wait, download our free guide: "7 Ways to Reduce Healthcare Costs in 2026"
+                              While you wait, download our guide: "The Private PPO Playbook for High Earners and Entrepreneurs in 2026"
                             </p>
                           </div>
                           <Button className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90">
-                            Download Free Guide
+                            Download the Playbook
                           </Button>
                         </div>
                       </Card>
@@ -1226,16 +1212,8 @@ export default function HealthcareQuizPage() {
                         placeholder="Enter your age"
                         value={answers.age || ""}
                         onChange={(e) => {
-                          const age = Number.parseInt(e.target.value)
                           updateAnswer("age", e.target.value)
-
-                          if (age >= 65) {
-                            setErrors({
-                              age: "You may qualify for Medicare! We'll connect you with a Medicare specialist.",
-                            })
-                          } else {
-                            setErrors({ age: "" })
-                          }
+                          setErrors({ age: "" })
                         }}
                         className="h-14 text-lg text-center"
                         min="18"
@@ -1253,13 +1231,13 @@ export default function HealthcareQuizPage() {
                       <Button
                         onClick={() => {
                           const age = Number.parseInt(answers.age)
-                          if (age >= 18 && age < 65) {
+                          if (age >= 18 && age <= 100) {
                             nextStep()
                           } else if (!age) {
                             setErrors({ age: "Please enter your age" })
                           }
                         }}
-                        disabled={!answers.age || Number.parseInt(answers.age) >= 65}
+                        disabled={!answers.age}
                         className="w-full h-12 bg-[#0A1128] text-white hover:bg-[#0A1128]/90"
                       >
                         Continue
@@ -1315,14 +1293,14 @@ export default function HealthcareQuizPage() {
                         One Last Question
                       </h2>
                       <p className="text-xl text-muted-foreground">
-                        What is your household income range?
+                        What is your household income tier?
                       </p>
                       <Card className="p-4 bg-yellow-50 border-yellow-300 max-w-md mx-auto">
                         <p className="text-sm text-foreground font-medium">
-                          This helps your specialist match you to the right plan tier and coverage level.
+                          This helps your specialist match you to the right private PPO tier and concierge service level.
                         </p>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Best estimate is fine. Your specialist will go over every detail on your call.
+                          Best estimate is fine. Your specialist will walk you through every detail on your call.
                         </p>
                       </Card>
                     </div>
@@ -1356,24 +1334,24 @@ export default function HealthcareQuizPage() {
                     <div className="grid gap-3">
                       {[
                         {
-                          label: "Lowest monthly payment",
-                          icon: DollarSign,
-                          desc: "Bronze/Silver plans with higher deductibles",
-                        },
-                        {
-                          label: "Best doctors & hospitals",
+                          label: "Access to top specialists & hospitals",
                           icon: Stethoscope,
-                          desc: "Wide network access and top facilities",
+                          desc: "Nationwide PPO networks and concierge-tier facilities",
                         },
                         {
-                          label: "Lowest out-of-pocket costs",
+                          label: "Comprehensive coverage with low out-of-pocket",
                           icon: Shield,
-                          desc: "Gold/Platinum plans with lower deductibles",
+                          desc: "Premium PPO plans with rich benefits and low deductibles",
+                        },
+                        {
+                          label: "Coverage that travels with me",
+                          icon: Globe,
+                          desc: "Nationwide and international care across all 50 states",
                         },
                         {
                           label: "Prescription coverage",
                           icon: FileText,
-                          desc: "Plans with comprehensive drug coverage",
+                          desc: "Comprehensive formularies including brand-name medications",
                         },
                       ].map((option) => (
                         <Card

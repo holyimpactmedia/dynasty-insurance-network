@@ -43,7 +43,7 @@ const COVERAGE_ITEMS = [
   { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options available with most plans" },
   { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling covered" },
   { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual exams, screenings, and vaccines" },
-  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits 24/7, often $0 copay" },
+  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Concierge virtual visits 24/7 with board-certified physicians" },
 ]
 
 const COBRA_PROBLEMS = [
@@ -293,10 +293,10 @@ export default function COBRAQuizPage() {
               <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto">
                 <DollarSign className="w-8 h-8 text-[#D4AF37]" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground">Don&apos;t Overpay for COBRA</h3>
+              <h3 className="text-2xl font-bold text-foreground">Stop Overpaying for COBRA</h3>
               <p className="text-muted-foreground">
-                Enter your email and we&apos;ll send you a free guide to COBRA alternatives that could save you
-                hundreds per month.
+                Enter your email and we&apos;ll send you our private guide to COBRA alternatives, premium PPO plans
+                built for executives between roles.
               </p>
               <Input
                 type="email"
@@ -434,7 +434,7 @@ export default function COBRAQuizPage() {
                               bg: "bg-gray-100",
                               title: "Next Steps",
                               badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                              desc: "Your specialist will walk you through plan options side-by-side with your current COBRA costs, including any subsidies you qualify for.",
+                              desc: "Your specialist will walk you through private PPO options side-by-side with your current COBRA costs and benefits.",
                               extra: null,
                             },
                           ].map((item, i) => (
@@ -658,18 +658,18 @@ export default function COBRAQuizPage() {
                         Losing Your Job Is Hard. Losing Your Coverage Does Not Have to Follow.
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Dynasty Insurance Group connects people in COBRA with private PPO alternatives
-                        that cost less and often cover more. We are not a marketplace. We are licensed
-                        specialists who do the comparison work for you.
+                        Dynasty Insurance Group connects executives and entrepreneurs leaving COBRA with private PPO
+                        plans built for high earners, often with broader networks and richer benefits. We are not a
+                        public exchange. We are licensed specialists who curate carrier-direct options for you.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
-                        No pressure. No cost. Just answers.
+                        No pressure. Concierge service. Just answers.
                       </p>
                     </div>
                     <div className="space-y-4">
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
+                        { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
                         { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A real specialist contacts you within 10 minutes on business days." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                       ].map((item, i) => (
@@ -871,7 +871,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">What state do you live in?</h2>
-                      <p className="text-muted-foreground">Plans and subsidies vary by state.</p>
+                      <p className="text-muted-foreground">Carrier networks and plan availability vary by state.</p>
                     </div>
                     <Input
                       type="text"

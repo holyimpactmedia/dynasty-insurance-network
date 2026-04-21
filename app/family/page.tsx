@@ -41,7 +41,7 @@ const FAMILY_COVERAGE_ITEMS = [
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide Network", desc: "Coverage wherever your family travels" },
   { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER visits covered at any hospital" },
   { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on plans available for the whole family" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and well-child visits at $0" },
+  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and well-child visits fully covered" },
   { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits 24/7, no waiting room" },
 ]
 
@@ -240,36 +240,6 @@ export default function FamilyQuizPage() {
   // Determine if children are involved (skip Step 2 if no children)
   const hasChildren = answers.familyComposition && answers.familyComposition !== "2 adults, no children"
 
-  // Calculate family subsidy estimate
-  const calculateFamilySavings = () => {
-    const income = answers.income || ""
-    const composition = answers.familyComposition || ""
-
-    const familyMultiplier =
-      composition === "2 adults, no children" ? 2
-      : composition === "2 adults + 1-2 children" ? 3
-      : composition === "2 adults + 3 or more children" ? 4.5
-      : 2.5 // single parent
-
-    const baseIndividual = 450
-    const baseTotal = Math.round(baseIndividual * familyMultiplier)
-
-    let subsidyRate = 0
-    if (income === "Under $40,000") subsidyRate = 0.85
-    else if (income === "$40,000 - $60,000") subsidyRate = 0.70
-    else if (income === "$60,000 - $80,000") subsidyRate = 0.50
-    else if (income === "$80,000 - $100,000") subsidyRate = 0.30
-    else if (income === "Over $100,000") subsidyRate = 0.10
-
-    const subsidyAmount = Math.round(baseTotal * subsidyRate)
-    const afterSubsidy = Math.max(0, baseTotal - subsidyAmount)
-    const annualSavings = subsidyAmount * 12
-
-    return { baseTotal, subsidyAmount, afterSubsidy, annualSavings, subsidyPct: Math.round(subsidyRate * 100) }
-  }
-
-  const savings = calculateFamilySavings()
-
   // Step options
   const familyCompositionOptions = [
     { value: "2 adults, no children", icon: <Users className="w-6 h-6" />, label: "2 adults, no children" },
@@ -288,25 +258,26 @@ export default function FamilyQuizPage() {
       ]
 
   const priorityOptions = [
-    { value: "Keeping monthly costs low", icon: <DollarSign className="w-6 h-6" />, label: "Keeping monthly costs low" },
-    { value: "Best pediatric care network", icon: <Baby className="w-6 h-6" />, label: "Best pediatric care network" },
-    { value: "Low deductibles, predictable costs", icon: <Shield className="w-6 h-6" />, label: "Low deductibles, predictable costs" },
-    { value: "Mental health + therapy coverage", icon: <Heart className="w-6 h-6" />, label: "Mental health + therapy coverage" },
+    { value: "Top pediatric specialists & children's hospitals", icon: <Baby className="w-6 h-6" />, label: "Top pediatric specialists & children's hospitals" },
+    { value: "Concierge access to specialists with no referrals", icon: <Stethoscope className="w-6 h-6" />, label: "Concierge access to specialists with no referrals" },
+    { value: "Low deductibles and predictable family budget", icon: <Shield className="w-6 h-6" />, label: "Low deductibles and predictable family budget" },
+    { value: "Mental health, therapy, and wellness coverage", icon: <Heart className="w-6 h-6" />, label: "Mental health, therapy, and wellness coverage" },
   ]
 
   const coverageOptions = [
     { value: "No coverage right now", label: "No coverage right now" },
-    { value: "Employer coverage is too expensive", label: "Employer coverage is too expensive" },
-    { value: "Currently on a marketplace plan", label: "Currently on a marketplace plan" },
+    { value: "Employer plan is too restrictive", label: "Employer plan is too restrictive" },
+    { value: "Currently on an HMO and want a private PPO", label: "Currently on an HMO and want a private PPO" },
     { value: "Child aging off my plan soon", label: "Child aging off my plan soon" },
   ]
 
   const incomeOptions = [
-    "Under $40,000",
-    "$40,000 - $60,000",
-    "$60,000 - $80,000",
-    "$80,000 - $100,000",
-    "Over $100,000",
+    "$150,000 - $250,000",
+    "$250,000 - $500,000",
+    "$500,000 - $1M",
+    "$1M - $5M",
+    "Over $5M",
+    "Prefer not to say",
   ]
 
   // Effective step accounting for the skipped children step
@@ -368,7 +339,7 @@ export default function FamilyQuizPage() {
               </div>
               <h3 className="text-2xl font-bold text-foreground">Your Family Deserves Better Coverage</h3>
               <p className="text-muted-foreground">
-                Enter your email and we&apos;ll send you a free guide to private family PPO plans with nationwide coverage.
+                Enter your email and we&apos;ll send you our private guide to family PPO plans with nationwide coverage.
               </p>
               <Input
                 type="email"

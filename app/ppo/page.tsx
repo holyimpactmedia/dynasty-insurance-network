@@ -57,7 +57,7 @@ const COVERAGE_GAPS = [
   { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual doctor visits 24/7" },
 ]
 
-const ACA_PROBLEMS = [
+const HMO_PROBLEMS = [
   "Restricted to narrow networks, your doctor may not be covered",
   "Need referrals just to see a specialist",
   "High deductibles before any benefits kick in",
@@ -291,7 +291,7 @@ export default function PPOQuizPage() {
             </div>
           </section>
 
-          {/* Problem Agitation — ACA Swiss Cheese */}
+          {/* Problem Agitation — HMO Restrictions */}
           <section className="py-16 px-6 bg-background">
             <div className="max-w-4xl mx-auto space-y-12">
               <div className="text-center space-y-4">
@@ -305,7 +305,7 @@ export default function PPOQuizPage() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
-                {/* ACA/HMO Problems */}
+                {/* HMO Restrictions */}
                 <Card className="p-6 border-2 border-red-200 bg-red-50/50">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -318,7 +318,7 @@ export default function PPOQuizPage() {
                       </div>
                     </div>
                     <ul className="space-y-3">
-                      {ACA_PROBLEMS.map((item, i) => (
+                      {HMO_PROBLEMS.map((item, i) => (
                         <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
                           <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                           {item}
@@ -761,7 +761,7 @@ export default function PPOQuizPage() {
                       {[
                         { label: "I have an HMO or narrow-network plan", value: "hmo" },
                         { label: "I currently have no health insurance", value: "uninsured" },
-                        { label: "I'm on COBRA and looking for a cheaper option", value: "cobra" },
+                        { label: "I'm on COBRA and want a private PPO alternative", value: "cobra" },
                         { label: "I have employer coverage but want better options", value: "employer" },
                         { label: "I'm self-employed or between jobs", value: "self_employed" },
                       ].map((opt) => (

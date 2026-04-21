@@ -33,12 +33,12 @@ export default function TermsOfUsePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">3. No Guarantee of Rates or Savings</h2>
+            <h2 className="text-2xl font-semibold mb-3">3. No Guarantee of Rates</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Any rate estimates, subsidy calculations, or savings projections provided on this Site are estimates only
-              and are not guarantees of actual rates, subsidies, or savings. Final premium rates and subsidy eligibility
-              are determined by insurance carriers and the federal marketplace based on verified information including
-              but not limited to age, location, household size, income, tobacco use, and plan selection.
+              Any rate estimates or plan illustrations provided on this Site are estimates only and are not guarantees
+              of actual rates. Final premium rates and plan availability are determined by insurance carriers based on
+              verified information including but not limited to age, location, household size, tobacco use,
+              underwriting, and plan selection.
             </p>
           </section>
 
@@ -68,7 +68,7 @@ export default function TermsOfUsePage() {
             <p className="text-muted-foreground leading-relaxed">
               You agree to provide accurate, current, and complete information when submitting forms or providing
               information through the Site. Providing false or misleading information may affect your eligibility for
-              insurance coverage or subsidies and could result in legal consequences.
+              insurance coverage and could result in legal consequences.
             </p>
           </section>
 

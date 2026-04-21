@@ -43,26 +43,26 @@ const BIZ_COVERAGE_ITEMS = [
   { icon: <FileText className="w-5 h-5" />, label: "Prescriptions", desc: "Comprehensive drug formularies for your whole team" },
   { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on group plans available for the whole team" },
   { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "EAP and therapy coverage included in most group plans" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and screenings at no cost" },
+  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and screenings fully covered" },
   { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits keep employees healthy without missing work" },
 ]
 
 const BIZ_PROBLEMS = [
-  "Individual plans for employees are 30–50% more expensive",
-  "Missing IRS small business health care tax credit (up to 50%)",
-  "Top talent expects benefits. Not offering them costs you hires.",
-  "Employee turnover is 3x higher without health benefits",
-  "Premiums not structured for maximum business deductibility",
-  "No dedicated broker means you compare plans alone and blind",
+  "Top talent will not consider you without executive-tier benefits",
+  "Generic group plans damage your employer brand at the offer stage",
+  "Your competitors offer concierge medicine and you do not",
+  "Renewals jump 15–25% with no broker actively negotiating for you",
+  "Benefits are stitched together piecemeal without a unified strategy",
+  "No dedicated specialist means C-suite and key hires get treated like everyone else",
 ]
 
 const BIZ_ADVANTAGES = [
-  "Group plans are 30–50% cheaper per person than individual plans",
-  "Small Business Health Care Tax Credit covers up to 50% of premiums",
-  "100% of employer-paid premiums are tax deductible",
-  "IRS Section 125 saves employees 30%+ on their contribution",
-  "Retain employees: benefits are the #1 reason people stay",
-  "One dedicated specialist manages everything for you",
+  "Executive-tier PPO and concierge medicine plans built for high-growth teams",
+  "Carrier-direct relationships with Blue Cross, Cigna, Aetna, and United Healthcare",
+  "Tiered benefit structures: founder/C-suite, key employees, and full team",
+  "Employer-paid premiums remain fully tax deductible as a business expense",
+  "Retain top talent: premium benefits are the #1 retention lever after equity",
+  "One dedicated benefits strategist manages renewal, compliance, and design",
 ]
 
 const US_STATES = [
@@ -278,7 +278,8 @@ export default function BusinessPage() {
               </div>
               <h3 className="text-2xl font-bold text-foreground">Before You Go</h3>
               <p className="text-muted-foreground">
-                Group plans can be 30–50% cheaper than individual coverage. Enter your email for a free group plan guide.
+                Premium group plans give you a recruiting and retention edge. Enter your email for our executive
+                benefits playbook.
               </p>
               <Input
                 type="email"
@@ -362,15 +363,15 @@ export default function BusinessPage() {
                   <Card className="p-8 border-2 border-[#D4AF37] bg-gradient-to-br from-[#0A1128] to-[#1a2744] text-white">
                     <div className="text-center mb-6">
                       <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
-                        <TrendingDown className="w-4 h-4" />
-                        Group Plan Advantages
+                        <Award className="w-4 h-4" />
+                        Executive Benefits Advantages
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       {[
-                        { label: "vs. Individual Plans", value: "30–50%", sub: "cheaper" },
-                        { label: "Small Business Tax Credit", value: "Up to 50%", sub: "of premiums" },
-                        { label: "Premium Deduction", value: "100%", sub: "for business" },
+                        { label: "Talent Retention", value: "3x", sub: "longer tenure" },
+                        { label: "Carrier Networks", value: "Top 4", sub: "nationwide PPOs" },
+                        { label: "Premium Deduction", value: "100%", sub: "business expense" },
                       ].map((item, i) => (
                         <div key={i} className="bg-white/10 rounded-xl p-4">
                           <p className="text-xs text-gray-400 mb-1">{item.label}</p>
@@ -380,7 +381,7 @@ export default function BusinessPage() {
                       ))}
                     </div>
                     <p className="text-center text-xs text-gray-400 mt-4">
-                      Tax credit eligibility based on business size and average wages. Consult a tax advisor.
+                      Plan availability and benefit design vary by carrier, state, and team profile.
                     </p>
                   </Card>
                 </motion.div>
@@ -403,7 +404,7 @@ export default function BusinessPage() {
                           bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
                           title: "Within 10 Minutes",
                           badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
-                          desc: "A licensed small business health benefits specialist will call you with group plan options tailored to your team size, industry, and budget.",
+                          desc: "A licensed executive benefits strategist will call you with group plan options tailored to your team profile, industry, and growth stage.",
                           extra: (
                             <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg mt-2">
                               <Mail className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -419,7 +420,7 @@ export default function BusinessPage() {
                           bg: "bg-gray-100",
                           title: "Next Steps",
                           badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                          desc: "Your specialist will walk you through multiple carrier options, employer contribution strategies, and tax credit eligibility for your team.",
+                          desc: "Your strategist will walk you through multiple carrier options, tiered contribution strategies, and benefit design for executives and key hires.",
                           extra: null,
                         },
                       ].map((item, i) => (
@@ -447,8 +448,8 @@ export default function BusinessPage() {
                 </motion.div>
 
                 <p className="text-xs text-center text-muted-foreground px-4">
-                  By submitting, you agree to be contacted by licensed insurance agents. Savings estimates are illustrative.
-                  Tax benefits subject to IRS eligibility rules.
+                  By submitting, you agree to be contacted by licensed insurance agents. Plan and pricing examples are
+                  illustrative. Final benefit design depends on team profile, carrier underwriting, and state.
                 </p>
               </div>
 
@@ -494,9 +495,9 @@ export default function BusinessPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Turnover is 3x higher without benefits" },
-                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Group plans are 30–50% cheaper per person" },
-                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Tax credit covers up to 50% of premiums" },
+                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Turnover is 3x higher without executive benefits" },
+                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Top talent expects executive-tier coverage" },
+                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Concierge medicine attracts senior hires" },
                       { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "100% of employer premiums are deductible" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
@@ -515,8 +516,9 @@ export default function BusinessPage() {
                         Not Offering Benefits Is Costing You More Than Benefits Would
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        Employee turnover costs 50–200% of annual salary per person. A well-structured group health plan
-                        can cost less than you think, especially with IRS tax credits most small business owners never claim.
+                        Replacing a senior hire costs 50–200% of annual salary. Executive-tier benefits are one of the
+                        highest ROI retention investments you can make, and most founders dramatically underestimate the
+                        leverage of a well-designed plan.
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -549,7 +551,7 @@ export default function BusinessPage() {
                             </div>
                             <div>
                               <p className="text-xs text-green-600 font-semibold uppercase tracking-wide">The Solution</p>
-                              <h3 className="font-bold text-foreground">Small Business Group Plan</h3>
+                              <h3 className="font-bold text-foreground">Executive Group Plan</h3>
                             </div>
                           </div>
                           <ul className="space-y-3">
@@ -602,18 +604,18 @@ export default function BusinessPage() {
                       {[
                         {
                           step: "1",
-                          title: "Coverage Review",
-                          desc: "A small business specialist reviews your team size, budget, and goals to identify the best group plan structure for your business.",
+                          title: "Strategy Review",
+                          desc: "An executive benefits strategist reviews your team profile, growth stage, and talent goals to design the right plan structure.",
                         },
                         {
                           step: "2",
-                          title: "Choose Your Plan",
-                          desc: "We compare group plans from top carriers, calculate your tax credit, and show you the true net cost after deductions.",
+                          title: "Curated Plan Selection",
+                          desc: "We compare top carriers, design tiered benefits for executives and key hires, and present a clear total compensation picture.",
                         },
                         {
                           step: "3",
                           title: "Rest Easy",
-                          desc: "We handle enrollment for your team and stay available as your dedicated broker for renewals and changes.",
+                          desc: "We handle enrollment for your team and stay on as your dedicated benefits strategist for renewals, claims, and design changes.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="text-center space-y-4 max-w-xs mx-auto md:max-w-none">
@@ -637,23 +639,23 @@ export default function BusinessPage() {
                         Why Dynasty
                       </div>
                       <h2 className="text-3xl font-bold leading-tight">
-                        Small Businesses Deserve the Same Benefits as Large Corporations
+                        High-Growth Companies Deserve Fortune 500-Caliber Benefits
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Most small business owners assume group benefits are too expensive or too complicated.
-                        We exist to prove otherwise. With the right structure, most businesses pay far less
-                        than expected and gain a massive competitive edge in hiring and retention.
+                        Most founders assume executive-tier benefits are reserved for billion-dollar enterprises.
+                        We exist to prove otherwise. With the right design, your company can offer concierge medicine
+                        and premium PPO networks that rival any Fortune 500 package.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
-                        Our licensed agents act as your dedicated benefits resource at no cost to you,
-                        handling everything from carrier selection to annual renewals.
+                        Our licensed strategists act as your dedicated benefits team, compensated by carriers, never
+                        by you, handling everything from carrier selection to annual renewals.
                       </p>
                     </div>
                     <div className="space-y-4">
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A small business specialist contacts you within 10 minutes." },
+                        { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
+                        { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A dedicated benefits strategist contacts you within 10 minutes." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
@@ -738,10 +740,10 @@ export default function BusinessPage() {
                 </div>
                 <div className="grid gap-3">
                   {[
-                    { label: "No coverage offered yet", sub: "Starting fresh with group benefits" },
-                    { label: "Have coverage, too expensive at renewal", sub: "Looking to reduce costs" },
-                    { label: "Employees requesting coverage", sub: "Time to add benefits to retain staff" },
-                    { label: "Just exploring options", sub: "Comparing costs and plans" },
+                    { label: "No coverage offered yet", sub: "Starting fresh with executive benefits" },
+                    { label: "Current plan needs upgrading", sub: "Want richer benefits for executives and key hires" },
+                    { label: "Top hires are asking for premium coverage", sub: "Need executive-tier benefits to compete for talent" },
+                    { label: "Just exploring options", sub: "Comparing carriers and plan design" },
                   ].map((opt) => (
                     <button
                       key={opt.label}
@@ -767,12 +769,12 @@ export default function BusinessPage() {
                   <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
                     How much will you contribute toward employee premiums?
                   </h2>
-                  <p className="text-muted-foreground text-sm">This affects your tax credit eligibility</p>
+                  <p className="text-muted-foreground text-sm">This shapes your benefit design and total comp positioning</p>
                 </div>
                 <div className="grid gap-3">
                   {[
-                    { label: "I'll cover 100%", sub: "Maximum benefit for employees, largest tax deduction" },
-                    { label: "I'll cover 50–75%", sub: "Shared cost, most common for small business" },
+                    { label: "I'll cover 100%", sub: "Premier offering, fully employer-paid for executive teams" },
+                    { label: "I'll cover 50–75%", sub: "Shared cost, common for high-growth companies" },
                     { label: "I'll cover 25–50%", sub: "Employee-majority contribution" },
                     { label: "Employees pay all (voluntary)", sub: "Group rates without employer contribution" },
                   ].map((opt) => (

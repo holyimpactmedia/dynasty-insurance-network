@@ -460,7 +460,7 @@ export default function AgentRecruitingPage() {
                 },
                 {
                   q: "What carriers do you work with?",
-                  a: "We are contracted with all major ACA marketplace carriers, plus supplemental products. You will receive full contracting support upon acceptance.",
+                  a: "We are contracted with all major private PPO carriers including Blue Cross, Cigna, Aetna, and United Healthcare, plus supplemental products. You will receive full contracting support upon acceptance.",
                 },
               ].map((faq, i) => (
                 <Card key={i} className="p-6 bg-white/5 backdrop-blur-sm border-white/10">

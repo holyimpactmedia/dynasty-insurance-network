@@ -42,7 +42,7 @@ const SE_COVERAGE_ITEMS = [
   { icon: <PiggyBank className="w-5 h-5" />, label: "HSA Eligible", desc: "High-deductible plans with tax-free savings accounts" },
   { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on coverage available with most plans" },
   { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling, important for solo founders" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and screenings at no cost" },
+  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and screenings fully covered" },
   { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits 24/7, great for remote workers" },
 ]
 
@@ -274,7 +274,8 @@ export default function SelfEmployedPage() {
               </div>
               <h3 className="text-2xl font-bold text-foreground">Did You Know?</h3>
               <p className="text-muted-foreground">
-                Self-employed individuals can deduct 100% of health insurance premiums. Enter your email for a free guide.
+                Self-employed founders can deduct 100% of health insurance premiums. Enter your email for our private
+                PPO guide built for entrepreneurs.
               </p>
               <Input
                 type="email"
