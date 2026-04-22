@@ -1,140 +1,68 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
 import {
-  TrendingUp,
-  Users,
-  DollarSign,
-  AlertTriangle,
-  Play,
-  Pause,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Activity,
   Download,
   RefreshCw,
-  CheckCircle2,
-  Clock,
-  Target,
-  Activity,
+  Search,
+  TrendingUp,
+  Inbox,
+  Globe,
 } from "lucide-react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts"
 import { createClient } from "@/lib/supabase/client"
 import { AIScoreBadge } from "@/components/dashboard/AIScoreBadge"
-
-interface Lead {
-  id: string
-  reference_number: string
-  first_name: string
-  last_name: string
-  email: string
-  state: string | null
-  funnel_type: string | null
-  status: string
-  ai_score: number | null
-  ai_score_reasons: string[] | null
-  created_at: string
-}
+import { LeadDetailDrawer } from "@/components/dashboard/LeadDetailDrawer"
+import type { Lead } from "@/lib/types/lead"
+import { FUNNEL_LABELS } from "@/lib/types/lead"
 
 interface DailyCount {
   day: string
   leads: number
 }
 
-interface PipelineCount {
-  new: number
-  contacted: number
-  appointment_set: number
-  sold: number
-}
-
 interface DashboardStats {
   leadsToday: number
   leadsThisWeek: number
   totalLeads: number
-  activeAgents: number
-  salesToday: number
-  revenueToday: number
+  sentToUsha: number
 }
 
 interface AdminDashboardClientProps {
   initialStats: DashboardStats
-  initialPipeline: PipelineCount
-  initialRecentLeads: Lead[]
+  initialLeads: Lead[]
   initialDailyData: DailyCount[]
 }
 
-const mockCampaigns = [
-  {
-    name: "Final Expense - FB Video 50-65",
-    status: "active",
-    dailyBudget: 100,
-    spendToday: 87,
-    leadsToday: 12,
-    cpl: 58.08,
-    impressions: 47283,
-    clicks: 892,
-    ctr: 1.89,
-  },
-  {
-    name: "Final Expense - FB Image 66-75",
-    status: "active",
-    dailyBudget: 100,
-    spendToday: 78,
-    leadsToday: 8,
-    cpl: 75.5,
-    impressions: 38156,
-    clicks: 651,
-    ctr: 1.71,
-  },
-  {
-    name: "ACA Medicare Bridge 60-64",
-    status: "paused",
-    dailyBudget: 75,
-    spendToday: 0,
-    leadsToday: 0,
-    cpl: 0,
-    impressions: 0,
-    clicks: 0,
-    ctr: 0,
-  },
-]
-
-const mockAgents = [
-  { name: "Sarah Johnson", tier: 1, status: "available", leadsToday: 6, contactRate: 92, closeRate: 23 },
-  { name: "Michael Chen", tier: 1, status: "busy", leadsToday: 5, contactRate: 88, closeRate: 21 },
-  { name: "Jessica Rodriguez", tier: 2, status: "available", leadsToday: 4, contactRate: 78, closeRate: 15 },
-  { name: "David Kim", tier: 2, status: "available", leadsToday: 3, contactRate: 81, closeRate: 16 },
-  { name: "Kevin Thompson", tier: 3, status: "offline", leadsToday: 2, contactRate: 65, closeRate: 9 },
-]
-
-const mockAlerts = [
-  {
-    severity: "warning",
-    type: "performance",
-    message: "Agent Kevin T. has 65% contact rate (below 80% threshold)",
-    time: "15 min ago",
-  },
-  {
-    severity: "warning",
-    type: "budget",
-    message: "Campaign 'Final Expense 66-75' CPL at $75.50 (target: <$70)",
-    time: "1 hour ago",
-  },
-  {
-    severity: "info",
-    type: "compliance",
-    message: "All TCPA consents verified for today's leads",
-    time: "2 hours ago",
-  },
-]
-
-const tierDistribution = [
-  { name: "Tier 1", value: 2, color: "#D4AF37" },
-  { name: "Tier 2", value: 4, color: "#3b82f6" },
-  { name: "Tier 3", value: 2, color: "#6b7280" },
-]
+// ── helpers ───────────────────────────────────────────────────────────────────
 
 function getTimeAgo(date: Date): string {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
@@ -143,322 +71,389 @@ function getTimeAgo(date: Date): string {
   if (minutes < 60) return `${minutes}m ago`
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
+  return `${Math.floor(hours / 24)}d ago`
 }
+
+function exportToCsv(leads: Lead[]): void {
+  const headers = [
+    "Reference", "First Name", "Last Name", "Email", "Phone", "Age",
+    "State", "Funnel", "Income Range", "Household Size", "Qualifying Event",
+    "Priorities", "AI Score", "UTM Source", "UTM Campaign", "USHA Status",
+    "Status", "Submitted At",
+  ]
+  const rows = leads.map(l => [
+    l.reference_number, l.first_name, l.last_name, l.email, l.phone ?? "",
+    l.age ?? "", l.state ?? "",
+    FUNNEL_LABELS[l.funnel_type ?? ""] ?? l.funnel_type ?? "",
+    l.income_range ?? "", l.household_size ?? "", l.qualifying_event ?? "",
+    l.priorities ?? "", l.ai_score ?? "", l.utm_source ?? "",
+    l.utm_campaign ?? "", l.usha_status ?? "", l.status,
+    new Date(l.created_at).toLocaleString(),
+  ])
+  const csv = [headers, ...rows]
+    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))
+    .join("\n")
+  const blob = new Blob([csv], { type: "text/csv" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `dynasty-leads-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// ── small UI pieces ───────────────────────────────────────────────────────────
+
+function StatusBadge({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    new: "bg-blue-100 text-blue-700 border-blue-200",
+    contacted: "bg-green-100 text-green-700 border-green-200",
+    appointment_set: "bg-purple-100 text-purple-700 border-purple-200",
+    sold: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    disqualified: "bg-gray-100 text-gray-500 border-gray-200",
+  }
+  const labels: Record<string, string> = {
+    new: "New", contacted: "Contacted",
+    appointment_set: "Appt Set", sold: "Sold", disqualified: "DQ",
+  }
+  return (
+    <Badge className={`${styles[status] ?? "bg-gray-100 text-gray-600"} text-xs`}>
+      {labels[status] ?? status}
+    </Badge>
+  )
+}
+
+function UshaStatusBadge({ status }: { status: string | null }) {
+  if (!status) return <span className="text-xs text-gray-400">—</span>
+  const styles: Record<string, string> = {
+    sent: "bg-green-100 text-green-700 border-green-200",
+    failed: "bg-red-100 text-red-700 border-red-200",
+    pending: "bg-amber-100 text-amber-700 border-amber-200",
+  }
+  return (
+    <Badge className={`${styles[status] ?? "bg-gray-100 text-gray-500"} text-xs`}>
+      {status}
+    </Badge>
+  )
+}
+
+function StatCard({
+  label, value, sub, icon: Icon, accent,
+}: {
+  label: string
+  value: string | number
+  sub?: string
+  icon: React.ElementType
+  accent: string
+}) {
+  return (
+    <Card className="p-5">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-sm text-gray-500 font-medium">{label}</span>
+        <Icon className={`w-4 h-4 ${accent}`} />
+      </div>
+      <div className="text-3xl font-bold text-gray-900">{value}</div>
+      {sub && <div className="text-xs text-gray-400 mt-1">{sub}</div>}
+    </Card>
+  )
+}
+
+// ── main component ────────────────────────────────────────────────────────────
 
 export default function AdminDashboardClient({
   initialStats,
-  initialPipeline,
-  initialRecentLeads,
+  initialLeads,
   initialDailyData,
 }: AdminDashboardClientProps) {
-  const [refreshing, setRefreshing] = useState(false)
+  const [leads, setLeads] = useState<Lead[]>(initialLeads)
   const [stats, setStats] = useState(initialStats)
-  const [pipeline, setPipeline] = useState(initialPipeline)
-  const [recentLeads, setRecentLeads] = useState(initialRecentLeads)
-  const [dailyData, setDailyData] = useState(initialDailyData)
+  const [dailyData] = useState(initialDailyData)
+  const [refreshing, setRefreshing] = useState(false)
 
-  // Set up real-time subscription
+  // Drawer state
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Filter state
+  const [search, setSearch] = useState("")
+  const [filterFunnel, setFilterFunnel] = useState("all")
+  const [filterStatus, setFilterStatus] = useState("all")
+  const [filterUsha, setFilterUsha] = useState("all")
+  const [filterMinScore, setFilterMinScore] = useState("0")
+
+  // ── real-time subscriptions ─────────────────────────────────────────────────
   useEffect(() => {
     const supabase = createClient()
-    
     const channel = supabase
-      .channel('leads-realtime')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'leads' },
-        (payload) => {
-          const newLead = payload.new as Lead
-          
-          // Update leads today count
-          setStats(prev => ({
-            ...prev,
-            leadsToday: prev.leadsToday + 1,
-            totalLeads: prev.totalLeads + 1,
-            leadsThisWeek: prev.leadsThisWeek + 1,
-          }))
-          
-          // Update pipeline
-          setPipeline(prev => ({
-            ...prev,
-            new: prev.new + 1,
-          }))
-          
-          // Add to recent leads (keep only 10)
-          setRecentLeads(prev => [newLead, ...prev.slice(0, 9)])
-          
-          // Update daily data for today
-          setDailyData(prev => {
-            const today = new Date().toLocaleDateString('en-US', { weekday: 'short' })
-            return prev.map(d => 
-              d.day === today ? { ...d, leads: d.leads + 1 } : d
-            )
-          })
+      .channel("admin-leads-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "leads" }, payload => {
+        const newLead = payload.new as Lead
+        setLeads(prev => [newLead, ...prev])
+        setStats(prev => ({
+          ...prev,
+          leadsToday: prev.leadsToday + 1,
+          totalLeads: prev.totalLeads + 1,
+          leadsThisWeek: prev.leadsThisWeek + 1,
+        }))
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "leads" }, payload => {
+        const updated = payload.new as Lead
+        setLeads(prev => prev.map(l => l.id === updated.id ? { ...l, ...updated } : l))
+        // Sync selected lead if it's open in the drawer
+        setSelectedLead(prev => prev?.id === updated.id ? { ...prev, ...updated } : prev)
+        if (updated.usha_status === "sent") {
+          setStats(prev => ({ ...prev, sentToUsha: prev.sentToUsha + 1 }))
         }
-      )
+      })
       .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
+  // ── refresh ──────────────────────────────────────────────────────────────────
   const handleRefresh = async () => {
     setRefreshing(true)
-    
     const supabase = createClient()
     const now = new Date()
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const startOfWeek = new Date(startOfToday)
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
 
-    // Fetch updated stats
     const [
       { count: leadsToday },
       { count: leadsThisWeek },
       { count: totalLeads },
-      { count: activeAgents },
-      { count: salesToday },
-      { data: soldLeads },
-      { data: newLeads },
+      { count: sentToUsha },
+      { data: freshLeads },
     ] = await Promise.all([
-      supabase.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', startOfToday.toISOString()),
-      supabase.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', startOfWeek.toISOString()),
-      supabase.from('leads').select('*', { count: 'exact', head: true }),
-      supabase.from('agents').select('*', { count: 'exact', head: true }).eq('is_active', true),
-      supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'sold').gte('created_at', startOfToday.toISOString()),
-      supabase.from('leads').select('sell_price').eq('status', 'sold').gte('created_at', startOfToday.toISOString()),
-      supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(10),
+      supabase.from("leads").select("*", { count: "exact", head: true }).gte("created_at", startOfToday.toISOString()),
+      supabase.from("leads").select("*", { count: "exact", head: true }).gte("created_at", startOfWeek.toISOString()),
+      supabase.from("leads").select("*", { count: "exact", head: true }),
+      supabase.from("leads").select("*", { count: "exact", head: true }).eq("usha_status", "sent"),
+      supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(200),
     ])
 
-    const revenueToday = soldLeads?.reduce((sum, lead) => sum + (Number(lead.sell_price) || 0), 0) || 0
-
-    setStats({
-      leadsToday: leadsToday || 0,
-      leadsThisWeek: leadsThisWeek || 0,
-      totalLeads: totalLeads || 0,
-      activeAgents: activeAgents || 0,
-      salesToday: salesToday || 0,
-      revenueToday,
-    })
-
-    if (newLeads) {
-      setRecentLeads(newLeads)
-    }
-
+    setStats({ leadsToday: leadsToday ?? 0, leadsThisWeek: leadsThisWeek ?? 0, totalLeads: totalLeads ?? 0, sentToUsha: sentToUsha ?? 0 })
+    if (freshLeads) setLeads(freshLeads as Lead[])
     setRefreshing(false)
   }
 
-  const totalPipeline = pipeline.new + pipeline.contacted + pipeline.appointment_set + pipeline.sold
-  const pipelineData = [
-    { name: "New", value: totalPipeline > 0 ? Math.round((pipeline.new / totalPipeline) * 100) : 0, count: pipeline.new },
-    { name: "Contacted", value: totalPipeline > 0 ? Math.round((pipeline.contacted / totalPipeline) * 100) : 0, count: pipeline.contacted },
-    { name: "Appointments", value: totalPipeline > 0 ? Math.round((pipeline.appointment_set / totalPipeline) * 100) : 0, count: pipeline.appointment_set },
-    { name: "Sold", value: totalPipeline > 0 ? Math.round((pipeline.sold / totalPipeline) * 100) : 0, count: pipeline.sold },
-  ]
+  // ── filtered leads ───────────────────────────────────────────────────────────
+  const filteredLeads = useMemo(() => {
+    const q = search.toLowerCase()
+    const minScore = parseInt(filterMinScore, 10) || 0
+    return leads.filter(l => {
+      if (q) {
+        const hay = [l.first_name, l.last_name, l.email, l.phone, l.reference_number, l.state].join(" ").toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      if (filterFunnel !== "all" && l.funnel_type !== filterFunnel) return false
+      if (filterStatus !== "all" && l.status !== filterStatus) return false
+      if (filterUsha !== "all") {
+        if (filterUsha === "none" && l.usha_status) return false
+        if (filterUsha !== "none" && l.usha_status !== filterUsha) return false
+      }
+      if (minScore > 0 && (l.ai_score === null || l.ai_score < minScore)) return false
+      return true
+    })
+  }, [leads, search, filterFunnel, filterStatus, filterUsha, filterMinScore])
 
-  const conversionRate = totalPipeline > 0 ? ((pipeline.sold / totalPipeline) * 100).toFixed(1) : "0"
-  const weeklyAverage = dailyData.length > 0 ? (dailyData.reduce((sum, d) => sum + d.leads, 0) / dailyData.length).toFixed(1) : "0"
+  const weeklyAvg = dailyData.length > 0
+    ? (dailyData.reduce((s, d) => s + d.leads, 0) / dailyData.length).toFixed(1)
+    : "0"
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto">
-      {/* Page Header */}
+
+      {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">Dynasty Lead Generation System</p>
+          <h1 className="text-2xl font-bold text-gray-900">Lead CRM</h1>
+          <p className="text-sm text-gray-500">Dynasty Insurance Network — Admin</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
             <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => exportToCsv(filteredLeads)}>
             <Download className="w-4 h-4 mr-2" />
-            Export
+            Export CSV
           </Button>
         </div>
       </div>
 
-      {/* Real-Time Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-medium text-gray-600">Leads Today</div>
-            <Activity className="w-5 h-5 text-blue-500" />
-          </div>
-          <div className="text-3xl font-bold text-gray-900 mb-1">{stats.leadsToday}</div>
-          <div className="text-sm text-gray-500">This week: {stats.leadsThisWeek}</div>
-          <div className="mt-2 text-xs text-gray-500">Total: {stats.totalLeads}</div>
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard label="Leads Today" value={stats.leadsToday} sub={`This week: ${stats.leadsThisWeek}`} icon={Activity} accent="text-blue-500" />
+        <StatCard label="Total Leads" value={stats.totalLeads} icon={Inbox} accent="text-purple-500" />
+        <StatCard label="Sent to USHA" value={stats.sentToUsha} sub="Purchased by agents" icon={Globe} accent="text-green-500" />
+        <StatCard label="Weekly Avg" value={weeklyAvg} sub="leads / day" icon={TrendingUp} accent="text-amber-500" />
+      </div>
+
+      {/* Charts row */}
+      <div className="grid lg:grid-cols-3 gap-6 mb-8">
+        <Card className="p-5 lg:col-span-1">
+          <h2 className="text-sm font-semibold text-gray-700 mb-4">Daily Lead Volume</h2>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={dailyData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="day" stroke="#9ca3af" fontSize={12} />
+              <YAxis stroke="#9ca3af" fontSize={12} />
+              <Tooltip />
+              <Bar dataKey="leads" fill="#1e3a8a" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-medium text-gray-600">Active Campaigns</div>
-            <Target className="w-5 h-5 text-green-500" />
-          </div>
-          <div className="text-3xl font-bold text-gray-900 mb-1">2</div>
-          <div className="text-sm text-gray-500">Spend: $1,487</div>
-          <div className="mt-2 text-xs text-gray-500">Budget: 74% utilized</div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-medium text-gray-600">Active Agents</div>
-            <Users className="w-5 h-5 text-purple-500" />
-          </div>
-          <div className="text-3xl font-bold text-gray-900 mb-1">{stats.activeAgents}</div>
-          <div className="text-sm text-gray-500">Avg contact: 81%</div>
-          <div className="mt-2 text-xs text-gray-500">Ready to receive leads</div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-medium text-gray-600">Sales Today</div>
-            <DollarSign className="w-5 h-5 text-amber-500" />
-          </div>
-          <div className="text-3xl font-bold text-gray-900 mb-1">{stats.salesToday}</div>
-          <div className="text-sm text-green-600">Revenue: ${stats.revenueToday.toFixed(2)}</div>
-          <div className="mt-2 text-xs text-gray-900 font-semibold">
-            Profit: ${(stats.revenueToday * 0.38).toFixed(2)}
+        <Card className="p-5 lg:col-span-2">
+          <h2 className="text-sm font-semibold text-gray-700 mb-4">Leads by Funnel</h2>
+          <div className="space-y-3">
+            {Object.entries(FUNNEL_LABELS).map(([key, label]) => {
+              const count = leads.filter(l => l.funnel_type === key).length
+              const pct = leads.length > 0 ? Math.round((count / leads.length) * 100) : 0
+              return (
+                <div key={key}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-700">{label}</span>
+                    <span className="text-gray-500 font-medium">{count} ({pct}%)</span>
+                  </div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#1e3a8a] rounded-full transition-all" style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        {/* Campaign Performance */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Campaign Performance</h2>
-            <Button variant="outline" size="sm">
-              View All
-            </Button>
+      {/* Leads table */}
+      <Card className="overflow-hidden">
+        {/* Filters bar */}
+        <div className="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Search name, email, phone, ref…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-9"
+            />
           </div>
-
-          <div className="space-y-4">
-            {mockCampaigns.map((campaign, i) => (
-              <div key={i} className="p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="font-semibold text-gray-900">{campaign.name}</div>
-                    <Badge
-                      className={
-                        campaign.status === "active"
-                          ? "bg-green-100 text-green-800 border-green-200"
-                          : "bg-gray-100 text-gray-800 border-gray-200"
-                      }
-                    >
-                      {campaign.status}
-                    </Badge>
-                  </div>
-                  <div className="flex gap-2">
-                    {campaign.status === "active" ? (
-                      <Button size="sm" variant="outline">
-                        <Pause className="w-3 h-3" />
-                      </Button>
-                    ) : (
-                      <Button size="sm" variant="outline">
-                        <Play className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <div className="text-gray-500 mb-1">Spend</div>
-                    <div className="font-semibold text-gray-900">${campaign.spendToday}</div>
-                    <div className="text-xs text-gray-400">of ${campaign.dailyBudget}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 mb-1">Leads</div>
-                    <div className="font-semibold text-gray-900">{campaign.leadsToday}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 mb-1">CPL</div>
-                    <div
-                      className={`font-semibold ${
-                        campaign.cpl < 60 ? "text-green-600" : campaign.cpl < 80 ? "text-amber-600" : "text-red-600"
-                      }`}
-                    >
-                      ${campaign.cpl.toFixed(2)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-gray-500 mb-1">CTR</div>
-                    <div className="font-semibold text-gray-900">{campaign.ctr.toFixed(2)}%</div>
-                  </div>
-                </div>
-
-                {campaign.status === "active" && (
-                  <div className="mt-3">
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500"
-                        style={{ width: `${(campaign.spendToday / campaign.dailyBudget) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+          <Select value={filterFunnel} onValueChange={setFilterFunnel}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="All funnels" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All funnels</SelectItem>
+              {Object.entries(FUNNEL_LABELS).map(([k, v]) => (
+                <SelectItem key={k} value={k}>{v}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="All statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="contacted">Contacted</SelectItem>
+              <SelectItem value="appointment_set">Appt Set</SelectItem>
+              <SelectItem value="sold">Sold</SelectItem>
+              <SelectItem value="disqualified">DQ</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterUsha} onValueChange={setFilterUsha}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="USHA status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All USHA</SelectItem>
+              <SelectItem value="sent">Sent</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="none">Not sent</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterMinScore} onValueChange={setFilterMinScore}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Min AI score" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Any score</SelectItem>
+              <SelectItem value="80">80+ (Hot)</SelectItem>
+              <SelectItem value="65">65+ (Warm)</SelectItem>
+              <SelectItem value="45">45+ (Qualified)</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="flex items-center gap-2 ml-auto">
+            <Badge className="bg-green-100 text-green-700 border-green-200">Live</Badge>
+            <span className="text-sm text-gray-400">{filteredLeads.length} leads</span>
           </div>
-        </Card>
+        </div>
 
-        {/* Recent Leads - Real Data */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Recent Leads</h2>
-            <Badge className="bg-green-100 text-green-800 border-green-200">Live</Badge>
-          </div>
-
+        {/* Table */}
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>State</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Score</TableHead>
-                <TableHead>Time</TableHead>
+              <TableRow className="bg-gray-50">
+                <TableHead className="font-semibold text-gray-600">Reference</TableHead>
+                <TableHead className="font-semibold text-gray-600">Name</TableHead>
+                <TableHead className="font-semibold text-gray-600">Contact</TableHead>
+                <TableHead className="font-semibold text-gray-600">State</TableHead>
+                <TableHead className="font-semibold text-gray-600">Funnel</TableHead>
+                <TableHead className="font-semibold text-gray-600">AI Score</TableHead>
+                <TableHead className="font-semibold text-gray-600">USHA</TableHead>
+                <TableHead className="font-semibold text-gray-600">Status</TableHead>
+                <TableHead className="font-semibold text-gray-600">UTM Source</TableHead>
+                <TableHead className="font-semibold text-gray-600">Submitted</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentLeads.length === 0 ? (
+              {filteredLeads.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-gray-500 py-8">
-                    No leads yet
+                  <TableCell colSpan={10} className="text-center text-gray-400 py-16">
+                    No leads match your filters.
                   </TableCell>
                 </TableRow>
               ) : (
-                recentLeads.map((lead) => (
-                  <TableRow key={lead.id}>
+                filteredLeads.map(lead => (
+                  <TableRow
+                    key={lead.id}
+                    className="cursor-pointer hover:bg-blue-50/60 transition-colors"
+                    onClick={() => { setSelectedLead(lead); setDrawerOpen(true) }}
+                  >
+                    <TableCell className="font-mono text-xs text-gray-500">
+                      {lead.reference_number}
+                    </TableCell>
                     <TableCell>
-                      <div className="font-medium text-gray-900">
+                      <div className="font-semibold text-gray-900">
                         {lead.first_name} {lead.last_name}
                       </div>
-                      <div className="text-xs text-gray-500">{lead.email}</div>
                     </TableCell>
-                    <TableCell className="text-gray-700">{lead.state || "--"}</TableCell>
                     <TableCell>
-                      <Badge
-                        className={
-                          lead.status === "new"
-                            ? "bg-blue-100 text-blue-800 border-blue-200"
-                            : lead.status === "contacted"
-                              ? "bg-green-100 text-green-800 border-green-200"
-                              : lead.status === "sold"
-                                ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                                : "bg-gray-100 text-gray-800 border-gray-200"
-                        }
-                      >
-                        {lead.status}
-                      </Badge>
+                      <div className="text-xs text-gray-600">{lead.email}</div>
+                      {lead.phone && <div className="text-xs text-gray-400">{lead.phone}</div>}
+                    </TableCell>
+                    <TableCell className="text-gray-700">{lead.state ?? "—"}</TableCell>
+                    <TableCell>
+                      <span className="text-xs text-gray-600">
+                        {FUNNEL_LABELS[lead.funnel_type ?? ""] ?? lead.funnel_type ?? "—"}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <AIScoreBadge score={lead.ai_score} reasons={lead.ai_score_reasons} />
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500">
+                    <TableCell>
+                      <UshaStatusBadge status={lead.usha_status ?? null} />
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={lead.status} />
+                    </TableCell>
+                    <TableCell className="text-xs text-gray-500">
+                      {lead.utm_source ?? "—"}
+                    </TableCell>
+                    <TableCell className="text-xs text-gray-400 whitespace-nowrap">
                       {getTimeAgo(new Date(lead.created_at))}
                     </TableCell>
                   </TableRow>
@@ -466,195 +461,15 @@ export default function AdminDashboardClient({
               )}
             </TableBody>
           </Table>
-        </Card>
-      </div>
-
-      {/* Lead Pipeline & Charts */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <Card className="p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Lead Pipeline</h2>
-
-          <div className="space-y-4">
-            {pipelineData.map((stage, i) => (
-              <div key={i}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-medium text-gray-900">{stage.name}</div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500">{stage.value}%</span>
-                    <span className="font-bold text-gray-900">{stage.count}</span>
-                  </div>
-                </div>
-                <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${
-                      i === 0
-                        ? "bg-blue-500"
-                        : i === 1
-                          ? "bg-green-500"
-                          : i === 2
-                            ? "bg-purple-500"
-                            : "bg-emerald-500"
-                    }`}
-                    style={{ width: `${stage.value}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <div className="text-sm text-blue-600 mb-1">Conversion Rate</div>
-              <div className="text-2xl font-bold text-blue-900">{conversionRate}%</div>
-              <div className="text-xs text-blue-600">Leads to Sales</div>
-            </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <div className="text-sm text-green-600 mb-1">Total Pipeline</div>
-              <div className="text-2xl font-bold text-green-900">{totalPipeline}</div>
-              <div className="text-xs text-green-600">Active leads</div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Daily Leads Generated</h2>
-
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={dailyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="day" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip />
-              <Bar dataKey="leads" fill="#1e3a8a" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600 mb-1">Weekly Average</div>
-              <div className="text-2xl font-bold text-gray-900">{weeklyAverage}</div>
-              <div className="text-xs text-gray-500">leads/day</div>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-sm text-gray-600 mb-1">This Week</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.leadsThisWeek}</div>
-              <div className="text-xs text-gray-500">total leads</div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Governance & Alerts */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Governance & Compliance</h2>
-          <div className="flex gap-2">
-            <Badge className="bg-red-100 text-red-800 border-red-200">0 Critical</Badge>
-            <Badge className="bg-amber-100 text-amber-800 border-amber-200">2 Warning</Badge>
-            <Badge className="bg-blue-100 text-blue-800 border-blue-200">1 Info</Badge>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {mockAlerts.map((alert, i) => (
-            <div
-              key={i}
-              className={`p-4 rounded-lg border-l-4 ${
-                alert.severity === "critical"
-                  ? "bg-red-50 border-red-500"
-                  : alert.severity === "warning"
-                    ? "bg-amber-50 border-amber-500"
-                    : "bg-blue-50 border-blue-500"
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  {alert.severity === "warning" ? (
-                    <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  ) : (
-                    <Activity className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  )}
-                  <div>
-                    <div className="font-medium text-gray-900 mb-1">{alert.message}</div>
-                    <div className="flex items-center gap-3 text-sm text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {alert.time}
-                      </span>
-                      <Badge className="bg-white border-gray-300 text-gray-700">{alert.type}</Badge>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm">
-                  Resolve
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 pt-6 border-t">
-          <h3 className="font-semibold text-gray-900 mb-4">Compliance Checklist</h3>
-          <div className="grid md:grid-cols-2 gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <CheckCircle2 className="w-4 h-4 text-green-600" />
-              <span className="text-gray-700">All leads have TCPA consent</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <CheckCircle2 className="w-4 h-4 text-green-600" />
-              <span className="text-gray-700">No DNC violations today</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <CheckCircle2 className="w-4 h-4 text-green-600" />
-              <span className="text-gray-700">Call recording active</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
-              <span className="text-gray-700">2 agents need license renewal</span>
-            </div>
-          </div>
         </div>
       </Card>
 
-      {/* Financial Overview */}
-      <Card className="p-6 mt-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Financial Overview (MTD)</h2>
-
-        <div className="grid md:grid-cols-4 gap-6">
-          <div>
-            <div className="text-sm text-gray-600 mb-2">Ad Spend</div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">$10,487</div>
-            <div className="text-sm text-gray-500">{stats.totalLeads} leads generated</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600 mb-2">Revenue</div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">$13,800</div>
-            <div className="text-sm text-gray-500">{pipeline.sold} sales closed</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600 mb-2">Net Profit</div>
-            <div className="text-3xl font-bold text-green-600 mb-1">$3,313</div>
-            <div className="text-sm text-gray-500">31.6% margin</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600 mb-2">ROI</div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">132%</div>
-            <div className="text-sm text-gray-500">LTV:CAC 2.4x</div>
-          </div>
-        </div>
-
-        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-green-600" />
-            <div>
-              <div className="font-semibold text-green-900">System Profitable</div>
-              <div className="text-sm text-green-700">
-                Current unit economics support scaling to $2,000/day ad spend
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
+      {/* Lead detail drawer */}
+      <LeadDetailDrawer
+        lead={selectedLead}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
     </div>
   )
 }

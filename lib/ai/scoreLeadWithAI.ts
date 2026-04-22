@@ -156,11 +156,7 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
         console.error('Error inserting lead_events for scoring:', eventError)
       }
 
-      // If the score is 80+, send a hot lead SMS alert
-      if (scoreResult.score >= 80) {
-        await sendHotLeadAlert(lead, scoreResult.score)
-      }
-
+      // Expose score result so callers (e.g. admin email) can enrich their payload
       console.log(`Lead ${lead.referenceNumber} scored: ${scoreResult.score}/100 (${scoreResult.urgencyLevel})`)
     } else {
       console.log(`Lead ${lead.referenceNumber} could not be scored`)
@@ -170,65 +166,5 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
   }
 }
 
-/**
- * Sends a hot lead SMS alert to agents when a lead scores 80+
- */
-async function sendHotLeadAlert(lead: Lead, score: number): Promise<void> {
-  const accountSid = process.env.TWILIO_ACCOUNT_SID
-  const authToken = process.env.TWILIO_AUTH_TOKEN
-  const fromNumber = process.env.TWILIO_PHONE_NUMBER
-
-  if (!accountSid || !authToken || !fromNumber) {
-    console.log('Twilio not configured, skipping hot lead SMS alert')
-    return
-  }
-
-  const supabase = createClient()
-
-  try {
-    // Get active agents licensed in the lead's state with SMS notifications enabled
-    let query = supabase
-      .from('agents')
-      .select('phone')
-      .eq('is_active', true)
-      .eq('notify_sms', true)
-      .not('phone', 'is', null)
-
-    if (lead.state) {
-      query = query.contains('licensed_states', [lead.state])
-    }
-
-    const { data: agents, error } = await query
-
-    if (error || !agents || agents.length === 0) {
-      console.log('No agents to notify for hot lead')
-      return
-    }
-
-    const message = `HOT LEAD ALERT: ${lead.firstName} from ${lead.state || 'Unknown'} scored ${score}/100. Call NOW. Ref: ${lead.referenceNumber}`
-
-    // Import Twilio dynamically to avoid issues if not installed
-    const twilio = await import('twilio')
-    const client = twilio.default(accountSid, authToken)
-
-    // Send SMS to each agent
-    const sendPromises = agents.map(async (agent) => {
-      if (!agent.phone) return
-
-      try {
-        await client.messages.create({
-          body: message,
-          from: fromNumber,
-          to: agent.phone,
-        })
-        console.log(`Hot lead SMS sent to agent: ${agent.phone}`)
-      } catch (err) {
-        console.error(`Failed to send hot lead SMS to ${agent.phone}:`, err)
-      }
-    })
-
-    await Promise.allSettled(sendPromises)
-  } catch (error) {
-    console.error('Error sending hot lead alerts:', error)
-  }
-}
+// Hot-lead SMS to agents removed — leads now route to USHA Marketplace.
+// Admin email notifications are fired from the leads API route instead.

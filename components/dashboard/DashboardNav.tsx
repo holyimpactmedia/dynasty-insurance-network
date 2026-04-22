@@ -15,16 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Users, 
-  LayoutDashboard, 
-  Settings, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  LogOut,
   ChevronDown,
-  TrendingUp,
-  Route,
-  BarChart3
+  BarChart3,
 } from "lucide-react"
+
+// Unused agent/routing imports kept in original file — removed here since
+// the new flow routes leads to USHA Marketplace, not internal agents.
 
 interface DashboardNavProps {
   userRole: string
@@ -45,32 +44,19 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
     router.refresh()
   }
 
-  const isAdmin = userRole === "admin" || userRole === "superadmin"
-  
+  // Admin-only nav — agent and routing items removed (USHA Marketplace handles lead distribution)
   const navItems = [
-    { 
-      href: "/dashboard/agent", 
-      label: "My Leads", 
-      icon: Users,
-      roles: ["agent", "admin", "superadmin"]
-    },
-    { 
-      href: "/dashboard/admin", 
-      label: "Admin", 
+    {
+      href: "/dashboard/admin",
+      label: "Lead CRM",
       icon: LayoutDashboard,
-      roles: ["admin", "superadmin"]
+      roles: ["admin", "superadmin"],
     },
-    { 
-      href: "/dashboard/routing", 
-      label: "Routing", 
-      icon: Route,
-      roles: ["admin", "superadmin"]
-    },
-    { 
-      href: "/dashboard/projections", 
-      label: "Projections", 
+    {
+      href: "/dashboard/projections",
+      label: "Projections",
       icon: BarChart3,
-      roles: ["admin", "superadmin"]
+      roles: ["admin", "superadmin"],
     },
   ]
 
@@ -87,14 +73,8 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
+  const getInitials = (name: string) =>
+    name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -154,29 +134,19 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/agent" className="flex items-center">
-                    <Users className="w-4 h-4 mr-2" />
-                    My Leads
+                  <Link href="/dashboard/admin" className="flex items-center">
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Lead CRM
                   </Link>
                 </DropdownMenuItem>
-                {isAdmin && (
-                  <>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/admin" className="flex items-center">
-                        <LayoutDashboard className="w-4 h-4 mr-2" />
-                        Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/routing" className="flex items-center">
-                        <Route className="w-4 h-4 mr-2" />
-                        Lead Routing
-                      </Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/projections" className="flex items-center">
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    Projections
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                   className="text-red-600 focus:text-red-600"

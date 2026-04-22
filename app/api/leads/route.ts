@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/admin'
 import { sendLeadConfirmation } from '@/lib/email/sendLeadConfirmation'
 import { notifyAgentsOfNewLead } from '@/lib/sms/notifyAgents'
 import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
+import { postLeadToUsha } from '@/lib/usha/postLead'
+import { notifyAdmin } from '@/lib/email/notifyAdmin'
 
 // Generate a unique reference number for leads
 function generateReferenceNumber(): string {
@@ -14,7 +16,7 @@ function generateReferenceNumber(): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Extract lead data from the request
     const {
       firstName,
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
       utmSource,
       utmMedium,
       utmCampaign,
+      funnelType,
     } = body
 
     // Validate required fields
@@ -57,6 +60,9 @@ export async function POST(request: NextRequest) {
     const forwardedFor = request.headers.get('x-forwarded-for')
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown'
 
+    const tcpaConsentAt = new Date().toISOString()
+    const resolvedFunnelType = funnelType || 'healthcare_aca'
+
     // Insert the lead into the database
     const { data, error } = await supabase
       .from('leads')
@@ -73,9 +79,9 @@ export async function POST(request: NextRequest) {
         qualifying_event: qualifyingEvent || null,
         priorities: priorities || null,
         tcpa_consent: tcpaConsent,
-        tcpa_consent_at: new Date().toISOString(),
+        tcpa_consent_at: tcpaConsentAt,
         trusted_form_cert_url: trustedFormCertUrl || null,
-        funnel_type: 'healthcare_aca',
+        funnel_type: resolvedFunnelType,
         utm_source: utmSource || null,
         utm_medium: utmMedium || null,
         utm_campaign: utmCampaign || null,
@@ -93,19 +99,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Fire-and-forget async integrations (don't block the response)
-    const leadData = {
-      id: data.id,
-      referenceNumber,
-      firstName,
-      lastName,
-      email,
-      phone,
-      state,
-      trustedFormCertUrl,
-    }
+    // ── Fire-and-forget async integrations (do not block the response) ──────
 
-    // 1. Claim TrustedForm certificate (if provided)
+    // 1. Claim TrustedForm certificate (TCPA compliance)
     if (trustedFormCertUrl) {
       fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
         method: 'POST',
@@ -119,17 +115,69 @@ export async function POST(request: NextRequest) {
       }).catch(err => console.error('TrustedForm claim error:', err))
     }
 
-    // 2. Send confirmation email to the lead
-    sendLeadConfirmation(leadData).catch(err => 
-      console.error('Email confirmation error:', err)
-    )
+    // 2. Send confirmation email to the consumer
+    sendLeadConfirmation({
+      id: data.id,
+      referenceNumber,
+      firstName,
+      lastName,
+      email,
+      phone,
+      state,
+      trustedFormCertUrl,
+    }).catch(err => console.error('Lead confirmation email error:', err))
 
-    // 3. Notify agents via SMS
-    notifyAgentsOfNewLead(leadData).catch(err => 
-      console.error('SMS notification error:', err)
-    )
+    // 3. Post lead to USHA Marketplace for agents to purchase
+    //    Also sends admin notification email with USHA result + full lead data
+    const ushaPayload = {
+      firstName,
+      lastName,
+      email,
+      phone: phone || null,
+      age: age ? parseInt(age, 10) : null,
+      state: state || null,
+      incomeRange: incomeRange || null,
+      householdSize: householdSize || null,
+      qualifyingEvent: qualifyingEvent || null,
+      tcpaConsent,
+      tcpaConsentAt,
+      trustedFormCertUrl: trustedFormCertUrl || null,
+      referenceNumber,
+      utmSource: utmSource || null,
+      utmMedium: utmMedium || null,
+      utmCampaign: utmCampaign || null,
+      ipAddress,
+      leadType: resolvedFunnelType,
+    }
 
-    // 4. Score lead with AI (async, will update the lead record and send hot alerts)
+    postLeadToUsha(data.id, ushaPayload)
+      .then(ushaResult => {
+        // Send admin notification email after USHA post so we can include its status
+        notifyAdmin({
+          referenceNumber,
+          firstName,
+          lastName,
+          email,
+          phone: phone || null,
+          age: age ? parseInt(age, 10) : null,
+          state: state || null,
+          funnelType: resolvedFunnelType,
+          incomeRange: incomeRange || null,
+          householdSize: householdSize || null,
+          qualifyingEvent: qualifyingEvent || null,
+          priorities: priorities || null,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          ipAddress,
+          tcpaConsentAt,
+          trustedFormCertUrl: trustedFormCertUrl || null,
+          ushaResult,
+        }).catch(err => console.error('Admin notification email error:', err))
+      })
+      .catch(err => console.error('USHA post error:', err))
+
+    // 4. Score lead with AI (async — updates the lead record in Supabase)
     scoreAndUpdateLead({
       id: data.id,
       referenceNumber,
@@ -144,9 +192,11 @@ export async function POST(request: NextRequest) {
       qualifyingEvent,
       priorities,
       created_at: data.created_at,
-    }).catch(err => 
-      console.error('AI scoring error:', err)
-    )
+    }).catch(err => console.error('AI scoring error:', err))
+
+    // notifyAgentsOfNewLead kept for legacy compatibility — not called in new flow.
+    // Leads route to USHA Marketplace instead.
+    void notifyAgentsOfNewLead
 
     return NextResponse.json({
       success: true,
