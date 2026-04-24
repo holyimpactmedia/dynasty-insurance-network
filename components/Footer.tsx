@@ -4,10 +4,10 @@ export function Footer() {
   return (
     <footer className="bg-[#0A1128] text-white mt-auto">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-8 text-center md:text-left">
           {/* Company Info */}
           <div className="space-y-3">
-            <img src="/images/logo.avif" alt="Dynasty" className="h-12 w-auto" />
+            <img src="/images/logo.avif" alt="Dynasty" className="h-20 md:h-24 w-auto mx-auto md:mx-0" />
             <p className="text-sm text-gray-400">
               Independent insurance agency helping Americans find quality healthcare coverage.
             </p>

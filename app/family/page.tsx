@@ -311,7 +311,7 @@ export default function FamilyQuizPage() {
           variant="ghost"
           size="sm"
           onClick={prevStep}
-          className="fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-background/90 backdrop-blur-sm border border-border shadow-sm rounded-full px-4"
+          className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-white text-[#0A1128] hover:bg-gray-100 border-2 border-[#D4AF37] shadow-lg rounded-full px-4 h-10 font-medium"
         >
           <ChevronLeft className="w-4 h-4" />
           Back
@@ -1071,7 +1071,7 @@ export default function FamilyQuizPage() {
         </AnimatePresence>
       </div>
 
-      <Footer />
+      {(currentStep === 0 || showThankYou) && <Footer />}
     </div>
   )
 }
