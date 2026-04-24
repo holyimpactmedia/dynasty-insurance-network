@@ -42,28 +42,39 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const pathname = request.nextUrl.pathname
+
   // Protected routes - redirect to login if not authenticated
-  const protectedPaths = ["/dashboard"]
-  const isProtectedPath = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  )
+  const isProtectedPath = pathname.startsWith("/dashboard")
 
   if (isProtectedPath && !user) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
-    url.searchParams.set("redirectTo", request.nextUrl.pathname)
+    url.searchParams.set("redirectTo", pathname)
     return NextResponse.redirect(url)
   }
 
+  // Admin-only routes — non-admins get redirected to their agent dashboard
+  const adminPaths = ["/dashboard/admin", "/dashboard/projections", "/dashboard/routing"]
+  const isAdminPath = adminPaths.some((p) => pathname.startsWith(p))
+
+  if (isAdminPath && user) {
+    const role = (user.user_metadata as { role?: string } | null)?.role
+    if (role !== "admin") {
+      const url = request.nextUrl.clone()
+      url.pathname = "/dashboard/agent"
+      return NextResponse.redirect(url)
+    }
+  }
+
   // If user is logged in and tries to access auth pages, redirect to dashboard
-  const authPaths = ["/auth/login", "/auth/sign-up"]
-  const isAuthPath = authPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  )
+  const authPaths = ["/auth/login", "/auth/signup"]
+  const isAuthPath = authPaths.some((p) => pathname.startsWith(p))
 
   if (isAuthPath && user) {
     const url = request.nextUrl.clone()
-    url.pathname = "/dashboard/agent"
+    const role = (user.user_metadata as { role?: string } | null)?.role
+    url.pathname = role === "admin" ? "/dashboard/admin" : "/dashboard/agent"
     return NextResponse.redirect(url)
   }
 

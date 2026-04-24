@@ -26,21 +26,31 @@ function LoginForm() {
     setIsLoading(true)
     setError(null)
 
-    const supabase = createClient()
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setError("Sign-in is not configured yet. Add Supabase environment variables in Vercel and redeploy.")
       setIsLoading(false)
       return
     }
 
-    router.push(redirectTo)
-    router.refresh()
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      })
+
+      if (error) {
+        setError(error.message)
+        setIsLoading(false)
+        return
+      }
+
+      router.push(redirectTo)
+      router.refresh()
+    } catch {
+      setError("Something went wrong reaching the auth service. Try again in a moment.")
+      setIsLoading(false)
+    }
   }
 
   return (

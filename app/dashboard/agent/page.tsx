@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -48,29 +49,52 @@ interface Lead {
 }
 
 export default function AgentDashboard() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<"leads" | "performance" | "activity">("leads")
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [leads, setLeads] = useState<Lead[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthChecked, setIsAuthChecked] = useState(false)
 
   useEffect(() => {
-    const fetchLeads = async () => {
+    const init = async () => {
       const supabase = createClient()
-      const { data, error } = await supabase
-        .from("leads")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50)
 
-      if (data && !error) {
-        setLeads(data)
+      // Auth gate — redirect unauthenticated users to login
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.replace("/auth/login?redirectTo=/dashboard/agent")
+        return
       }
-      setIsLoading(false)
+      setIsAuthChecked(true)
+
+      try {
+        const { data, error } = await supabase
+          .from("leads")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(50)
+
+        if (data && !error) setLeads(data)
+      } catch {
+        // Empty leads array — render shows zero state
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    fetchLeads()
-  }, [])
+    init()
+  }, [router])
+
+  // Hold render until auth check completes to avoid a flash of dashboard
+  if (!isAuthChecked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0A1128] via-[#1a2744] to-[#0A1128] flex items-center justify-center">
+        <div className="text-white text-sm">Loading agent portal...</div>
+      </div>
+    )
+  }
 
   const agentStats = {
     tier: 1,

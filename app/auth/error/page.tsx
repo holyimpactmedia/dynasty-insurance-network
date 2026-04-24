@@ -3,7 +3,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertTriangle } from "lucide-react"
 
-export default function AuthErrorPage() {
+export default async function AuthErrorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ message?: string }>
+}) {
+  const { message } = await searchParams
+  const detail = message?.trim() || "There was a problem signing you in. Please try again."
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] via-[#1a2744] to-[#0A1128] flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-sm">
@@ -15,9 +22,7 @@ export default function AuthErrorPage() {
           </div>
           <div>
             <CardTitle className="text-2xl text-white">Authentication Error</CardTitle>
-            <CardDescription className="text-gray-400">
-              There was a problem signing you in. Please try again.
-            </CardDescription>
+            <CardDescription className="text-gray-400">{detail}</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

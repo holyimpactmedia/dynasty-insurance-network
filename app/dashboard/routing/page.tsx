@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -36,12 +38,32 @@ const mockLeads = [
 ]
 
 export default function RoutingVisualization() {
+  const router = useRouter()
+  const [isAuthChecked, setIsAuthChecked] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [currentLead, setCurrentLead] = useState(mockLeads[0])
   const [selectedAgent, setSelectedAgent] = useState<number | null>(null)
   const [eliminatedAgents, setEliminatedAgents] = useState<number[]>([])
   const [speed, setSpeed] = useState(1)
+
+  useEffect(() => {
+    const check = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.replace("/auth/login?redirectTo=/dashboard/routing")
+        return
+      }
+      const role = (user.user_metadata as { role?: string } | null)?.role
+      if (role !== "admin") {
+        router.replace("/dashboard/agent")
+        return
+      }
+      setIsAuthChecked(true)
+    }
+    check()
+  }, [router])
 
   const routingSteps = [
     { label: "Lead Incoming", icon: Users, check: true },
@@ -111,6 +133,14 @@ export default function RoutingVisualization() {
     if (tier === 1) return "from-[#D4AF37] to-[#E8C976]"
     if (tier === 2) return "from-blue-500 to-blue-600"
     return "from-gray-500 to-gray-600"
+  }
+
+  if (!isAuthChecked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0A1128] via-[#1a2744] to-[#0A1128] flex items-center justify-center">
+        <div className="text-white text-sm">Loading routing console...</div>
+      </div>
+    )
   }
 
   return (

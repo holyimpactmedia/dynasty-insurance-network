@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { Card } from "@/components/ui/card"
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Download, Calendar, RefreshCw, TrendingUp, DollarSign, BarChart2, Users } from "lucide-react"
 import ProjectionsCalculators from "@/components/dashboard/ProjectionsCalculators"
 import RealVsProjectedChart from "@/components/dashboard/RealVsProjectedChart"
+import { SetupRequired } from "@/components/dashboard/SetupRequired"
 
 const SELL_PRICE = 28
 const ACQUISITION_COST = 10
@@ -28,47 +30,61 @@ const FUNNEL_LABELS: Record<string, string> = {
 
 export default async function ProjectionsDashboard() {
   const supabase = await createClient()
+  if (!supabase) return <SetupRequired page="projections" />
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect("/auth/login?redirectTo=/dashboard/projections")
+
+  const role = (user.user_metadata as { role?: string } | null)?.role
+  if (role !== "admin") redirect("/dashboard/agent")
 
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
   const thirtyDaysAgo = new Date(now)
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  // Fetch all data in parallel
-  const [
-    { count: totalLeads },
-    { data: soldLeads },
-    { data: soldLeadsThisMonth },
-    { data: recentLeads },
-    { data: funnelBreakdown },
-  ] = await Promise.all([
-    supabase.from("leads").select("*", { count: "exact", head: true }),
-    supabase.from("leads").select("gross_margin, sell_price, acquisition_cost").eq("status", "sold"),
-    supabase.from("leads")
-      .select("gross_margin, sell_price, acquisition_cost")
-      .eq("status", "sold")
-      .gte("created_at", startOfMonth.toISOString()),
-    supabase.from("leads")
-      .select("created_at, status, funnel_type")
-      .gte("created_at", thirtyDaysAgo.toISOString())
-      .order("created_at", { ascending: true }),
-    supabase.from("leads")
-      .select("funnel_type, status"),
+  const safeCount = async (q: PromiseLike<{ count: number | null }>) => {
+    try { return (await q).count ?? 0 } catch { return 0 }
+  }
+  const safeData = async <T,>(q: PromiseLike<{ data: T | null }>): Promise<T> => {
+    try { return ((await q).data ?? []) as T } catch { return [] as T }
+  }
+
+  // Fetch all data in parallel — error-tolerant per query
+  const [totalLeads, soldLeads, soldLeadsThisMonth, recentLeads, funnelBreakdown] = await Promise.all([
+    safeCount(supabase.from("leads").select("*", { count: "exact", head: true })),
+    safeData<{ gross_margin: number | null; sell_price: number | null; acquisition_cost: number | null }[]>(
+      supabase.from("leads").select("gross_margin, sell_price, acquisition_cost").eq("status", "sold")
+    ),
+    safeData<{ gross_margin: number | null; sell_price: number | null; acquisition_cost: number | null }[]>(
+      supabase.from("leads")
+        .select("gross_margin, sell_price, acquisition_cost")
+        .eq("status", "sold")
+        .gte("created_at", startOfMonth.toISOString())
+    ),
+    safeData<{ created_at: string; status: string; funnel_type: string | null }[]>(
+      supabase.from("leads")
+        .select("created_at, status, funnel_type")
+        .gte("created_at", thirtyDaysAgo.toISOString())
+        .order("created_at", { ascending: true })
+    ),
+    safeData<{ funnel_type: string | null; status: string }[]>(
+      supabase.from("leads").select("funnel_type, status")
+    ),
   ])
 
   // All-time financials
-  const allTimeSoldCount = soldLeads?.length || 0
+  const allTimeSoldCount = soldLeads.length
   const allTimeRevenue = allTimeSoldCount * SELL_PRICE
   const allTimeGrossMargin = allTimeSoldCount * GROSS_MARGIN_PER_LEAD
-  const yourNet = allTimeGrossMargin * 0.75 // 25% goes to each of 4 partners = 75% after splitting... actually 100% split 4 ways
 
   // This month financials
-  const thisMonthSoldCount = soldLeadsThisMonth?.length || 0
+  const thisMonthSoldCount = soldLeadsThisMonth.length
   const thisMonthGrossMargin = thisMonthSoldCount * GROSS_MARGIN_PER_LEAD
 
   // Build last-30-days actual vs projected chart data
   const dailyActual: Record<string, number> = {}
-  recentLeads?.forEach((lead) => {
+  recentLeads.forEach((lead) => {
     const day = lead.created_at.split("T")[0]
     dailyActual[day] = (dailyActual[day] || 0) + 1
   })
@@ -89,7 +105,7 @@ export default async function ProjectionsDashboard() {
 
   // Funnel breakdown
   const funnelMap: Record<string, { leads: number; sold: number }> = {}
-  funnelBreakdown?.forEach((lead) => {
+  funnelBreakdown.forEach((lead) => {
     const key = lead.funnel_type || "aca"
     if (!funnelMap[key]) funnelMap[key] = { leads: 0, sold: 0 }
     funnelMap[key].leads++
@@ -153,7 +169,7 @@ export default async function ProjectionsDashboard() {
               </div>
               <div className="text-sm text-gray-500 font-medium">Total Leads</div>
             </div>
-            <div className="text-3xl font-bold text-gray-900">{(totalLeads || 0).toLocaleString()}</div>
+            <div className="text-3xl font-bold text-gray-900">{totalLeads.toLocaleString()}</div>
             <div className="text-xs text-gray-400 mt-1">All time</div>
           </Card>
 

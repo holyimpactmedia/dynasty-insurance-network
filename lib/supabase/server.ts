@@ -3,14 +3,19 @@ import { cookies } from 'next/headers'
 
 /**
  * Creates a Supabase client for server-side use.
- * Always create a new client within each function when using it.
+ * Returns `null` if Supabase is not configured (env vars missing) so callers
+ * can render a graceful empty state instead of crashing.
  */
 export async function createClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !anonKey) return null
+
   const cookieStore = await cookies()
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {

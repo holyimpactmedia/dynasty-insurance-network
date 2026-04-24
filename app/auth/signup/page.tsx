@@ -43,28 +43,39 @@ function SignupForm() {
       return
     }
 
-    const supabase = createClient()
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: 'agent', // Default role for self-signup
-        },
-        emailRedirectTo: `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`,
-      },
-    })
-
-    if (error) {
-      setError(error.message)
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setError("Sign-up is not configured yet. Add Supabase environment variables in Vercel and redeploy.")
       setIsLoading(false)
       return
     }
 
-    setIsSuccess(true)
-    setIsLoading(false)
+    try {
+      const supabase = createClient()
+
+      const { error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: {
+            full_name: fullName.trim(),
+            role: 'agent', // Default role for self-signup
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`,
+        },
+      })
+
+      if (error) {
+        setError(error.message)
+        setIsLoading(false)
+        return
+      }
+
+      setIsSuccess(true)
+      setIsLoading(false)
+    } catch {
+      setError("Something went wrong reaching the auth service. Try again in a moment.")
+      setIsLoading(false)
+    }
   }
 
   if (isSuccess) {
