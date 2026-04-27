@@ -36,11 +36,11 @@ interface LeadDetailDrawerProps {
 // ── helpers ────────────────────────────────────────────────────────────────────
 
 function fmt(value: string | null | undefined): string {
-  return value?.trim() || "—"
+  return value?.trim() || "N/A"
 }
 
 function fmtDate(iso: string | null | undefined): string {
-  if (!iso) return "—"
+  if (!iso) return "N/A"
   return new Date(iso).toLocaleString("en-US", {
     month: "short",
     day: "numeric",
@@ -189,7 +189,7 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
                     <Phone className="w-3 h-3" />
                     {lead.phone}
                   </a>
-                ) : "—"
+                ) : "N/A"
               }
             />
             <Row label="Age" value={fmt(lead.age?.toString())} />
@@ -201,7 +201,7 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
                     <MapPin className="w-3 h-3" />
                     {lead.state}
                   </span>
-                ) : "—"
+                ) : "N/A"
               }
             />
           </Section>

@@ -240,7 +240,7 @@ export default function PPOQuizPage() {
 
         <main className="flex-1">
 
-          {/* Hero — Pain Points */}
+          {/* Hero: Pain Points */}
           <section className="relative text-white py-16 px-6 overflow-hidden">
             <img src="/images/heroes/ppo.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
             <div className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/95 via-[#0A1128]/85 to-[#0A1128]/95" aria-hidden="true" />
@@ -253,7 +253,7 @@ export default function PPOQuizPage() {
                 Stop Asking Permission to See a Doctor
               </h1>
               <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                Private PPO plans for healthy adults under 64 — see any specialist, skip the referrals, and pay less than COBRA.
+                Private PPO plans for healthy adults under 64. See any specialist, skip the referrals, and pay less than COBRA.
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
@@ -296,7 +296,7 @@ export default function PPOQuizPage() {
             </div>
           </section>
 
-          {/* Problem Agitation — HMO Restrictions */}
+          {/* Problem Agitation: HMO Restrictions */}
           <section className="py-16 px-6 bg-background">
             <div className="max-w-4xl mx-auto space-y-12">
               <div className="text-center space-y-4">
@@ -690,7 +690,7 @@ export default function PPOQuizPage() {
                   <Card className="p-8 border-2 border-[#D4AF37]">
                     <div className="space-y-6">
                       <div className="text-center">
-                        <h2 className="text-2xl font-bold text-foreground mb-1">What Happens Next</h2>
+                        <h2 className="text-2xl font-bold text-foreground mb-1">What Happens Next?</h2>
                         <p className="text-muted-foreground text-sm">Your reference number:{" "}
                           <span className="font-mono font-semibold text-foreground">{referenceNumber || "PPO-PENDING"}</span>
                         </p>
@@ -726,7 +726,7 @@ export default function PPOQuizPage() {
                   <span className="text-sm text-muted-foreground">Step {currentStep} of {TOTAL_STEPS}</span>
                 </div>
 
-                {/* Step 1 — Coverage For */}
+                {/* Step 1: Coverage For */}
                 {currentStep === 1 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
@@ -755,7 +755,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 2 — Current Situation */}
+                {/* Step 2: Current Situation */}
                 {currentStep === 2 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
@@ -784,7 +784,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 3 — Top Priority */}
+                {/* Step 3: Top Priority */}
                 {currentStep === 3 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
@@ -814,7 +814,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 4 — Budget */}
+                {/* Step 4: Budget */}
                 {currentStep === 4 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
@@ -843,7 +843,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 5 — State */}
+                {/* Step 5: State */}
                 {currentStep === 5 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
@@ -873,7 +873,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 6 — Contact */}
+                {/* Step 6: Contact */}
                 {currentStep === 6 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">

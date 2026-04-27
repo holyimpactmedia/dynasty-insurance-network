@@ -124,7 +124,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function UshaStatusBadge({ status }: { status: string | null }) {
-  if (!status) return <span className="text-xs text-gray-400">—</span>
+  if (!status) return <span className="text-xs text-gray-400">-</span>
   const styles: Record<string, string> = {
     sent: "bg-green-100 text-green-700 border-green-200",
     failed: "bg-red-100 text-red-700 border-red-200",
@@ -268,7 +268,7 @@ export default function AdminDashboardClient({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Lead CRM</h1>
-          <p className="text-sm text-gray-500">Dynasty Insurance Network — Admin</p>
+          <p className="text-sm text-gray-500">Dynasty Insurance Network: Admin</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
@@ -435,10 +435,10 @@ export default function AdminDashboardClient({
                       <div className="text-xs text-gray-600">{lead.email}</div>
                       {lead.phone && <div className="text-xs text-gray-400">{lead.phone}</div>}
                     </TableCell>
-                    <TableCell className="text-gray-700">{lead.state ?? "—"}</TableCell>
+                    <TableCell className="text-gray-700">{lead.state ?? "N/A"}</TableCell>
                     <TableCell>
                       <span className="text-xs text-gray-600">
-                        {FUNNEL_LABELS[lead.funnel_type ?? ""] ?? lead.funnel_type ?? "—"}
+                        {FUNNEL_LABELS[lead.funnel_type ?? ""] ?? lead.funnel_type ?? "N/A"}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -451,7 +451,7 @@ export default function AdminDashboardClient({
                       <StatusBadge status={lead.status} />
                     </TableCell>
                     <TableCell className="text-xs text-gray-500">
-                      {lead.utm_source ?? "—"}
+                      {lead.utm_source ?? "N/A"}
                     </TableCell>
                     <TableCell className="text-xs text-gray-400 whitespace-nowrap">
                       {getTimeAgo(new Date(lead.created_at))}

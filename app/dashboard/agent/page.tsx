@@ -61,7 +61,7 @@ export default function AgentDashboard() {
     const init = async () => {
       const supabase = createClient()
 
-      // Auth gate — redirect unauthenticated users to login
+      // Auth gate: redirect unauthenticated users to login
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.replace("/auth/login?redirectTo=/dashboard/agent")
@@ -78,7 +78,7 @@ export default function AgentDashboard() {
 
         if (data && !error) setLeads(data)
       } catch {
-        // Empty leads array — render shows zero state
+        // Empty leads array: render shows zero state
       } finally {
         setIsLoading(false)
       }

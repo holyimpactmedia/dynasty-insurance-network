@@ -50,7 +50,7 @@ export default async function ProjectionsDashboard() {
     try { return ((await q).data ?? []) as T } catch { return [] as T }
   }
 
-  // Fetch all data in parallel — error-tolerant per query
+  // Fetch all data in parallel: error-tolerant per query
   const [totalLeads, soldLeads, soldLeadsThisMonth, recentLeads, funnelBreakdown] = await Promise.all([
     safeCount(supabase.from("leads").select("*", { count: "exact", head: true })),
     safeData<{ gross_margin: number | null; sell_price: number | null; acquisition_cost: number | null }[]>(

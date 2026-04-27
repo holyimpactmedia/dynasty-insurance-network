@@ -473,7 +473,7 @@ export default function COBRAQuizPage() {
               /* ── LANDING PAGE ─────────────────────────────────── */
               <div className="w-full max-w-none -mx-6 px-0">
 
-                {/* Hero — Pain Points */}
+                {/* Hero: Pain Points */}
                 <section className="relative text-white py-16 px-6 overflow-hidden">
                   <img src="/images/heroes/cobra.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/95 via-[#0A1128]/85 to-[#0A1128]/95" aria-hidden="true" />
@@ -723,7 +723,7 @@ export default function COBRAQuizPage() {
                   Step {currentStep} of {TOTAL_STEPS}
                 </div>
 
-                {/* Step 1 — COBRA Timeline */}
+                {/* Step 1: COBRA Timeline */}
                 {currentStep === 1 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -759,7 +759,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 2 — Monthly COBRA Cost */}
+                {/* Step 2: Monthly COBRA Cost */}
                 {currentStep === 2 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -795,7 +795,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 3 — Coverage Needed */}
+                {/* Step 3: Coverage Needed */}
                 {currentStep === 3 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -833,7 +833,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 4 — Health Considerations */}
+                {/* Step 4: Health Considerations */}
                 {currentStep === 4 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -871,7 +871,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 5 — State */}
+                {/* Step 5: State */}
                 {currentStep === 5 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -909,7 +909,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 6 — Contact Info */}
+                {/* Step 6: Contact Info */}
                 {currentStep === 6 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
@@ -993,7 +993,7 @@ export default function COBRAQuizPage() {
                   </div>
                 )}
 
-                {/* Step 7 — Name + Submit */}
+                {/* Step 7: Name + Submit */}
                 {currentStep === 7 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">

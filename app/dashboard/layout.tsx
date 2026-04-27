@@ -19,7 +19,7 @@ export default async function DashboardLayout({
     redirect("/auth/login")
   }
 
-  // Fetch user profile with role — tolerate missing `profiles` table
+  // Fetch user profile with role: tolerate missing `profiles` table
   let profile: { role?: string; first_name?: string; last_name?: string } | null = null
   try {
     const { data } = await supabase

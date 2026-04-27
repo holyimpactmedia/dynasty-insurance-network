@@ -22,7 +22,7 @@ import {
   BarChart3,
 } from "lucide-react"
 
-// Unused agent/routing imports kept in original file — removed here since
+// Unused agent/routing imports kept in original file: removed here since
 // the new flow routes leads to USHA Marketplace, not internal agents.
 
 interface DashboardNavProps {
@@ -44,7 +44,7 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
     router.refresh()
   }
 
-  // Admin-only nav — agent and routing items removed (USHA Marketplace handles lead distribution)
+  // Admin-only nav: agent and routing items removed (USHA Marketplace handles lead distribution)
   const navItems = [
     {
       href: "/dashboard/admin",

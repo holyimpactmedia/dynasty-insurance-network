@@ -26,7 +26,7 @@ export default async function AdminDashboard() {
     try { return (await q).data } catch { return null }
   }
 
-  // Fetch stats and full lead records in parallel — each query is independently
+  // Fetch stats and full lead records in parallel: each query is independently
   // error-tolerant so a missing column or RPC does not take down the page.
   const [leadsToday, leadsThisWeek, totalLeads, sentToUsha, leadsRaw, dailyLeadsRaw] = await Promise.all([
     safeCount(supabase.from("leads").select("*", { count: "exact", head: true })
@@ -55,7 +55,7 @@ export default async function AdminDashboard() {
   const stats = { leadsToday, leadsThisWeek, totalLeads, sentToUsha }
   const leads: Lead[] = (leadsRaw ?? []) as Lead[]
 
-  // Build 7-day chart — fall back to zero-filled bars if the RPC is missing
+  // Build 7-day chart: fall back to zero-filled bars if the RPC is missing
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   let dailyData: { day: string; leads: number }[] = []
 

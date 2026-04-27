@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
       })
       .catch(err => console.error('USHA post error:', err))
 
-    // 4. Score lead with AI (async — updates the lead record in Supabase)
+    // 4. Score lead with AI (async: updates the lead record in Supabase)
     scoreAndUpdateLead({
       id: data.id,
       referenceNumber,
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
       created_at: data.created_at,
     }).catch(err => console.error('AI scoring error:', err))
 
-    // notifyAgentsOfNewLead kept for legacy compatibility — not called in new flow.
+    // notifyAgentsOfNewLead kept for legacy compatibility: not called in new flow.
     // Leads route to USHA Marketplace instead.
     void notifyAgentsOfNewLead
 

@@ -467,7 +467,7 @@ export default function SelfEmployedPage() {
                       1099 Income. No Employer Plan. Bad Options. We Fix That.
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Private PPO plans built for self-employed Americans aged 18–63 — with premiums you can actually deduct.
+                      Private PPO plans built for self-employed Americans aged 18 to 63. Premiums you can actually deduct.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
