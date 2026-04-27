@@ -1,23 +1,5 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 import { Footer } from "@/components/Footer"
-
-export const metadata: Metadata = {
-  title: "Find Your Plan",
-  description:
-    "Individual, family, COBRA, self-employed, or group coverage. Find the right private PPO plan for your situation in 90 seconds.",
-  openGraph: {
-    title: "Dynasty Insurance Group | Find Your Private PPO Plan",
-    description:
-      "Individual, family, COBRA, self-employed, or group coverage. Nationwide PPO plans. No referrals. Licensed specialists standing by.",
-    url: "/",
-  },
-  twitter: {
-    title: "Dynasty Insurance Group | Find Your Private PPO Plan",
-    description:
-      "Individual, family, COBRA, self-employed, or group coverage. Nationwide PPO plans. No referrals.",
-  },
-}
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
