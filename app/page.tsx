@@ -177,11 +177,11 @@ export default function PlansPage() {
               Licensed Insurance Agency
             </div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-              Find the Right Private PPO Plan for You
+              Real Coverage for the Earners the Marketplace Forgets
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
-              Individual. Family. COBRA replacement. Self-employed. Whatever your situation,
-              we find a private PPO plan that actually works for your life.
+              Private PPO plans for healthy Americans aged 18–63 who earn too much for ACA subsidies but
+              still need real coverage that takes their doctor and travels with them.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Concierge Service</span>

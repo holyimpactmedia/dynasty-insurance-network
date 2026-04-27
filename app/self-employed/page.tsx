@@ -464,11 +464,14 @@ export default function SelfEmployedPage() {
                       Self-Employed &amp; Freelance Health Insurance
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      Coverage That Works as Hard as You Do
+                      1099 Income. No Employer Plan. Bad Options. We Fix That.
                     </h1>
+                    <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                      Private PPO plans built for self-employed Americans aged 18–63 — with premiums you can actually deduct.
+                    </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Your HMO restricts which doctors you can see. Your business does not restrict where you work.",
+                        "You earn too much for ACA help but the marketplace HMO networks are a joke.",
                         "You cross state lines for clients. Your plan stops at the border.",
                         "Your health insurance premiums may be 100% tax deductible. Are you claiming that?",
                       ].map((q, i) => (

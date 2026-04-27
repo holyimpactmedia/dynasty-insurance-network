@@ -272,12 +272,11 @@ export default function FamilyQuizPage() {
   ]
 
   const incomeOptions = [
-    "$150,000 - $250,000",
-    "$250,000 - $500,000",
-    "$500,000 - $1M",
-    "$1M - $5M",
-    "Over $5M",
-    "Prefer not to say",
+    "Under $30,000",
+    "$30,000 - $50,000",
+    "$50,000 - $75,000",
+    "$75,000 - $125,000",
+    "$125,000+",
   ]
 
   // Effective step accounting for the skipped children step
@@ -528,13 +527,16 @@ export default function FamilyQuizPage() {
                       Family Health Insurance - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      Your Family Deserves a Plan That Says Yes
+                      A Family Plan for Earners the Marketplace Forgets
                     </h1>
+                    <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                      Built for working families who earn just past the subsidy cliff and still need real coverage.
+                    </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Your pediatrician is not in your network. Your plan said no.",
-                        "Your child needs a specialist. Your plan makes you wait for a referral.",
-                        "Your employer plan covers the whole country except where you live.",
+                        "Your household income is too high for an ACA subsidy but the marketplace is still unaffordable.",
+                        "Your pediatrician is not in your network and your HMO requires a referral for everything.",
+                        "Your employer plan barely covers the family and the deductible swallows your savings.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -829,25 +831,78 @@ export default function FamilyQuizPage() {
               </div>
 
             ) : currentStep === 3 ? (
-              /* ── STEP 3: Priority ─────────────────────────────── */
+              /* ── STEP 3: Qualifying Questions (primary adult age + health) ── */
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <p className="text-sm font-medium text-[#D4AF37] uppercase tracking-wide">Step 3 of {TOTAL_STEPS}</p>
-                  <h2 className="text-3xl font-bold text-foreground">What matters most for your family&apos;s plan?</h2>
+                  <h2 className="text-3xl font-bold text-foreground">A Couple Quick Qualifying Questions</h2>
+                  <p className="text-muted-foreground">Helps us route you to the right specialist</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {priorityOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleAutoAdvance("priority", opt.value)}
-                      className={`p-5 rounded-xl border-2 text-left transition-all hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 flex items-center gap-4 ${
-                        answers.priority === opt.value ? "border-[#D4AF37] bg-[#D4AF37]/5" : "border-border"
-                      }`}
-                    >
-                      <div className="text-[#D4AF37]">{opt.icon}</div>
-                      <span className="font-medium text-foreground">{opt.label}</span>
-                    </button>
-                  ))}
+
+                <div className="space-y-6 max-w-md mx-auto w-full">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-foreground">Primary adult&apos;s age</label>
+                    <Input
+                      type="number"
+                      placeholder="Enter age"
+                      value={answers.primaryAge || ""}
+                      onChange={(e) => updateAnswer("primaryAge", e.target.value)}
+                      className="h-14 text-lg text-center"
+                      min={18}
+                      max={100}
+                    />
+                    {answers.primaryAge && Number.parseInt(answers.primaryAge) >= 64 && (
+                      <Card className="p-4 bg-blue-50 border-blue-200">
+                        <p className="text-sm text-blue-700">
+                          Age 64+ qualifies for Medicare options. We focus on private PPO plans for ages 18–63. A licensed Medicare specialist can still help.
+                        </p>
+                      </Card>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-foreground">
+                      In the last 5 years, has anyone on the plan been treated for cancer, diabetes, heart disease, or any other significant condition?
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {["No", "Yes"].map((opt) => (
+                        <Card
+                          key={opt}
+                          className={`p-4 cursor-pointer border-2 text-center font-semibold transition-all ${
+                            answers.healthScreen === opt
+                              ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                              : "border-border hover:border-[#D4AF37]"
+                          }`}
+                          onClick={() => updateAnswer("healthScreen", opt)}
+                        >
+                          {opt}
+                        </Card>
+                      ))}
+                    </div>
+                    {answers.healthScreen === "Yes" && (
+                      <Card className="p-4 bg-amber-50 border-amber-200">
+                        <p className="text-sm text-amber-700">
+                          Our private PPO family plans are designed for healthy households. With a significant medical history, an ACA marketplace plan with guaranteed-issue protections is usually the better fit. A licensed specialist can still walk you through your options.
+                        </p>
+                      </Card>
+                    )}
+                  </div>
+
+                  <Button
+                    onClick={() => {
+                      const age = Number.parseInt(answers.primaryAge)
+                      if (age >= 18 && age <= 63 && answers.healthScreen) nextStep()
+                    }}
+                    disabled={
+                      !answers.primaryAge ||
+                      Number.parseInt(answers.primaryAge) >= 64 ||
+                      Number.parseInt(answers.primaryAge) < 18 ||
+                      !answers.healthScreen
+                    }
+                    className="w-full h-12 bg-[#0A1128] text-white hover:bg-[#0A1128]/90"
+                  >
+                    Continue
+                  </Button>
                 </div>
               </div>
 

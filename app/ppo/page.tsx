@@ -252,10 +252,13 @@ export default function PPOQuizPage() {
               <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
                 Stop Asking Permission to See a Doctor
               </h1>
+              <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                Private PPO plans for healthy adults under 64 — see any specialist, skip the referrals, and pay less than COBRA.
+              </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
                   "Your HMO makes you get a referral just to see a specialist.",
-                  "Your network excludes the doctors you actually trust.",
+                  "Your income is past the subsidy cliff, so the marketplace is unaffordable.",
                   "Your plan charges you full price until you hit a deductible you never reach.",
                 ].map((q, i) => (
                   <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">

@@ -48,21 +48,21 @@ const BIZ_COVERAGE_ITEMS = [
 ]
 
 const BIZ_PROBLEMS = [
-  "Top talent will not consider you without executive-tier benefits",
-  "Generic group plans damage your employer brand at the offer stage",
-  "Your competitors offer concierge medicine and you do not",
-  "Renewals jump 15–25% with no broker actively negotiating for you",
-  "Benefits are stitched together piecemeal without a unified strategy",
-  "No dedicated specialist means C-suite and key hires get treated like everyone else",
+  "Individual plans cost your team 30–50% more than a small-group plan would",
+  "You can't recruit good people if you don't offer health benefits",
+  "Premiums climb every renewal with no broker actively negotiating for you",
+  "ACA marketplace plans are HMOs with narrow networks your team won't tolerate",
+  "Your CPA keeps reminding you about the small business health-insurance tax credit you're not using",
+  "You're stitching together coverage piecemeal instead of one clean plan",
 ]
 
 const BIZ_ADVANTAGES = [
-  "Executive-tier PPO and concierge medicine plans built for high-growth teams",
-  "Carrier-direct relationships with Blue Cross, Cigna, Aetna, and United Healthcare",
-  "Tiered benefit structures: founder/C-suite, key employees, and full team",
-  "Employer-paid premiums remain fully tax deductible as a business expense",
-  "Retain top talent: premium benefits are the #1 retention lever after equity",
-  "One dedicated benefits strategist manages renewal, compliance, and design",
+  "Small-group PPO plans built for businesses with 2–50 employees",
+  "Trusted carrier networks: Blue Cross, Cigna, Aetna, and United Healthcare",
+  "Employer-paid premiums are 100% tax deductible as a business expense",
+  "Small Business Health Care Tax Credit covers up to 50% of premiums for qualifying employers",
+  "Retain your team: benefits are the #1 reason employees stay past year two",
+  "One licensed benefits specialist handles enrollment, renewal, and compliance",
 ]
 
 const US_STATES = [
@@ -364,13 +364,13 @@ export default function BusinessPage() {
                     <div className="text-center mb-6">
                       <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                         <Award className="w-4 h-4" />
-                        Executive Benefits Advantages
+                        Small Business Group Benefits
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       {[
-                        { label: "Talent Retention", value: "3x", sub: "longer tenure" },
-                        { label: "Carrier Networks", value: "Top 4", sub: "nationwide PPOs" },
+                        { label: "vs. Individual Plans", value: "30–50%", sub: "lower per person" },
+                        { label: "Tax Credit", value: "Up to 50%", sub: "of employer premiums" },
                         { label: "Premium Deduction", value: "100%", sub: "business expense" },
                       ].map((item, i) => (
                         <div key={i} className="bg-white/10 rounded-xl p-4">
@@ -497,9 +497,9 @@ export default function BusinessPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Turnover is 3x higher without executive benefits" },
-                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Top talent expects executive-tier coverage" },
-                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Concierge medicine attracts senior hires" },
+                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Turnover is 3x higher without benefits" },
+                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Group plans 30–50% cheaper per person" },
+                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Tax credit covers up to 50% of premiums" },
                       { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "100% of employer premiums are deductible" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
@@ -641,16 +641,16 @@ export default function BusinessPage() {
                         Why Dynasty
                       </div>
                       <h2 className="text-3xl font-bold leading-tight">
-                        High-Growth Companies Deserve Fortune 500-Caliber Benefits
+                        Small Businesses Deserve Real Benefits Too
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Most founders assume executive-tier benefits are reserved for billion-dollar enterprises.
-                        We exist to prove otherwise. With the right design, your company can offer concierge medicine
-                        and premium PPO networks that rival any Fortune 500 package.
+                        Most owners assume group benefits are too complicated or too expensive. With the right plan
+                        design and carrier mix, a 2–50 employee business can offer real PPO coverage and qualify for
+                        the federal small business tax credit at the same time.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
-                        Our licensed strategists act as your dedicated benefits team, compensated by carriers, never
-                        by you, handling everything from carrier selection to annual renewals.
+                        Our licensed specialists are compensated by carriers, never by you, and handle everything from
+                        plan selection to enrollment to annual renewals.
                       </p>
                     </div>
                     <div className="space-y-4">

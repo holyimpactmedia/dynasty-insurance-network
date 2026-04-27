@@ -50,30 +50,29 @@ const INDIV_COVERAGE_ITEMS = [
 ]
 
 const INDIV_PROBLEMS = [
-  "Your HMO forces you to get referrals for every specialist visit",
+  "You earn too much for an ACA subsidy but your premiums keep climbing anyway",
+  "Your HMO forces you to get referrals just to see a specialist",
   "Narrow networks exclude the doctors and hospitals you actually want",
-  "You travel for work or own multiple homes but your plan only works locally",
-  "Your employer plan costs a fortune and still has massive deductibles",
-  "You want concierge-level coverage that does not exist on public exchanges",
-  "You are tired of fighting insurance companies for basic coverage",
+  "Deductibles are so high you end up paying out-of-pocket for everything anyway",
+  "You travel or work across state lines, but your plan barely works at home",
+  "You are healthy but stuck overpaying for benefits you do not use",
 ]
 
 const INDIV_ADVANTAGES = [
-  "Private PPO plans with nationwide coverage and zero referrals",
-  "Keep your doctors and see any specialist directly",
-  "Premium networks: Blue Cross, Cigna, Aetna, United Healthcare",
+  "Private PPO plans designed for healthy adults who don't qualify for big subsidies",
+  "Keep your doctors. See any specialist. No referrals required.",
+  "Trusted carrier networks: Blue Cross, Cigna, Aetna, United Healthcare",
   "Coverage that travels with you across all 50 states",
-  "Plans designed for high earners, entrepreneurs, and families",
-  "Private consultation with a licensed specialist who knows the carrier-direct market",
+  "Lower premiums than COBRA, broader networks than HMO marketplace plans",
+  "A licensed specialist who knows the private-market options the marketplace will not show you",
 ]
 
 const INCOME_RANGES = [
-  "$150,000 - $250,000",
-  "$250,000 - $500,000",
-  "$500,000 - $1M",
-  "$1M - $5M",
-  "Over $5M",
-  "Prefer not to say",
+  "Under $30,000",
+  "$30,000 - $50,000",
+  "$50,000 - $75,000",
+  "$75,000 - $125,000",
+  "$125,000+",
 ]
 
 // US States
@@ -896,13 +895,16 @@ export default function HealthcareQuizPage() {
                           Licensed Independent Insurance Specialists
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                          See Any Doctor. No Referrals. No Narrow Networks.
+                          Earn Too Much for ACA Help. Too Healthy for an HMO.
                         </h1>
+                        <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                          Private PPO plans built for working Americans the marketplace overlooks.
+                        </p>
                         <div className="space-y-3 text-left max-w-xl mx-auto">
                           {[
+                            "Your income is just past the subsidy cliff, so the marketplace is unaffordable.",
                             "Your HMO makes you beg for a referral just to see a specialist.",
-                            "Your network excludes the doctors and hospitals you actually trust.",
-                            "Your plan stops working the moment you cross state lines.",
+                            "Your deductibles are so high you pay out-of-pocket for everything anyway.",
                           ].map((q, i) => (
                             <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                               <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -1204,42 +1206,89 @@ export default function HealthcareQuizPage() {
                 {currentStep === 3 && (
                   <div className="space-y-8">
                     <div className="text-center space-y-4">
-                      <h2 className="text-3xl md:text-4xl font-bold text-foreground">What is your age?</h2>
-                      <p className="text-muted-foreground">Age affects your premium rate</p>
+                      <h2 className="text-3xl md:text-4xl font-bold text-foreground">A Couple Quick Qualifying Questions</h2>
+                      <p className="text-muted-foreground">This makes sure we route you to the right specialist</p>
                     </div>
 
-                    <div className="space-y-4 max-w-md mx-auto">
-                      <Input
-                        type="number"
-                        placeholder="Enter your age"
-                        value={answers.age || ""}
-                        onChange={(e) => {
-                          updateAnswer("age", e.target.value)
-                          setErrors({ age: "" })
-                        }}
-                        className="h-14 text-lg text-center"
-                        min="18"
-                        max="100"
-                      />
-                      {errors.age && (
-                        <Card className="p-4 bg-blue-50 border-blue-200">
-                          <div className="flex items-start gap-3">
-                            <Stethoscope className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-blue-600">{errors.age}</p>
-                          </div>
-                        </Card>
-                      )}
+                    <div className="space-y-6 max-w-md mx-auto">
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-foreground">Your age</label>
+                        <Input
+                          type="number"
+                          placeholder="Enter your age"
+                          value={answers.age || ""}
+                          onChange={(e) => {
+                            const age = Number.parseInt(e.target.value)
+                            updateAnswer("age", e.target.value)
+                            if (age >= 64) {
+                              setErrors({
+                                ...errors,
+                                age: "Age 64+ qualifies for Medicare options. We focus on private PPO plans for ages 18–63. We can refer you to a licensed Medicare specialist.",
+                              })
+                            } else {
+                              setErrors({ ...errors, age: "" })
+                            }
+                          }}
+                          className="h-14 text-lg text-center"
+                          min="18"
+                          max="100"
+                        />
+                        {errors.age && (
+                          <Card className="p-4 bg-blue-50 border-blue-200">
+                            <div className="flex items-start gap-3">
+                              <Stethoscope className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <p className="text-sm text-blue-600">{errors.age}</p>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-foreground">
+                          In the last 5 years, have you been treated for cancer, diabetes, heart disease, or any other significant condition?
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {["No", "Yes"].map((opt) => (
+                            <Card
+                              key={opt}
+                              className={`p-4 cursor-pointer border-2 text-center font-semibold transition-all ${
+                                answers.healthScreen === opt
+                                  ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                                  : "border-border hover:border-[#D4AF37]"
+                              }`}
+                              onClick={() => updateAnswer("healthScreen", opt)}
+                            >
+                              {opt}
+                            </Card>
+                          ))}
+                        </div>
+                        {answers.healthScreen === "Yes" && (
+                          <Card className="p-4 bg-amber-50 border-amber-200">
+                            <div className="flex items-start gap-3">
+                              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                              <p className="text-sm text-amber-700">
+                                Our private PPO plans are designed for healthy adults. With a significant medical history, an ACA marketplace plan with guaranteed-issue protections is usually the better fit. A licensed specialist can still walk you through your options.
+                              </p>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
 
                       <Button
                         onClick={() => {
                           const age = Number.parseInt(answers.age)
-                          if (age >= 18 && age <= 100) {
+                          if (age >= 18 && age <= 63 && answers.healthScreen) {
                             nextStep()
                           } else if (!age) {
-                            setErrors({ age: "Please enter your age" })
+                            setErrors({ ...errors, age: "Please enter your age" })
                           }
                         }}
-                        disabled={!answers.age}
+                        disabled={
+                          !answers.age ||
+                          Number.parseInt(answers.age) >= 64 ||
+                          Number.parseInt(answers.age) < 18 ||
+                          !answers.healthScreen
+                        }
                         className="w-full h-12 bg-[#0A1128] text-white hover:bg-[#0A1128]/90"
                       >
                         Continue

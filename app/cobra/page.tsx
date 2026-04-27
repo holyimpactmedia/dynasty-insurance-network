@@ -483,12 +483,15 @@ export default function COBRAQuizPage() {
                       COBRA Alternatives - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      COBRA Costs Too Much. Better Options Exist.
+                      COBRA Is Eating Your Severance. Private PPO Is Half the Cost.
                     </h1>
+                    <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                      Healthy adults under 64 can replace COBRA with a private PPO and keep their doctors. Often for 30–60% less per month.
+                    </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
                         "You are paying 102% of the full premium. Your employer pays nothing.",
-                        "COBRA expires in 18 months. Then what?",
+                        "COBRA expires in 18 months. The marketplace will not subsidize you at your income level.",
                         "You are locked into a plan that may not fit your life anymore.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
