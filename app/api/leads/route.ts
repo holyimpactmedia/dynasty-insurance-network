@@ -63,40 +63,50 @@ export async function POST(request: NextRequest) {
     const tcpaConsentAt = new Date().toISOString()
     const resolvedFunnelType = funnelType || 'healthcare_aca'
 
-    // Insert the lead into the database
-    const { data, error } = await supabase
-      .from('leads')
-      .insert({
-        reference_number: referenceNumber,
-        first_name: firstName,
-        last_name: lastName,
-        email: email.toLowerCase().trim(),
-        phone: phone || null,
-        age: age ? parseInt(age, 10) : null,
-        state: state || null,
-        income_range: incomeRange || null,
-        household_size: householdSize || null,
-        qualifying_event: qualifyingEvent || null,
-        priorities: priorities || null,
-        tcpa_consent: tcpaConsent,
-        tcpa_consent_at: tcpaConsentAt,
-        trusted_form_cert_url: trustedFormCertUrl || null,
-        funnel_type: resolvedFunnelType,
-        utm_source: utmSource || null,
-        utm_medium: utmMedium || null,
-        utm_campaign: utmCampaign || null,
-        ip_address: ipAddress,
-        status: 'new',
-      })
-      .select()
-      .single()
+    // Try to insert the lead. If Supabase is unavailable or the insert fails,
+    // we still proceed with downstream notifications and return success to the
+    // user so the form does not appear broken. The lead is preserved in the
+    // admin notification email.
+    let data: { id: string | null; created_at: string } = {
+      id: null,
+      created_at: new Date().toISOString(),
+    }
 
-    if (error) {
-      console.error('Error inserting lead:', error)
-      return NextResponse.json(
-        { error: 'Failed to save lead' },
-        { status: 500 }
-      )
+    if (!supabase) {
+      console.warn('Supabase admin client not configured. Lead will be sent via email only.', { referenceNumber })
+    } else {
+      const { data: insertResult, error } = await supabase
+        .from('leads')
+        .insert({
+          reference_number: referenceNumber,
+          first_name: firstName,
+          last_name: lastName,
+          email: email.toLowerCase().trim(),
+          phone: phone || null,
+          age: age ? parseInt(age, 10) : null,
+          state: state || null,
+          income_range: incomeRange || null,
+          household_size: householdSize || null,
+          qualifying_event: qualifyingEvent || null,
+          priorities: priorities || null,
+          tcpa_consent: tcpaConsent,
+          tcpa_consent_at: tcpaConsentAt,
+          trusted_form_cert_url: trustedFormCertUrl || null,
+          funnel_type: resolvedFunnelType,
+          utm_source: utmSource || null,
+          utm_medium: utmMedium || null,
+          utm_campaign: utmCampaign || null,
+          ip_address: ipAddress,
+          status: 'new',
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error inserting lead (continuing with notifications):', error, { referenceNumber })
+      } else if (insertResult) {
+        data = insertResult
+      }
     }
 
     // ── Fire-and-forget async integrations (do not block the response) ──────
