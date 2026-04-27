@@ -455,8 +455,10 @@ export default function SelfEmployedPage() {
               <div className="w-full max-w-none">
 
                 {/* Hero */}
-                <section className="bg-[#0A1128] text-white py-16 px-6">
-                  <div className="max-w-3xl mx-auto text-center space-y-6">
+                <section className="relative text-white py-16 px-6 overflow-hidden">
+                  <img src="/images/heroes/self-employed.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" aria-hidden="true" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/95 via-[#0A1128]/85 to-[#0A1128]/95" aria-hidden="true" />
+                  <div className="relative max-w-3xl mx-auto text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                       <Briefcase className="w-4 h-4" />
                       Self-Employed &amp; Freelance Health Insurance
