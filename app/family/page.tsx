@@ -529,10 +529,10 @@ export default function FamilyQuizPage() {
                       Family Health Insurance - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      A Family Plan for Earners the Marketplace Forgets
+                      A Family Plan for Earners the <span className="text-[#D4AF37]">Marketplace Forgets</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Built for working families who earn just past the subsidy cliff and still need real coverage.
+                      Built for working families who earn just past the <span className="text-[#D4AF37] font-semibold">subsidy cliff</span> and still need real coverage.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[

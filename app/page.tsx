@@ -177,10 +177,10 @@ export default function PlansPage() {
               Licensed Insurance Agency
             </div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-              Real Coverage for the Earners the Marketplace Forgets
+              Real Coverage for the Earners the <span className="text-[#D4AF37]">Marketplace Forgets</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
-              Private PPO plans for healthy Americans aged 18–63 who earn too much for ACA subsidies but
+              Private PPO plans for healthy Americans aged <span className="text-[#D4AF37] font-semibold">18 to 63</span> who earn too much for ACA subsidies but
               still need real coverage that takes their doctor and travels with them.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">

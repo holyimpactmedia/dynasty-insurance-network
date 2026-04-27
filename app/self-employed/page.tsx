@@ -466,10 +466,10 @@ export default function SelfEmployedPage() {
                       Self-Employed &amp; Freelance Health Insurance
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      1099 Income. No Employer Plan. Bad Options. We Fix That.
+                      1099 Income. No Employer Plan. Bad Options. <span className="text-[#D4AF37]">We Fix That.</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Private PPO plans built for self-employed Americans aged 18 to 63. Premiums you can actually deduct.
+                      Private PPO plans built for self-employed Americans aged <span className="text-[#D4AF37] font-semibold">18 to 63</span>. Premiums you can <span className="text-[#D4AF37] font-semibold">actually deduct</span>.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[

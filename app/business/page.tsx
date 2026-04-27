@@ -467,8 +467,11 @@ export default function BusinessPage() {
                       Small Business Group Health Benefits
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      Your Best People Deserve Benefits. So Does Your Bottom Line.
+                      Your Best People Deserve Benefits. So Does Your <span className="text-[#D4AF37]">Bottom Line</span>.
                     </h1>
+                    <p className="text-lg text-gray-300 max-w-xl mx-auto">
+                      Small-group PPO plans for businesses with <span className="text-[#D4AF37] font-semibold">2 to 50 employees</span>, plus tax credits most owners never claim.
+                    </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
                         "Your team members are buying individual plans that cost 30 to 50% more than a group plan would.",

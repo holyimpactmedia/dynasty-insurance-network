@@ -889,10 +889,10 @@ export default function HealthcareQuizPage() {
                           Licensed Independent Insurance Specialists
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                          Earn Too Much for ACA Help. Too Healthy for an HMO.
+                          Earn Too Much for <span className="text-[#D4AF37]">ACA Help</span>. Too Healthy for an <span className="text-[#D4AF37]">HMO</span>.
                         </h1>
                         <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                          Private PPO plans built for working Americans the marketplace overlooks.
+                          Private PPO plans built for working Americans the <span className="text-[#D4AF37] font-semibold">marketplace overlooks</span>.
                         </p>
                         <div className="space-y-3 text-left max-w-xl mx-auto">
                           {[

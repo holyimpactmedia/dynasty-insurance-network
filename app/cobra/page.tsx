@@ -485,10 +485,10 @@ export default function COBRAQuizPage() {
                       COBRA Alternatives - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      COBRA Is Eating Your Severance. Private PPO Is Half the Cost.
+                      COBRA Is <span className="text-[#D4AF37]">Eating Your Severance</span>. Private PPO Is <span className="text-[#D4AF37]">Half the Cost</span>.
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Healthy adults under 64 can replace COBRA with a private PPO and keep their doctors. Often for 30–60% less per month.
+                      Healthy adults under 64 can replace COBRA with a private PPO and keep their doctors. Often for <span className="text-[#D4AF37] font-semibold">30 to 60% less</span> per month.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[

@@ -252,10 +252,10 @@ export default function PPOQuizPage() {
                 Private PPO Health Insurance
               </div>
               <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                Stop Asking Permission to See a Doctor
+                Stop <span className="text-[#D4AF37]">Asking Permission</span> to See a Doctor
               </h1>
               <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                Private PPO plans for healthy adults under 64. See any specialist, skip the referrals, and pay less than COBRA.
+                Private PPO plans for healthy adults under 64. See <span className="text-[#D4AF37] font-semibold">any specialist</span>, skip the referrals, and pay <span className="text-[#D4AF37] font-semibold">less than COBRA</span>.
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
