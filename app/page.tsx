@@ -198,7 +198,7 @@ export default function PlansPage() {
               { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "1,000+ clients served" },
               { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO coverage" },
               { icon: <Star className="w-4 h-4 flex-shrink-0" />, text: "4.9/5 client rating" },
-              { icon: <Clock className="w-4 h-4 flex-shrink-0" />, text: "10-min agent response" },
+              { icon: <Clock className="w-4 h-4 flex-shrink-0" />, text: "5-min agent response" },
             ].map((item, i) => (
               <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                 {item.icon}
