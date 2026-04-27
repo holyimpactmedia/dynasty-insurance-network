@@ -161,7 +161,9 @@ export default function FamilyQuizPage() {
     if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
     }
-    if (answers.phone && !validatePhone(answers.phone)) {
+    if (!answers.phone) {
+      newErrors.phone = "Phone number is required"
+    } else if (!validatePhone(answers.phone)) {
       newErrors.phone = "Please enter a valid 10-digit phone number"
     }
     if (!answers.tcpaConsent) {
@@ -991,7 +993,7 @@ export default function FamilyQuizPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-1.5">
-                      Phone Number <span className="text-muted-foreground font-normal">(optional)</span>
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

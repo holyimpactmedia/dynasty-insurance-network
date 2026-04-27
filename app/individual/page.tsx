@@ -230,20 +230,14 @@ export default function HealthcareQuizPage() {
   const handleContactSubmit = () => {
     const newErrors: any = {}
 
-    // Require at least one contact method
-    const hasPhone = answers.phone && validatePhone(answers.phone)
-    const hasEmail = answers.email && validateEmail(answers.email)
-
-    if (!hasPhone && !hasEmail) {
-      newErrors.contact = "Please provide either a valid phone number or email address"
-    }
-
-    if (answers.phone && !validatePhone(answers.phone)) {
-      newErrors.phone = "Please enter a valid 10-digit phone number"
-    }
-
-    if (answers.email && !validateEmail(answers.email)) {
+    if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
+    }
+
+    if (!answers.phone) {
+      newErrors.phone = "Phone number is required"
+    } else if (!validatePhone(answers.phone)) {
+      newErrors.phone = "Please enter a valid 10-digit phone number"
     }
 
     // TCPA consent required by law
@@ -1469,7 +1463,7 @@ export default function HealthcareQuizPage() {
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground flex items-center gap-2">
                           <Phone className="w-4 h-4 text-[#D4AF37]" />
-                          Phone Number (Optional)
+                          Phone Number <span className="text-red-500">*</span>
                         </label>
                         <Input
                           type="tel"

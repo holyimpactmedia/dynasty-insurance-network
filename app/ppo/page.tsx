@@ -152,7 +152,9 @@ export default function PPOQuizPage() {
     if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
     }
-    if (answers.phone && !validatePhone(answers.phone)) {
+    if (!answers.phone) {
+      newErrors.phone = "Phone number is required"
+    } else if (!validatePhone(answers.phone)) {
       newErrors.phone = "Please enter a valid 10-digit phone number"
     }
     if (!answers.tcpaConsent) {
@@ -894,7 +896,7 @@ export default function PPOQuizPage() {
                       <div>
                         <Input
                           type="tel"
-                          placeholder="Phone number (optional)"
+                          placeholder="Phone number (required)"
                           value={answers.phone || ""}
                           onChange={(e) => updateAnswer("phone", e.target.value)}
                           className={`h-12 ${errors.phone ? "border-red-500" : ""}`}

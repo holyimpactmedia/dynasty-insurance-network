@@ -38,9 +38,33 @@ export default function AgentRecruitingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null)
+  const [contactErrors, setContactErrors] = useState<{ email?: string; phone?: string }>({})
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    if (field === "email" || field === "phone") {
+      setContactErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
+  }
+
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const validatePhone = (phone: string) => phone.replace(/\D/g, "").length === 10
+
+  const handleContactStepSubmit = () => {
+    const errs: { email?: string; phone?: string } = {}
+    if (!formData.email || !validateEmail(formData.email)) {
+      errs.email = "Please enter a valid email address"
+    }
+    if (!formData.phone) {
+      errs.phone = "Phone number is required"
+    } else if (!validatePhone(formData.phone)) {
+      errs.phone = "Please enter a valid 10-digit phone number"
+    }
+    if (Object.keys(errs).length > 0) {
+      setContactErrors(errs)
+      return
+    }
+    nextStep()
   }
 
   const nextStep = () => {
@@ -617,29 +641,35 @@ export default function AgentRecruitingPage() {
 
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-white mb-2">Email Address</Label>
+                    <Label className="text-white mb-2">Email Address <span className="text-red-400">*</span></Label>
                     <Input
                       type="email"
                       value={formData.email}
                       onChange={(e) => updateField("email", e.target.value)}
                       placeholder="john@example.com"
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 h-12"
+                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-500 h-12 ${contactErrors.email ? "border-red-500" : ""}`}
                     />
+                    {contactErrors.email && (
+                      <p className="text-red-400 text-xs mt-1">{contactErrors.email}</p>
+                    )}
                   </div>
                   <div>
-                    <Label className="text-white mb-2">Phone Number</Label>
+                    <Label className="text-white mb-2">Phone Number <span className="text-red-400">*</span></Label>
                     <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => updateField("phone", e.target.value)}
                       placeholder="(555) 123-4567"
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 h-12"
+                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-500 h-12 ${contactErrors.phone ? "border-red-500" : ""}`}
                     />
+                    {contactErrors.phone && (
+                      <p className="text-red-400 text-xs mt-1">{contactErrors.phone}</p>
+                    )}
                   </div>
                 </div>
 
                 <Button
-                  onClick={nextStep}
+                  onClick={handleContactStepSubmit}
                   disabled={!formData.email || !formData.phone}
                   className="w-full bg-gradient-to-r from-[#D4AF37] to-[#E8C976] hover:from-[#E8C976] hover:to-[#D4AF37] text-[#0A1128] font-bold h-12"
                 >

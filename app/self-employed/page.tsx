@@ -146,7 +146,9 @@ export default function SelfEmployedPage() {
     if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
     }
-    if (answers.phone && !validatePhone(answers.phone)) {
+    if (!answers.phone) {
+      newErrors.phone = "Phone number is required"
+    } else if (!validatePhone(answers.phone)) {
       newErrors.phone = "Please enter a valid 10-digit phone number"
     }
     if (!answers.tcpaConsent) {
@@ -884,7 +886,7 @@ export default function SelfEmployedPage() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground block mb-1.5">
-                      Phone Number <span className="text-muted-foreground text-xs">(optional, for faster response)</span>
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <Input
                       type="tel"

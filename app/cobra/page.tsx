@@ -153,7 +153,9 @@ export default function COBRAQuizPage() {
     if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
     }
-    if (answers.phone && !validatePhone(answers.phone)) {
+    if (!answers.phone) {
+      newErrors.phone = "Phone number is required"
+    } else if (!validatePhone(answers.phone)) {
       newErrors.phone = "Please enter a valid 10-digit phone number"
     }
     if (!answers.tcpaConsent) {
@@ -918,7 +920,7 @@ export default function COBRAQuizPage() {
                     </div>
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Phone (optional)</label>
+                        <label className="text-sm font-medium text-foreground">Phone <span className="text-red-500">*</span></label>
                         <div className="relative">
                           <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
