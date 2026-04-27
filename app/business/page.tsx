@@ -355,7 +355,7 @@ export default function BusinessPage() {
                     Your group plan options are being prepared, {answers.firstName}.
                   </h1>
                   <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                    A small business specialist will contact you within 10 minutes.
+                    A small business specialist will contact you within 5 minutes.
                   </p>
                 </div>
 
@@ -402,7 +402,7 @@ export default function BusinessPage() {
                         {
                           icon: <Clock className="w-6 h-6 text-[#D4AF37]" />,
                           bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
-                          title: "Within 10 Minutes",
+                          title: "Within 5 Minutes",
                           badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
                           desc: "A licensed executive benefits strategist will call you with group plan options tailored to your team profile, industry, and growth stage.",
                           extra: (
@@ -660,7 +660,7 @@ export default function BusinessPage() {
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A dedicated benefits strategist contacts you within 10 minutes." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A dedicated benefits strategist contacts you within 5 minutes." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">

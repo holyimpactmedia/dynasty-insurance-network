@@ -475,7 +475,7 @@ export default function AgentRecruitingPage() {
                   a: "Leads are sent via SMS to your phone within 30 seconds of submission. You also get email notification and CRM access with full lead details.",
                 },
                 {
-                  q: "What if I miss the 10-minute contact window?",
+                  q: "What if I miss the 5-minute contact window?",
                   a: "The lead stays assigned to you, but it counts against your contact rate. Consistently missing the window affects your tier placement.",
                 },
                 {

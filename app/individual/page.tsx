@@ -464,7 +464,7 @@ export default function HealthcareQuizPage() {
                         </h1>
                         <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
                           A licensed specialist is reviewing your profile right now. They will reach out
-                          within 10 minutes with private PPO plans built for your situation.
+                          within 5 minutes with private PPO plans built for your situation.
                         </p>
                       </div>
                     </div>
@@ -538,7 +538,7 @@ export default function HealthcareQuizPage() {
                               </div>
                               <div className="pb-6">
                                 <div className="flex items-center gap-2 mb-1">
-                                  <h3 className="font-semibold text-foreground">Within 10 Minutes</h3>
+                                  <h3 className="font-semibold text-foreground">Within 5 Minutes</h3>
                                   <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
                                     In Progress
                                   </span>
@@ -1036,7 +1036,7 @@ export default function HealthcareQuizPage() {
                             {
                               step: "2",
                               title: "Get Your Options",
-                              desc: "A licensed specialist calls you within 10 minutes with real private PPO plans that fit your life.",
+                              desc: "A licensed specialist calls you within 5 minutes with real private PPO plans that fit your life.",
                             },
                             {
                               step: "3",
@@ -1081,7 +1081,7 @@ export default function HealthcareQuizPage() {
                           {[
                             { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                             { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We're compensated by the carriers." },
-                            { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A real specialist contacts you within 10 minutes on business days." },
+                            { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
                             { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                           ].map((item, i) => (
                             <div key={i} className="flex items-start gap-4">

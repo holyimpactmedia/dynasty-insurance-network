@@ -292,7 +292,7 @@ export default function PlansPage() {
                 {
                   icon: <Clock className="w-8 h-8 text-[#D4AF37]" />,
                   title: "Fast Response",
-                  desc: "A licensed specialist contacts you within 10 minutes on business days. No waiting, no call centers. Real people who know your options.",
+                  desc: "A licensed specialist contacts you within 5 minutes on business days. No waiting, no call centers. Real people who know your options.",
                 },
               ].map((item, i) => (
                 <div key={i} className="text-center space-y-3">

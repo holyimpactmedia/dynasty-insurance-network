@@ -358,7 +358,7 @@ export default function COBRAQuizPage() {
                         Great news, {answers.firstName}. Alternatives exist.
                       </h1>
                       <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                        A licensed specialist is reviewing your options now and will reach out within 10 minutes.
+                        A licensed specialist is reviewing your options now and will reach out within 5 minutes.
                       </p>
                     </div>
 
@@ -416,7 +416,7 @@ export default function COBRAQuizPage() {
                             {
                               icon: <Clock className="w-6 h-6 text-[#D4AF37]" />,
                               bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
-                              title: "Within 10 Minutes",
+                              title: "Within 5 Minutes",
                               badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
                               desc: "A licensed health insurance specialist will review your COBRA situation and prepare alternative plan comparisons.",
                               extra: (
@@ -677,7 +677,7 @@ export default function COBRAQuizPage() {
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A real specialist contacts you within 10 minutes on business days." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
@@ -916,7 +916,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">Where should we send your options?</h2>
-                      <p className="text-muted-foreground">A licensed specialist will reach out within 10 minutes.</p>
+                      <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
                       <div className="space-y-2">

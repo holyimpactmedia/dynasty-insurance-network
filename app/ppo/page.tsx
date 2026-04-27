@@ -398,7 +398,7 @@ export default function PPOQuizPage() {
                   {
                     step: "1",
                     title: "Coverage Review",
-                        desc: "A licensed agent reviews your situation to identify what you actually need and what you&apos;re currently missing.",
+                        desc: "A licensed agent reviews your situation to identify what you actually need and what you're currently missing.",
                   },
                   {
                     step: "2",
@@ -446,7 +446,7 @@ export default function PPOQuizPage() {
                 {[
                   { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                   { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We're compensated by the carriers." },
-                  { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A real specialist contacts you within 10 minutes on business days." },
+                  { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
                   { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 bg-white/5 rounded-xl p-4">
@@ -512,7 +512,7 @@ export default function PPOQuizPage() {
                 See What PPO Plans You Qualify For Right Now
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                Takes 90 seconds. No obligation. A licensed specialist will contact you within 10 minutes
+                Takes 90 seconds. No obligation. A licensed specialist will contact you within 5 minutes
                 with your best private PPO options.
               </p>
               <Button
@@ -650,7 +650,7 @@ export default function PPOQuizPage() {
                     </h1>
                     <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
                       A licensed PPO specialist is reviewing your information right now and will contact you
-                      within 10 minutes with your best plan options.
+                      within 5 minutes with your best plan options.
                     </p>
                   </div>
                 </div>
@@ -700,7 +700,7 @@ export default function PPOQuizPage() {
                       <div className="space-y-5">
                         {[
                           { icon: <CheckCircle2 className="w-6 h-6 text-green-600" />, bg: "bg-green-100", title: "Right Now: Complete", desc: "Your information is submitted and a specialist has been notified.", badge: "Done", badgeColor: "bg-green-100 text-green-700" },
-                          { icon: <Clock className="w-6 h-6 text-[#D4AF37]" />, bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]", title: "Within 10 Minutes", desc: "A licensed PPO specialist reviews your answers and prepares a personalized plan comparison.", badge: "In Progress", badgeColor: "bg-blue-100 text-blue-700" },
+                          { icon: <Clock className="w-6 h-6 text-[#D4AF37]" />, bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]", title: "Within 5 Minutes", desc: "A licensed PPO specialist reviews your answers and prepares a personalized plan comparison.", badge: "In Progress", badgeColor: "bg-blue-100 text-blue-700" },
                           { icon: <Phone className="w-6 h-6 text-gray-400" />, bg: "bg-gray-100", title: "Enrollment Call", desc: "Your specialist walks you through your options and can enroll you same-day if you're ready.", badge: "Upcoming", badgeColor: "bg-gray-100 text-gray-600" },
                         ].map((item, i) => (
                           <div key={i} className="flex gap-4">
@@ -880,7 +880,7 @@ export default function PPOQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">Where should we send your PPO options?</h2>
-                      <p className="text-muted-foreground">A licensed specialist will reach out within 10 minutes.</p>
+                      <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
                       <div>

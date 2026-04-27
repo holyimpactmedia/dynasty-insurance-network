@@ -57,7 +57,7 @@ const FAMILY_PROBLEMS = [
 const FAMILY_ADVANTAGES = [
   "Private PPO plans with nationwide coverage for your entire family",
   "Pediatric specialists accessible without referrals or waiting",
-  "Keep your family&apos;s doctors, including pediatricians and OB-GYNs",
+  "Keep your family's doctors, including pediatricians and OB-GYNs",
   "Coverage that travels with you across all 50 states",
   "Comprehensive dental and vision add-ons available",
   "Flexible enrollment options for growing families",
@@ -398,7 +398,7 @@ export default function FamilyQuizPage() {
                     Your family coverage options are being prepared, {answers.firstName}.
                   </h1>
                   <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                    A family specialist will contact you within 10 minutes.
+                    A family specialist will contact you within 5 minutes.
                   </p>
                 </div>
 
@@ -456,13 +456,13 @@ export default function FamilyQuizPage() {
                           bg: "bg-green-100",
                           title: "Right Now",
                           badge: { text: "Complete", cls: "bg-green-100 text-green-700" },
-                          desc: "Your family&apos;s information has been securely submitted. Our system is matching you with family plans available in your state.",
+                          desc: "Your family's information has been securely submitted. Our system is matching you with family plans available in your state.",
                           extra: null,
                         },
                         {
                           icon: <Clock className="w-6 h-6 text-[#D4AF37]" />,
                           bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
-                          title: "Within 10 Minutes",
+                          title: "Within 5 Minutes",
                           badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
                           desc: "A licensed family health specialist will review your situation and prepare personalized plan comparisons including pediatric benefits.",
                           extra: (
@@ -720,7 +720,7 @@ export default function FamilyQuizPage() {
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "10-Minute Response", desc: "A real specialist contacts you within 10 minutes on business days." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
