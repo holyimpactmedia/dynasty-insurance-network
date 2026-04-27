@@ -1,20 +1,29 @@
 import type React from "react"
 import type { Metadata } from "next"
 
+const TITLE = "Private PPO Plans Without Asking Permission"
+const DESC =
+  "Stop asking your HMO for permission to see a doctor. Private PPO plans for healthy adults under 64. See any specialist, skip the referrals, and pay less than COBRA."
+const SHORT_DESC =
+  "Private PPO plans. See any specialist. No referrals. Pay less than COBRA."
+
 export const metadata: Metadata = {
-  title: "Private PPO Health Plans",
-  description:
-    "Stop asking permission to see a doctor. Private PPO plans with no referrals, nationwide networks, and doctor freedom. Compare plans with a licensed specialist.",
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: "/ppo" },
   openGraph: {
-    title: "Private PPO Health Plans | Dynasty Insurance Group",
-    description:
-      "No referrals. No narrow networks. No restrictions. Private PPO coverage that works anywhere in the US.",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
     url: "/ppo",
+    images: [
+      { url: "/og/ppo.jpg", width: 1200, height: 630, type: "image/jpeg" },
+    ],
   },
   twitter: {
-    title: "Private PPO Health Plans | Dynasty Insurance Group",
-    description:
-      "No referrals. No narrow networks. Private PPO coverage that works anywhere in the US.",
+    card: "summary_large_image",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
+    images: ["/og/ppo.jpg"],
   },
 }
 

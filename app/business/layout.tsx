@@ -1,20 +1,29 @@
 import type React from "react"
 import type { Metadata } from "next"
 
+const TITLE = "Small Business Group Health Insurance"
+const DESC =
+  "Private PPO group plans for businesses with 2 to 50 employees. Up to 50% federal tax credit, 100% deductible employer premiums, and broader networks than ACA marketplace HMOs."
+const SHORT_DESC =
+  "Group PPO plans for 2 to 50 employees. Up to 50% federal tax credit. 100% deductible."
+
 export const metadata: Metadata = {
-  title: "Group Health Insurance for Small Businesses",
-  description:
-    "Offer your team private PPO group health benefits that attract and retain top talent. Fully deductible business expense. Get a quote from a licensed specialist.",
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: "/business" },
   openGraph: {
-    title: "Group Health Benefits for Small Business | Dynasty Insurance Group",
-    description:
-      "Private PPO group plans for small businesses. Attract great people. Keep them. Fully deductible.",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
     url: "/business",
+    images: [
+      { url: "/og/business.jpg", width: 1200, height: 630, type: "image/jpeg" },
+    ],
   },
   twitter: {
-    title: "Group Health Benefits for Small Business | Dynasty Insurance Group",
-    description:
-      "Private PPO group plans for small businesses. Attract great people. Keep them. Fully deductible.",
+    card: "summary_large_image",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
+    images: ["/og/business.jpg"],
   },
 }
 

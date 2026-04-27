@@ -1,20 +1,29 @@
 import type React from "react"
 import type { Metadata } from "next"
 
+const TITLE = "Self-Employed Health Insurance That Deducts"
+const DESC =
+  "Private PPO plans for 1099 workers, freelancers, and contractors aged 18 to 63. Nationwide coverage, no referrals, and premiums that may be 100% tax deductible."
+const SHORT_DESC =
+  "Private PPO plans for 1099 workers. Nationwide coverage. Premiums often 100% tax deductible."
+
 export const metadata: Metadata = {
-  title: "Health Insurance for the Self-Employed",
-  description:
-    "Private PPO plans built for freelancers, contractors, and founders. Nationwide coverage, no referrals, and premiums that may be 100% tax deductible.",
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: "/self-employed" },
   openGraph: {
-    title: "Health Insurance for Self-Employed | Dynasty Insurance Group",
-    description:
-      "Private PPO plans for entrepreneurs. Nationwide coverage, no referrals, 100% potentially tax deductible premiums.",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
     url: "/self-employed",
+    images: [
+      { url: "/og/self-employed.jpg", width: 1200, height: 630, type: "image/jpeg" },
+    ],
   },
   twitter: {
-    title: "Health Insurance for Self-Employed | Dynasty Insurance Group",
-    description:
-      "Private PPO plans for entrepreneurs. Nationwide coverage, no referrals, potentially 100% tax deductible.",
+    card: "summary_large_image",
+    title: `${TITLE} | Dynasty Insurance Group`,
+    description: SHORT_DESC,
+    images: ["/og/self-employed.jpg"],
   },
 }
 
