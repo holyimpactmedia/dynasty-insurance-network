@@ -473,7 +473,7 @@ export default function COBRAQuizPage() {
               })()
             ) : currentStep === 0 ? (
               /* ── LANDING PAGE ─────────────────────────────────── */
-              <div className="w-full max-w-none -mx-6 px-0">
+              <div className="w-full max-w-none">
 
                 {/* Hero: Pain Points */}
                 <section className="relative text-white py-16 px-6 overflow-hidden">
