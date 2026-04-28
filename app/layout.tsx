@@ -45,7 +45,7 @@ export const metadata: Metadata = {
       {
         url: "/og/home.jpg",
         width: 1200,
-        height: 551,
+        height: 630,
         alt: "Dynasty Insurance Group: Real Coverage for the Earners the Marketplace Forgets",
         type: "image/jpeg",
       },
