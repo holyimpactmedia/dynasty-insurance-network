@@ -17,7 +17,7 @@ export default function TermsOfUsePage() {
           <section>
             <h2 className="text-2xl font-semibold mb-3">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By accessing and using this website (the "Site") operated by Dynasty, you accept and agree to be bound by
+              By accessing and using this website (the "Site") operated by Holy Impact Media, LLC, you accept and agree to be bound by
               the terms and provision of this agreement. If you do not agree to abide by the above, please do not use
               this service.
             </p>
@@ -127,9 +127,8 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">12. TCPA Compliance</h2>
             <p className="text-muted-foreground leading-relaxed">
               By providing your phone number and agreeing to our terms, you consent to receive calls, text messages, and
-              communications from Dynasty and its insurance partners, including through automated dialing systems or
-              pre-recorded messages. You understand that consent is not required to purchase insurance and may be
-              revoked at any time. Message and data rates may apply.
+              communications from Holy Impact Media and its licensed insurance partners, including Dynasty Insurance
+              Group. Reply STOP to opt out of SMS at any time.
             </p>
           </section>
 
@@ -167,16 +166,26 @@ export default function TermsOfUsePage() {
             </p>
             <div className="mt-3 text-muted-foreground">
               <p className="font-medium">Dynasty</p>
-              <p>Email: legal@dynasty.com</p>
+              <p>Email: legal@holyimpactmedia.com</p>
               <p>Phone: (888) 555-0123</p>
             </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-3">17. Relationship to Insurance Partners</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Holy Impact Media, LLC is a marketing and lead generation company, not a licensed insurance agency.
+              Dynasty Insurance Group is an independent licensed insurance agency that purchases leads from Holy Impact
+              Media and contacts consumers regarding insurance coverage options. Holy Impact Media does not provide
+              insurance advice or sell insurance products.
+            </p>
           </section>
         </div>
       </main>
 
       <footer className="bg-muted border-t border-border mt-12 py-6">
         <div className="max-w-4xl mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 Dynasty. All rights reserved.</p>
+          <p>&copy; 2026 Holy Impact Media, LLC. All rights reserved.</p>
         </div>
       </footer>
     </div>

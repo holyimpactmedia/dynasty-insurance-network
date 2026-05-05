@@ -19,7 +19,7 @@ export async function sendLeadConfirmation({
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@dynasty.app'
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@holyimpactmedia.com'
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -48,7 +48,7 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                Thank you for taking the time to check your coverage options. A licensed insurance specialist will contact you within <strong>2 hours</strong> at ${phone || email}.
+                You recently requested health insurance information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 2 hours at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->
@@ -118,10 +118,7 @@ export async function sendLeadConfirmation({
           <tr>
             <td style="background-color: #f8f9fa; padding: 24px 32px; border-top: 1px solid #eeeeee;">
               <p style="margin: 0; color: #999999; font-size: 12px; line-height: 1.5; text-align: center;">
-                You are receiving this email because you submitted a request for healthcare coverage options. 
-                If you did not make this request, please disregard this email.
-                <br><br>
-                Dynasty Health Insurance | Reply STOP to opt out
+                Holy Impact Media, LLC &mdash; Marketing &amp; Lead Generation Services | This email was sent because you submitted a request at our website.
               </p>
             </td>
           </tr>
@@ -135,7 +132,7 @@ export async function sendLeadConfirmation({
 
   try {
     const { error } = await resend.emails.send({
-      from: `Dynasty Health Insurance <${fromEmail}>`,
+      from: `Holy Impact Media <${fromEmail}>`,
       to: email,
       subject: `Your Coverage Options Are Being Prepared, ${firstName}`,
       html: htmlContent,

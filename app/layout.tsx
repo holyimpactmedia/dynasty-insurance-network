@@ -29,9 +29,9 @@ export const metadata: Metadata = {
     "private health insurance for healthy adults",
     "Dynasty Insurance Group",
   ],
-  authors: [{ name: "Dynasty Insurance Group", url: siteUrl }],
-  creator: "Dynasty Insurance Group",
-  publisher: "Dynasty Insurance Group",
+  authors: [{ name: "Holy Impact Media", url: "https://holyimpactmedia.com" }],
+  creator: "Holy Impact Media",
+  publisher: "Holy Impact Media",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -113,6 +113,12 @@ export default function RootLayout({
                   description:
                     "Private PPO health insurance for healthy Americans aged 18 to 63 who earn too much for ACA subsidies.",
                   sameAs: [],
+                },
+                {
+                  "@type": "Organization",
+                  "name": "Holy Impact Media, LLC",
+                  "url": "https://holyimpactmedia.com",
+                  "description": "Marketing and lead generation services",
                 },
                 {
                   "@type": "WebSite",

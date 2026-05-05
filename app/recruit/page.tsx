@@ -464,7 +464,7 @@ export default function AgentRecruitingPage() {
                 },
                 {
                   q: "How much does it cost to join?",
-                  a: "Zero. There are no upfront fees, monthly fees, or lead costs. Dynasty covers all lead generation expenses. You keep 100% of your commissions.",
+                  a: "Zero. There are no upfront fees, monthly fees, or lead costs. Holy Impact Media manages all lead generation expenses. You keep 100% of your commissions.",
                 },
                 {
                   q: "Do I need insurance experience?",
@@ -523,7 +523,7 @@ export default function AgentRecruitingPage() {
             <div>
               <img src="/images/logo.avif" alt="Dynasty Insurance Group" className="h-10 mb-4" />
               <p className="text-gray-400 text-sm">
-                Dynasty Insurance Group provides exclusive healthcare leads to licensed insurance agents nationwide.
+                Holy Impact Media generates and provides exclusive healthcare leads to Dynasty Insurance Group agents nationwide.
               </p>
             </div>
             <div>

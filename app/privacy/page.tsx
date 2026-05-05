@@ -17,10 +17,10 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-3">1. Introduction</h2>
             <p className="text-muted-foreground leading-relaxed">
-              This Privacy Policy governs the online information collection practices of Dynasty ("we," "us," or "our").
-              This policy outlines the types of information we gather about you while you use our website (the "Site")
-              and how we use this information. By visiting and using the Site, you agree to the terms of this Privacy
-              Policy.
+              This Privacy Policy governs the online information collection practices of Holy Impact Media, LLC ("we,"
+              "us," or "our"), operator of this website. This policy outlines the types of information we gather about
+              you while you use our website (the "Site") and how we use this information. By visiting and using the Site,
+              you agree to the terms of this Privacy Policy.
             </p>
           </section>
 
@@ -71,6 +71,11 @@ export default function PrivacyPolicyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold mb-3">4. Information Sharing and Disclosure</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">Lead Recipients:</strong> Holy Impact Media shares your information
+              with Dynasty Insurance Group, a licensed independent insurance agency, and US Health Advisors marketplace,
+              for the purpose of providing you with insurance coverage options.
+            </p>
             <h3 className="text-xl font-semibold mb-2 mt-4">4.1 Licensed Insurance Agents</h3>
             <p className="text-muted-foreground leading-relaxed">
               We share your information with licensed insurance agents and brokers who can help you evaluate and enroll
@@ -184,7 +189,7 @@ export default function PrivacyPolicyPage() {
               (CCPA), including the right to know what personal information we collect, use, and disclose; the right to
               delete your personal information; and the right to opt out of the sale of your personal information. We do
               not sell personal information as defined by the CCPA. To exercise your CCPA rights, please contact us at
-              privacy@dynasty.com.
+              privacy@holyimpactmedia.com.
             </p>
           </section>
 
@@ -194,7 +199,7 @@ export default function PrivacyPolicyPage() {
               If you are located in the European Economic Area (EEA), you have rights under the General Data Protection
               Regulation (GDPR), including the right to access, rectify, erase, restrict processing, object to
               processing, and data portability. Our Site is primarily directed at United States residents, and we do not
-              specifically target EEA residents. If GDPR applies to you, please contact us at privacy@dynasty.com.
+              specifically target EEA residents. If GDPR applies to you, please contact us at privacy@holyimpactmedia.com.
             </p>
           </section>
 
@@ -234,7 +239,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="mt-3 text-muted-foreground">
               <p className="font-medium">Dynasty</p>
-              <p>Email: privacy@dynasty.com</p>
+              <p>Email: privacy@holyimpactmedia.com</p>
               <p>Phone: (888) 555-0123</p>
               <p>Mailing Address: [Company Address]</p>
             </div>
@@ -244,7 +249,7 @@ export default function PrivacyPolicyPage() {
 
       <footer className="bg-muted border-t border-border mt-12 py-6">
         <div className="max-w-4xl mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 Dynasty. All rights reserved.</p>
+          <p>&copy; 2026 Holy Impact Media, LLC. All rights reserved.</p>
         </div>
       </footer>
     </div>

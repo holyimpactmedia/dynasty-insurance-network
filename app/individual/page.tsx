@@ -1496,12 +1496,7 @@ export default function HealthcareQuizPage() {
                             className="mt-1 w-4 h-4 text-[#D4AF37] border-gray-300 rounded focus:ring-[#D4AF37]"
                           />
                           <label htmlFor="tcpa-consent" className="text-xs text-muted-foreground leading-relaxed">
-                            <strong className="text-foreground">Consent to Contact (Required):</strong> By checking this
-                            box and submitting this form, I provide my express written consent to be contacted by
-                            Dynasty Insurance Group via phone calls, text messages (including via autodialer or
-                            prerecorded message){answers.phone && " at the number I provided"}, and email, regarding
-                            health insurance options. Consent is not required to purchase any product or service.
-                            Message and data rates may apply. Reply STOP to opt out. I agree to the{" "}
+                            <strong className="text-foreground">Consent to Contact (Required):</strong> By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I agree to the{" "}
                             <a href="/terms" target="_blank" className="text-[#D4AF37] underline hover:text-[#E8C976]">
                               Terms of Service
                             </a>{" "}

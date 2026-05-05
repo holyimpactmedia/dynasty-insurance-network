@@ -912,11 +912,7 @@ export default function PPOQuizPage() {
                             className="mt-1"
                           />
                           <span className="text-xs text-muted-foreground leading-relaxed">
-                            By checking this box and submitting this form, I provide my express written consent to be
-                            contacted by Dynasty Insurance Group via phone calls, text messages (including via autodialer
-                            or prerecorded message), and email regarding health insurance options. Consent is not
-                            required to purchase any product or service. Message and data rates may apply. Reply STOP to
-                            opt out. See our{" "}
+                            By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. See our{" "}
                             <a href="/terms" className="underline hover:text-foreground">Terms of Service</a> and{" "}
                             <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>.
                           </span>

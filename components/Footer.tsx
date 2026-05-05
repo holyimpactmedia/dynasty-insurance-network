@@ -90,12 +90,14 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-sm text-gray-400">
           <p className="mb-2">
-            &copy; 2026 Dynasty. All rights reserved. Licensed insurance agency.
+            &copy; 2026 Holy Impact Media, LLC. All rights reserved.
           </p>
           <p className="text-xs max-w-3xl mx-auto">
-            Dynasty is an independent insurance agency and is not affiliated with or endorsed by any government entity,
-            Healthcare.gov, or the Centers for Medicare & Medicaid Services. We may receive compensation from insurance
-            carriers for policies sold.
+            This website is operated by Holy Impact Media, LLC, a marketing company and lead generation service.
+            Holy Impact Media is not an insurance agency. Dynasty Insurance Group is an independent licensed insurance
+            agency and is not affiliated with or endorsed by any government entity, Healthcare.gov, or the Centers for
+            Medicare &amp; Medicaid Services. Holy Impact Media connects consumers with Dynasty Insurance Group and its
+            licensed agents. We may receive compensation for leads provided.
           </p>
         </div>
       </div>
