@@ -183,13 +183,62 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">10. California Privacy Rights (CCPA)</h2>
+            <h2 className="text-2xl font-semibold mb-3">10. California Privacy Rights (CCPA / CPRA)</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              If you are a California resident, you have specific rights under the California Consumer Privacy Act
+              (CCPA), as amended by the California Privacy Rights Act (CPRA):
+            </p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-3">
+              <li>
+                <strong>Right to Know:</strong> You can request a copy of the personal information we have collected
+                about you in the past 12 months, including the categories of information, sources, business purposes,
+                and third parties with whom we have shared it.
+              </li>
+              <li>
+                <strong>Right to Delete:</strong> You can request that we delete personal information we have collected
+                from you, subject to certain legal exceptions.
+              </li>
+              <li>
+                <strong>Right to Correct:</strong> You can request that we correct inaccurate personal information.
+              </li>
+              <li>
+                <strong>Right to Opt Out of Sale or Sharing:</strong> You can direct us not to sell or share your
+                personal information with third parties for cross-context behavioral advertising.
+              </li>
+              <li>
+                <strong>Right to Limit Use of Sensitive Personal Information:</strong> You can direct us to limit the
+                use of any sensitive personal information you provide.
+              </li>
+              <li>
+                <strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising any of
+                these rights.
+              </li>
+            </ul>
+            <h3 className="text-xl font-semibold mb-2 mt-6">Do Not Sell or Share My Personal Information</h3>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Holy Impact Media shares your contact information with licensed insurance partners (including Dynasty
+              Insurance Group and US Health Advisors marketplace) so they can provide you with insurance coverage
+              options. Under the CCPA, this transfer may be considered a "sale" or "sharing" of personal information.
+              You have the right to opt out at any time.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              To submit a Do-Not-Sell, Right-to-Know, Right-to-Delete, Right-to-Correct, or any other CCPA request,
+              email{" "}
+              <a href="mailto:privacy@holyimpactmedia.com?subject=CCPA%20Request" className="text-[#D4AF37] underline">
+                privacy@holyimpactmedia.com
+              </a>{" "}
+              with the subject line <strong>"CCPA Request"</strong> and include:
+            </p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-3">
+              <li>The type of request (Know, Delete, Correct, Opt-Out, Limit Sensitive Info)</li>
+              <li>Your full legal name</li>
+              <li>The email address and phone number you submitted on our site</li>
+              <li>Your California ZIP code (used to verify residency)</li>
+            </ul>
             <p className="text-muted-foreground leading-relaxed">
-              If you are a California resident, you have additional rights under the California Consumer Privacy Act
-              (CCPA), including the right to know what personal information we collect, use, and disclose; the right to
-              delete your personal information; and the right to opt out of the sale of your personal information. We do
-              not sell personal information as defined by the CCPA. To exercise your CCPA rights, please contact us at
-              privacy@holyimpactmedia.com.
+              We will verify your identity before responding and will reply within 45 days as required by California
+              law. You may also designate an authorized agent to make a request on your behalf by including a signed
+              authorization with your request.
             </p>
           </section>
 

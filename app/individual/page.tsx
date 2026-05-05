@@ -732,27 +732,12 @@ export default function HealthcareQuizPage() {
                         <div className="flex items-start gap-3">
                           <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                           <div className="space-y-2 text-sm">
-                            <p className="font-medium text-blue-900">Important Disclaimers</p>
-                            <ul className="text-blue-700 space-y-1 text-xs">
-                              <li>
-                                • <strong>Rates:</strong> Final premium rates are subject to change based on plan
-                                selection, exact age, location, household size, tobacco use, and underwriting
-                              </li>
-                              <li>
-                                • <strong>Estimates:</strong> Plan pricing estimates are based on national averages.
-                                Actual rates are confirmed during your specialist consultation.
-                              </li>
-                              <li>• <strong>Coverage:</strong> Private PPO plans include comprehensive in- and out-of-network benefits</li>
-                              <li>
-                                • <strong>Agent Compensation:</strong> Our licensed agents may receive compensation from
-                                insurance carriers. This does not affect your rates
-                              </li>
-                              {daysUntilDeadline > 0 && daysUntilDeadline <= 30 && (
-                                <li className="font-semibold">
-                                  • <strong>Deadline:</strong> Open Enrollment ends in {daysUntilDeadline} days
-                                </li>
-                              )}
-                            </ul>
+                            <p className="text-blue-700 text-xs">
+                              Final premium rates are confirmed during your specialist consultation. Our licensed agents
+                              may receive compensation from insurance carriers. See our{" "}
+                              <a href="/terms" className="underline">Terms</a> and{" "}
+                              <a href="/privacy" className="underline">Privacy Policy</a> for details.
+                            </p>
                           </div>
                         </div>
                       </Card>
@@ -1474,7 +1459,7 @@ export default function HealthcareQuizPage() {
                             className="mt-1 w-4 h-4 text-[#D4AF37] border-gray-300 rounded focus:ring-[#D4AF37]"
                           />
                           <label htmlFor="tcpa-consent" className="text-xs text-muted-foreground leading-relaxed">
-                            <strong className="text-foreground">Consent to Contact (Required):</strong> By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I agree to the{" "}
+                            <strong className="text-foreground">Consent to Contact (Required):</strong> By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. I agree to the{" "}
                             <a href="/terms" target="_blank" className="text-[#D4AF37] underline hover:text-[#E8C976]">
                               Terms of Service
                             </a>{" "}
@@ -1486,25 +1471,6 @@ export default function HealthcareQuizPage() {
                           </label>
                         </div>
                         {errors.tcpaConsent && <p className="text-sm text-red-500 pl-7">{errors.tcpaConsent}</p>}
-
-                        {/* Additional Disclosures */}
-                        <Card className="p-4 bg-muted/50 border-muted-foreground/20">
-                          <div className="space-y-3 text-xs text-muted-foreground">
-                            <p>
-                              <strong className="text-foreground">Recording Notice:</strong> Calls may be monitored or
-                              recorded for quality assurance and training purposes.
-                            </p>
-                            <p>
-                              <strong className="text-foreground">Opt-Out:</strong> To opt out of communications, reply
-                              STOP to text messages or use the unsubscribe link in any email.
-                            </p>
-                            <p>
-                              <strong className="text-foreground">No Guarantee:</strong> Submitting this form does not
-                              guarantee coverage or specific rates. All quotes are estimates subject to underwriting
-                              approval and income verification.
-                            </p>
-                          </div>
-                        </Card>
                       </div>
 
                       <Button
