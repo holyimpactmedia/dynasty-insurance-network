@@ -10,7 +10,6 @@ const PUBLIC_ROUTES: { path: string; priority: number; changeFrequency: "daily" 
   { path: "/cobra", priority: 0.9, changeFrequency: "weekly" },
   { path: "/ppo", priority: 0.9, changeFrequency: "weekly" },
   { path: "/self-employed", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/recruit", priority: 0.6, changeFrequency: "monthly" },
   { path: "/terms", priority: 0.3, changeFrequency: "monthly" },
   { path: "/privacy", priority: 0.3, changeFrequency: "monthly" },
 ]

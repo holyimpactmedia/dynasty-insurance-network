@@ -36,6 +36,7 @@ import {
 } from "lucide-react"
 
 import { SERVICED_STATES } from "@/lib/serviced-states"
+import { INDIVIDUAL_INCOME_BRACKETS } from "@/lib/income-thresholds"
 const SE_COVERAGE_ITEMS = [
   { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Any primary care or specialist, no employer required" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide Coverage", desc: "Work and live anywhere, coverage follows you" },
@@ -802,7 +803,7 @@ export default function SelfEmployedPage() {
                   <p className="text-muted-foreground text-sm">Helps us match you with the right plan tier</p>
                 </div>
                 <div className="grid gap-3">
-                  {["Under $30K", "$30K–$50K", "$50K–$75K", "$75K–$100K", "Over $100K"].map((opt) => (
+                  {INDIVIDUAL_INCOME_BRACKETS.map((opt) => (
                     <button
                       key={opt}
                       onClick={() => handleAutoAdvance("annualIncome", opt)}

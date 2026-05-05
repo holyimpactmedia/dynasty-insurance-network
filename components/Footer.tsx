@@ -52,11 +52,6 @@ export function Footer() {
                   Group Health Benefits
                 </Link>
               </li>
-              <li>
-                <Link href="/recruit" className="text-gray-400 hover:text-white transition-colors">
-                  Become an Agent
-                </Link>
-              </li>
             </ul>
           </div>
 

@@ -35,6 +35,10 @@ import {
 } from "lucide-react"
 
 import { SERVICED_STATES } from "@/lib/serviced-states"
+import {
+  FAMILY_INCOME_BRACKETS_BY_SIZE,
+  parseHouseholdSize,
+} from "@/lib/income-thresholds"
 const FAMILY_COVERAGE_ITEMS = [
   { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Routine checkups, vaccines, and specialist visits for kids" },
   { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling for all family members" },
@@ -265,13 +269,10 @@ export default function FamilyQuizPage() {
     { value: "Child aging off my plan soon", label: "Child aging off my plan soon" },
   ]
 
-  const incomeOptions = [
-    "Under $30,000",
-    "$30,000 - $50,000",
-    "$50,000 - $75,000",
-    "$75,000 - $125,000",
-    "$125,000+",
-  ]
+  // Income brackets are scoped to household size so the floor sits above the
+  // 2026 subsidy threshold for that household. Set in lib/income-thresholds.ts.
+  const householdSize = parseHouseholdSize(answers.familyComposition)
+  const incomeOptions = FAMILY_INCOME_BRACKETS_BY_SIZE[householdSize]
 
   // Effective step accounting for the skipped children step
   const getEffectiveStep = () => {

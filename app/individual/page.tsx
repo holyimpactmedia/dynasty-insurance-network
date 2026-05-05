@@ -39,6 +39,7 @@ import {
 } from "lucide-react"
 
 import { SERVICED_STATES } from "@/lib/serviced-states"
+import { INDIVIDUAL_INCOME_BRACKETS } from "@/lib/income-thresholds"
 const INDIV_COVERAGE_ITEMS = [
   { icon: <Stethoscope className="w-5 h-5" />, label: "Any Doctor", desc: "See any physician or specialist without referrals" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide PPO", desc: "Premium networks accepted at top hospitals across the US" },
@@ -68,13 +69,7 @@ const INDIV_ADVANTAGES = [
   "A licensed specialist who walks you through every private-market option you have",
 ]
 
-const INCOME_RANGES = [
-  "Under $30,000",
-  "$30,000 - $50,000",
-  "$50,000 - $75,000",
-  "$75,000 - $125,000",
-  "$125,000+",
-]
+const INCOME_RANGES = INDIVIDUAL_INCOME_BRACKETS
 
 const US_STATES = SERVICED_STATES
 

@@ -34,6 +34,7 @@ import {
 } from "lucide-react"
 
 import { SERVICED_STATES } from "@/lib/serviced-states"
+import { PPO_BUDGET_BRACKETS } from "@/lib/income-thresholds"
 const US_STATES = SERVICED_STATES
 
 const TOTAL_STEPS = 7
@@ -841,13 +842,7 @@ export default function PPOQuizPage() {
                       <p className="text-muted-foreground">PPO plans range widely. This helps narrow your options.</p>
                     </div>
                     <div className="space-y-3">
-                      {[
-                        { label: "Under $300/month", value: "under_300" },
-                        { label: "$300 – $500/month", value: "300_500" },
-                        { label: "$500 – $800/month", value: "500_800" },
-                        { label: "$800 – $1,200/month", value: "800_1200" },
-                        { label: "Over $1,200/month", value: "over_1200" },
-                      ].map((opt) => (
+                      {PPO_BUDGET_BRACKETS.map((opt) => (
                         <button
                           key={opt.value}
                           onClick={() => handleAutoAdvance("budget", opt.value)}
