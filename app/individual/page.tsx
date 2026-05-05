@@ -38,6 +38,7 @@ import {
   X,
 } from "lucide-react"
 
+import { SERVICED_STATES } from "@/lib/serviced-states"
 const INDIV_COVERAGE_ITEMS = [
   { icon: <Stethoscope className="w-5 h-5" />, label: "Any Doctor", desc: "See any physician or specialist without referrals" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide PPO", desc: "Premium networks accepted at top hospitals across the US" },
@@ -75,59 +76,7 @@ const INCOME_RANGES = [
   "$125,000+",
 ]
 
-// US States
-const US_STATES = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming",
-]
+const US_STATES = SERVICED_STATES
 
 export default function HealthcareQuizPage() {
   const [currentStep, setCurrentStep] = useState(0)

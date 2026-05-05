@@ -36,6 +36,7 @@ import {
   X,
 } from "lucide-react"
 
+import { SERVICED_STATES } from "@/lib/serviced-states"
 const BIZ_COVERAGE_ITEMS = [
   { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Primary care and specialist access for all employees" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide Network", desc: "Cover employees in multiple states or locations" },
@@ -65,16 +66,7 @@ const BIZ_ADVANTAGES = [
   "One licensed benefits specialist handles enrollment, renewal, and compliance",
 ]
 
-const US_STATES = [
-  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
-  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
-  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
-  "New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
-  "Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
-  "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-  "Wisconsin","Wyoming",
-]
+const US_STATES = SERVICED_STATES
 
 const TOTAL_STEPS = 8
 

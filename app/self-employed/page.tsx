@@ -35,6 +35,7 @@ import {
   X,
 } from "lucide-react"
 
+import { SERVICED_STATES } from "@/lib/serviced-states"
 const SE_COVERAGE_ITEMS = [
   { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Any primary care or specialist, no employer required" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide Coverage", desc: "Work and live anywhere, coverage follows you" },
@@ -64,16 +65,7 @@ const SE_ADVANTAGES = [
   "Plans tailored to high earners who need premium coverage",
 ]
 
-const US_STATES = [
-  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
-  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
-  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
-  "New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
-  "Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
-  "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-  "Wisconsin","Wyoming",
-]
+const US_STATES = SERVICED_STATES
 
 const TOTAL_STEPS = 7
 
