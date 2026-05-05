@@ -238,10 +238,8 @@ export default function PrivacyPolicyPage() {
               please contact us at:
             </p>
             <div className="mt-3 text-muted-foreground">
-              <p className="font-medium">Dynasty</p>
+              <p className="font-medium">Holy Impact Media, LLC</p>
               <p>Email: privacy@holyimpactmedia.com</p>
-              <p>Phone: (888) 555-0123</p>
-              <p>Mailing Address: [Company Address]</p>
             </div>
           </section>
         </div>

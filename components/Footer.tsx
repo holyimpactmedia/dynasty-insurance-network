@@ -77,14 +77,18 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Get Started */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-white">Contact</h3>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li>Phone: (888) 555-0123</li>
-              <li>Email: info@dynasty.com</li>
-              <li>Hours: Mon-Fri 9am-6pm EST</li>
-            </ul>
+            <h3 className="font-semibold text-white">Get Started</h3>
+            <p className="text-sm text-gray-400">
+              See your private PPO options in 90 seconds.
+            </p>
+            <Link
+              href="/individual"
+              className="inline-flex items-center justify-center w-full md:w-auto px-5 h-11 rounded-md bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] font-semibold text-base transition-colors"
+            >
+              Find My Plan
+            </Link>
           </div>
         </div>
 

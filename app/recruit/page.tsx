@@ -123,9 +123,11 @@ export default function AgentRecruitingPage() {
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <img src="/images/logo.avif" alt="Dynasty" className="h-12" />
             <div className="flex gap-4">
-              <Button variant="outline" className="hidden md:flex bg-transparent">
-                <Phone className="w-4 h-4 mr-2" />
-                (888) 555-0123
+              <Button
+                onClick={() => setCurrentStep(1)}
+                className="hidden md:flex bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] font-bold"
+              >
+                Apply Now
               </Button>
             </div>
           </div>
@@ -527,21 +529,17 @@ export default function AgentRecruitingPage() {
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-white mb-4">Contact</h3>
-              <div className="space-y-3 text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  (888) 555-0123
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  recruiting@dynasty.com
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Licensed in all 50 states
-                </div>
-              </div>
+              <h3 className="font-bold text-white mb-4">Ready to Apply?</h3>
+              <p className="text-sm text-gray-400 mb-4">
+                Licensed in all 50 states. Application takes 2 minutes.
+              </p>
+              <Button
+                onClick={() => setCurrentStep(1)}
+                className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] font-bold"
+              >
+                Apply to Join Dynasty
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
             </div>
             <div>
               <h3 className="font-bold text-white mb-4">Legal</h3>
@@ -970,22 +968,13 @@ export default function AgentRecruitingPage() {
               <div className="text-sm text-gray-400">Save this for your records</div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button
-                variant="outline"
-                className="bg-white/5 border-white/20 text-white hover:bg-white/10"
-                onClick={() => (window.location.href = "tel:8885550123")}
+                onClick={() => (window.location.href = "/")}
+                className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] font-bold"
               >
-                <Phone className="w-4 h-4 mr-2" />
-                Call Us: (888) 555-0123
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-white/5 border-white/20 text-white hover:bg-white/10"
-                onClick={() => (window.location.href = "mailto:recruiting@dynasty.com")}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                recruiting@dynasty.com
+                Back to Dynasty
+                <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </Card>

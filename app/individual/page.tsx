@@ -578,11 +578,10 @@ export default function HealthcareQuizPage() {
                                 </p>
                                 {answers.phone && (
                                   <div className="space-y-2 text-xs bg-blue-50 p-3 rounded-lg border border-blue-200">
-                                    <p className="font-medium text-blue-900">📱 Save This Number</p>
+                                    <p className="font-medium text-blue-900">📱 Watch for our call</p>
                                     <p className="text-blue-700">
-                                      We'll call from: <span className="font-semibold">(800) 555-0123</span>
+                                      Your specialist will call from a US number within 5 minutes. Answer the phone or save the call to keep your spot in line.
                                     </p>
-                                    <p className="text-blue-600">Add to contacts so you don't miss our call!</p>
                                   </div>
                                 )}
                               </div>
@@ -828,27 +827,6 @@ export default function HealthcareQuizPage() {
                       transition={{ delay: 1.0 }}
                       className="text-center space-y-4"
                     >
-                      <div className="border-t pt-6">
-                        <p className="text-sm text-muted-foreground mb-3">Need immediate assistance?</p>
-                          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-                          <a
-                            href="tel:8005550123"
-                            className="flex items-center gap-2 text-foreground hover:text-[#D4AF37] transition-colors"
-                          >
-                            <Phone className="w-4 h-4" />
-                            <span className="font-semibold">(800) 555-0123</span>
-                          </a>
-                          <span className="hidden sm:inline text-muted-foreground">•</span>
-                          <a
-                            href={`mailto:${answers.email || "support@example.com"}`}
-                            className="flex items-center gap-2 text-foreground hover:text-[#D4AF37] transition-colors"
-                          >
-                            <Mail className="w-4 h-4" />
-                            <span className="font-semibold">Reply to your email</span>
-                          </a>
-                        </div>
-                      </div>
-
                       <div className="pt-4">
                         <Button
                           onClick={() => {
@@ -1517,9 +1495,8 @@ export default function HealthcareQuizPage() {
                               recorded for quality assurance and training purposes.
                             </p>
                             <p>
-                              <strong className="text-foreground">Opt-Out:</strong> To opt-out of communications, reply
-                              STOP to text messages, use unsubscribe links in emails, or contact us at
-                              support@dynastyinsurancegroup.com.
+                              <strong className="text-foreground">Opt-Out:</strong> To opt out of communications, reply
+                              STOP to text messages or use the unsubscribe link in any email.
                             </p>
                             <p>
                               <strong className="text-foreground">No Guarantee:</strong> Submitting this form does not
