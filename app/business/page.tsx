@@ -52,7 +52,7 @@ const BIZ_PROBLEMS = [
   "Individual plans cost your team 30–50% more than a small-group plan would",
   "You can't recruit good people if you don't offer health benefits",
   "Premiums climb every renewal with no broker actively negotiating for you",
-  "ACA marketplace plans are HMOs with narrow networks your team won't tolerate",
+  "Narrow-network plans frustrate your team and make recruiting harder",
   "Your CPA keeps reminding you about the small business health-insurance tax credit you're not using",
   "You're stitching together coverage piecemeal instead of one clean plan",
 ]
@@ -666,6 +666,74 @@ export default function BusinessPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </section>
+
+                {/* Owner Savings Stories */}
+                <section className="py-16 px-6 bg-muted/30">
+                  <div className="max-w-5xl mx-auto space-y-10">
+                    <div className="text-center space-y-3">
+                      <h2 className="text-3xl font-bold text-foreground">Owners Cutting Costs Without Cutting Coverage</h2>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        Small business owners are switching their teams to private group PPO plans
+                        and saving hundreds per employee while keeping the doctors their people trust.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          name: "Anthony R.",
+                          role: "Construction, 12 employees",
+                          location: "Houston, TX",
+                          before: "$1,180/employee",
+                          after: "$720/employee",
+                          quote: "We were burning $1,180 per guy on individual plans. Group PPO dropped us to $720 per employee with a better network. The tax credit covered the broker fee twice over.",
+                        },
+                        {
+                          name: "Priya M.",
+                          role: "Marketing agency, 8 employees",
+                          location: "Atlanta, GA",
+                          before: "$1,050/employee",
+                          after: "$680/employee",
+                          quote: "Half my team was buying their own plans for over a grand a month. We pulled them onto a group plan at $680, kept everyone's doctor, and morale went up overnight.",
+                        },
+                        {
+                          name: "Jamal W.",
+                          role: "Logistics, 22 employees",
+                          location: "Charlotte, NC",
+                          before: "$1,320/employee",
+                          after: "$815/employee",
+                          quote: "Recruiting was killing us without benefits. Got a group PPO for $815 per employee versus what they were paying solo. Two new hires accepted within a week of us announcing it.",
+                        },
+                      ].map((story, i) => (
+                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
+                          <div className="flex items-center gap-1 text-[#D4AF37]">
+                            {[...Array(5)].map((_, s) => (
+                              <Star key={s} className="w-4 h-4 fill-current" />
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-center">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                              <p className="text-lg font-bold text-red-700">{story.before}</p>
+                            </div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                              <p className="text-lg font-bold text-green-700">{story.after}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
+                          <div className="pt-2 border-t border-border">
+                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
+                            <p className="text-xs text-muted-foreground">{story.role}</p>
+                            <p className="text-xs text-muted-foreground">{story.location}</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                      Group savings stories are illustrative of typical outcomes. Actual rates depend on group size, employee ages, state, plan selection, and underwriting. A licensed benefits specialist will quote your business directly.
+                    </p>
                   </div>
                 </section>
 

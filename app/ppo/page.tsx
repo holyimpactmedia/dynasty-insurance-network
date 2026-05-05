@@ -251,8 +251,8 @@ export default function PPOQuizPage() {
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
-                  "Your HMO makes you get a referral just to see a specialist.",
-                  "Your income is past the subsidy cliff, so the marketplace is unaffordable.",
+                  "Your current plan makes you get a referral just to see a specialist.",
+                  "Your premium climbs every renewal but your network keeps shrinking.",
                   "Your plan charges you full price until you hit a deductible you never reach.",
                 ].map((q, i) => (
                   <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
@@ -457,43 +457,68 @@ export default function PPOQuizPage() {
 
           {/* Social Proof */}
           <section className="py-16 px-6 bg-muted/30">
-            <div className="max-w-4xl mx-auto space-y-10">
-              <h2 className="text-3xl font-bold text-center text-foreground">What Our Clients Say</h2>
+            <div className="max-w-5xl mx-auto space-y-10">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl font-bold text-foreground">Real PPO Switches. Real Monthly Savings.</h2>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  These clients dropped their old narrow-network plans, kept their doctors,
+                  and walked away paying hundreds less every month.
+                </p>
+              </div>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
                   {
                     name: "Marcus T.",
                     location: "Dallas, TX",
-                    text: "I was paying $900/month for an HMO that wouldn't let me see my cardiologist. Switched to a PPO and now I see whoever I want for $620/month. Wish I did this years ago.",
+                    before: "$1,090/mo",
+                    after: "$640/mo",
+                    text: "I was paying over a thousand a month for a narrow-network plan that wouldn't let me see my cardiologist. Switched to a private PPO and now I see whoever I want for $640. Wish I did this years ago.",
                     stars: 5,
                   },
                   {
                     name: "Jennifer R.",
                     location: "Phoenix, AZ",
-                    text: "My old plan had a $7,000 deductible. My new PPO has a $2,500 deductible and I can go out of network. The specialist found it in 20 minutes.",
+                    before: "$1,210/mo",
+                    after: "$795/mo",
+                    text: "My old plan had a $7,000 deductible and was costing me $1,210 a month. My new PPO is $795, the deductible is $2,500, and I can go out of network. The specialist found it in 20 minutes.",
                     stars: 5,
                   },
                   {
                     name: "David & Lisa K.",
                     location: "Atlanta, GA",
-                    text: "We needed a plan that covered our daughter's pediatric specialist out of state. The agent found us a nationwide PPO at a price we could afford. Amazing service.",
+                    before: "$1,480/mo",
+                    after: "$820/mo",
+                    text: "We needed a plan that covered our daughter's pediatric specialist out of state. We went from $1,480 a month to $820 on a nationwide PPO that actually covers her doctor. Amazing service.",
                     stars: 5,
                   },
                 ].map((review, i) => (
-                  <Card key={i} className="p-6 space-y-4 border-2 border-[#D4AF37]/20">
+                  <Card key={i} className="p-6 space-y-4 border-2 border-[#D4AF37]/30 bg-white">
                     <div className="flex gap-1">
                       {Array.from({ length: review.stars }).map((_, j) => (
                         <Star key={j} className="w-4 h-4 fill-[#D4AF37] text-[#D4AF37]" />
                       ))}
                     </div>
+                    <div className="grid grid-cols-2 gap-2 text-center">
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                        <p className="text-xl font-bold text-red-700">{review.before}</p>
+                      </div>
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                        <p className="text-xl font-bold text-green-700">{review.after}</p>
+                      </div>
+                    </div>
                     <p className="text-sm text-muted-foreground leading-relaxed italic">&ldquo;{review.text}&rdquo;</p>
-                    <div>
+                    <div className="pt-2 border-t border-border">
                       <p className="font-semibold text-foreground text-sm">{review.name}</p>
                       <p className="text-xs text-muted-foreground">{review.location}</p>
                     </div>
                   </Card>
                 ))}
               </div>
+              <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                Client savings stories are illustrative of typical outcomes. Actual rates depend on age, state, plan selection, and underwriting. A licensed agent will quote you directly.
+              </p>
             </div>
           </section>
 

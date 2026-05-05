@@ -12,15 +12,15 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dynastyinsurancegro
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dynasty Insurance Group | Real Coverage for the Earners the Marketplace Forgets",
+    default: "Dynasty Insurance Group | Private Health Insurance Plans",
     template: "%s | Dynasty Insurance Group",
   },
   description:
-    "Private PPO plans for healthy Americans aged 18 to 63 who earn too much for ACA subsidies. See any doctor, no referrals, nationwide networks. Get matched with a licensed specialist in 90 seconds.",
+    "Private PPO health insurance plans for healthy Americans aged 18 to 63. See any doctor, skip referrals, and get nationwide network coverage. Match with a licensed specialist in 90 seconds.",
   keywords: [
     "private health insurance",
     "PPO plans",
-    "ACA subsidy alternative",
+    "private PPO health insurance",
     "no referral health insurance",
     "COBRA alternative",
     "self-employed health insurance",
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Dynasty Insurance Group",
-    title: "Dynasty Insurance Group | Real Coverage for the Earners the Marketplace Forgets",
+    title: "Dynasty Insurance Group | Private Health Insurance Plans",
     description:
-      "Private PPO plans for healthy Americans aged 18 to 63 who earn too much for ACA subsidies. See any doctor. No referrals.",
+      "Private PPO health insurance plans for healthy Americans aged 18 to 63. See any doctor. No referrals. Nationwide networks.",
     images: [
       {
         url: "/og/home.jpg",
         width: 1200,
         height: 630,
-        alt: "Dynasty Insurance Group: Real Coverage for the Earners the Marketplace Forgets",
+        alt: "Dynasty Insurance Group: Private Health Insurance Plans",
         type: "image/jpeg",
       },
     ],
@@ -55,9 +55,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@DynastyInsGroup",
     creator: "@DynastyInsGroup",
-    title: "Dynasty Insurance Group | Real Coverage for the Earners the Marketplace Forgets",
+    title: "Dynasty Insurance Group | Private Health Insurance Plans",
     description:
-      "Private PPO plans for healthy adults priced out of ACA subsidies. See any doctor. No referrals. Match in 90 seconds.",
+      "Private PPO health insurance plans for healthy adults. See any doctor. No referrals. Match in 90 seconds.",
     images: ["/og/home.jpg"],
   },
   robots: {
@@ -111,7 +111,7 @@ export default function RootLayout({
                   url: siteUrl,
                   logo: `${siteUrl}/images/logo.avif`,
                   description:
-                    "Private PPO health insurance for healthy Americans aged 18 to 63 who earn too much for ACA subsidies.",
+                    "Private PPO health insurance plans for healthy Americans aged 18 to 63.",
                   sameAs: [],
                 },
                 {

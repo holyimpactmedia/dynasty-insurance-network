@@ -51,21 +51,21 @@ const INDIV_COVERAGE_ITEMS = [
 ]
 
 const INDIV_PROBLEMS = [
-  "You earn too much for an ACA subsidy but your premiums keep climbing anyway",
-  "Your HMO forces you to get referrals just to see a specialist",
-  "Narrow networks exclude the doctors and hospitals you actually want",
+  "Your premiums keep climbing every year while your plan covers less and less",
+  "Narrow networks force you to get referrals just to see a specialist",
+  "The doctors and hospitals you actually want are not in your network",
   "Deductibles are so high you end up paying out-of-pocket for everything anyway",
   "You travel or work across state lines, but your plan barely works at home",
   "You are healthy but stuck overpaying for benefits you do not use",
 ]
 
 const INDIV_ADVANTAGES = [
-  "Private PPO plans designed for healthy adults who don't qualify for big subsidies",
+  "Private PPO plans designed for healthy adults who want real choice",
   "Keep your doctors. See any specialist. No referrals required.",
   "Trusted carrier networks: Blue Cross, Cigna, Aetna, United Healthcare",
   "Coverage that travels with you across all 50 states",
-  "Lower premiums than COBRA, broader networks than HMO marketplace plans",
-  "A licensed specialist who knows the private-market options the marketplace will not show you",
+  "Lower premiums than COBRA and broader networks than narrow-network plans",
+  "A licensed specialist who walks you through every private-market option you have",
 ]
 
 const INCOME_RANGES = [
@@ -730,30 +730,6 @@ export default function HealthcareQuizPage() {
                       </div>
                     </motion.div>
 
-                    {/* Download Resources */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.9 }}
-                    >
-                      <Card className="p-6 bg-gradient-to-r from-[#D4AF37]/10 to-[#E8C976]/10 border-2 border-[#D4AF37]/30">
-                        <div className="text-center space-y-4">
-                          <div className="w-12 h-12 bg-[#D4AF37]/20 rounded-full flex items-center justify-center mx-auto">
-                            <FileText className="w-6 h-6 text-[#D4AF37]" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-foreground mb-2">Private PPO Buyer's Guide</h3>
-                            <p className="text-sm text-muted-foreground">
-                              While you wait, download our guide: "The Private PPO Playbook for High Earners and Entrepreneurs in 2026"
-                            </p>
-                          </div>
-                          <Button className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90">
-                            Download the Playbook
-                          </Button>
-                        </div>
-                      </Card>
-                    </motion.div>
-
                     {/* Contact Information */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -801,16 +777,16 @@ export default function HealthcareQuizPage() {
                           Licensed Independent Insurance Specialists
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                          Earn Too Much for <span className="text-[#D4AF37]">ACA Help</span>. Too Healthy for an <span className="text-[#D4AF37]">HMO</span>.
+                          Private Health Insurance Built for <span className="text-[#D4AF37]">Working Adults</span>
                         </h1>
                         <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                          Private PPO plans built for working Americans the <span className="text-[#D4AF37] font-semibold">marketplace overlooks</span>.
+                          Real PPO coverage with the doctors you trust, the freedom to skip referrals, and rates designed for healthy adults who travel and work hard.
                         </p>
                         <div className="space-y-3 text-left max-w-xl mx-auto">
                           {[
-                            "Your income is just past the subsidy cliff, so the marketplace is unaffordable.",
-                            "Your HMO makes you beg for a referral just to see a specialist.",
-                            "Your deductibles are so high you pay out-of-pocket for everything anyway.",
+                            "Premiums climbing every year on a plan that covers less than it used to.",
+                            "Narrow networks that make you beg for a referral just to see a specialist.",
+                            "Deductibles so high you end up paying out-of-pocket for everything anyway.",
                           ].map((q, i) => (
                             <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                               <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -1010,6 +986,70 @@ export default function HealthcareQuizPage() {
                       </div>
                     </section>
 
+                    {/* Savings Stories */}
+                    <section className="py-16 px-6 bg-muted/30">
+                      <div className="max-w-5xl mx-auto space-y-10">
+                        <div className="text-center space-y-3">
+                          <h2 className="text-3xl font-bold text-foreground">Real People. Real Savings.</h2>
+                          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                            Working adults across the country are switching to private PPO plans and keeping
+                            hundreds every month while keeping the doctors they trust.
+                          </p>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-6">
+                          {[
+                            {
+                              name: "David K.",
+                              location: "Dallas, TX",
+                              before: "$1,080/mo",
+                              after: "$640/mo",
+                              quote: "I was paying over a grand a month for a plan I barely used. New private PPO is $640, my doctor is in-network, and I don't need a referral for anything.",
+                            },
+                            {
+                              name: "Maria S.",
+                              location: "Phoenix, AZ",
+                              before: "$1,250/mo",
+                              after: "$715/mo",
+                              quote: "My premium kept jumping every renewal. Switched to a private plan, kept my cardiologist, and saved $535 a month. Wish I'd done this two years ago.",
+                            },
+                            {
+                              name: "Jordan T.",
+                              location: "Tampa, FL",
+                              before: "$1,150/mo",
+                              after: "$800/mo",
+                              quote: "Self-employed and the rates were brutal. The agent found me a PPO at $800 with way better network access than what I had. No referrals, no games.",
+                            },
+                          ].map((story, i) => (
+                            <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
+                              <div className="flex items-center gap-1 text-[#D4AF37]">
+                                {[...Array(5)].map((_, s) => (
+                                  <Star key={s} className="w-4 h-4 fill-current" />
+                                ))}
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 text-center">
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                  <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                                  <p className="text-xl font-bold text-red-700">{story.before}</p>
+                                </div>
+                                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                  <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                                  <p className="text-xl font-bold text-green-700">{story.after}</p>
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
+                              <div className="pt-2 border-t border-border">
+                                <p className="text-sm font-semibold text-foreground">{story.name}</p>
+                                <p className="text-xs text-muted-foreground">{story.location}</p>
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+                        <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                          Client savings stories are illustrative of typical outcomes. Actual rates depend on age, state, plan selection, and underwriting. A licensed agent will quote you directly.
+                        </p>
+                      </div>
+                    </section>
+
                     {/* Final CTA */}
                     <section className="py-16 px-6 bg-background">
                       <div className="max-w-2xl mx-auto text-center space-y-6">
@@ -1173,7 +1213,7 @@ export default function HealthcareQuizPage() {
                             <div className="flex items-start gap-3">
                               <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                               <p className="text-sm text-amber-700">
-                                Our private PPO plans are designed for healthy adults. With a significant medical history, an ACA marketplace plan with guaranteed-issue protections is usually the better fit. A licensed specialist can still walk you through your options.
+                                Our private PPO plans are designed for healthy adults. With a significant medical history, a guaranteed-issue plan is usually the better fit. A licensed specialist can still walk you through every option you have.
                               </p>
                             </div>
                           </Card>

@@ -107,7 +107,7 @@ const funnels = [
     highlights: [
       "No referrals, see any specialist directly",
       "Nationwide in-network and out-of-network coverage",
-      "Lower deductibles than most HMO plans",
+      "Lower deductibles than most narrow-network plans",
       "Real coverage with no hidden holes",
     ],
     cta: "Find PPO Plans",
@@ -159,11 +159,11 @@ export default function PlansPage() {
               Licensed Insurance Agency
             </div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-              Real Coverage for the Earners the <span className="text-[#D4AF37]">Marketplace Forgets</span>
+              Private Health Coverage Built for <span className="text-[#D4AF37]">Working Americans</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
-              Private PPO plans for healthy Americans aged <span className="text-[#D4AF37] font-semibold">18 to 63</span> who earn too much for ACA subsidies but
-              still need real coverage that takes their doctor and travels with them.
+              Private PPO health insurance plans for healthy adults and families aged <span className="text-[#D4AF37] font-semibold">18 to 63</span>.
+              Keep your doctor, see any specialist, and travel with coverage that works in all 50 states.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Concierge Service</span>

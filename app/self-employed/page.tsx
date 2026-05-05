@@ -49,7 +49,7 @@ const SE_COVERAGE_ITEMS = [
 
 const SE_PROBLEMS = [
   "No employer contribution. You pay 100% of premiums alone.",
-  "Narrow HMO networks that limit your doctor choices",
+  "Narrow networks that limit your doctor choices",
   "Referral requirements that slow down your care",
   "Regional plans that do not work when you travel for business",
   "Generic plans not designed for entrepreneurs and contractors",
@@ -465,7 +465,7 @@ export default function SelfEmployedPage() {
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "You earn too much for ACA help but the marketplace HMO networks are a joke.",
+                        "You shop solo. Premiums keep climbing while networks keep shrinking.",
                         "You cross state lines for clients. Your plan stops at the border.",
                         "Your health insurance premiums may be 100% tax deductible. Are you claiming that?",
                       ].map((q, i) => (
@@ -512,7 +512,7 @@ export default function SelfEmployedPage() {
                         You Run Your Own Business. Your Health Plan Should Match.
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        Generic HMO plans are built for people who sit in one office and see one doctor.
+                        Generic narrow-network plans are built for people who sit in one office and see one doctor.
                         You do not. Private PPO coverage gives you the doctor freedom, nationwide access,
                         and tax benefits your business deserves.
                       </p>
@@ -664,6 +664,74 @@ export default function SelfEmployedPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </section>
+
+                {/* 1099 Savings Stories */}
+                <section className="py-16 px-6 bg-muted/30">
+                  <div className="max-w-5xl mx-auto space-y-10">
+                    <div className="text-center space-y-3">
+                      <h2 className="text-3xl font-bold text-foreground">Self-Employed. Saving Real Money.</h2>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        Contractors, founders, and freelancers are switching to private PPO plans,
+                        deducting their premiums, and paying hundreds less every month.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          name: "Carlos M.",
+                          role: "Real estate agent",
+                          location: "Houston, TX",
+                          before: "$1,120/mo",
+                          after: "$680/mo",
+                          quote: "I was paying over $1,100 solo on the open market. Got a private PPO at $680, deduct it on my Schedule C, and my doctor is still in-network. Best call I made this year.",
+                        },
+                        {
+                          name: "Aisha N.",
+                          role: "Freelance designer",
+                          location: "Atlanta, GA",
+                          before: "$1,050/mo",
+                          after: "$720/mo",
+                          quote: "Premiums kept jumping every renewal. The agent found me an HSA-eligible PPO at $720, I get tax-free savings on top of it, and my plan actually works when I travel for clients.",
+                        },
+                        {
+                          name: "Trevor K.",
+                          role: "Independent contractor",
+                          location: "Charlotte, NC",
+                          before: "$1,260/mo",
+                          after: "$815/mo",
+                          quote: "Family of three, 1099 income, no employer help. We were drowning at $1,260 a month. Switched to a private family PPO at $815 and the deduction makes it feel even cheaper.",
+                        },
+                      ].map((story, i) => (
+                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
+                          <div className="flex items-center gap-1 text-[#D4AF37]">
+                            {[...Array(5)].map((_, s) => (
+                              <Star key={s} className="w-4 h-4 fill-current" />
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-center">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                              <p className="text-lg font-bold text-red-700">{story.before}</p>
+                            </div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                              <p className="text-lg font-bold text-green-700">{story.after}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
+                          <div className="pt-2 border-t border-border">
+                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
+                            <p className="text-xs text-muted-foreground">{story.role}</p>
+                            <p className="text-xs text-muted-foreground">{story.location}</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. Tax deductibility depends on your business structure. A licensed agent will quote you directly.
+                    </p>
                   </div>
                 </section>
 

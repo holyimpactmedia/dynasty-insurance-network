@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold mb-3">4. Information Sharing and Disclosure</h2>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Lead Recipients:</strong> Holy Impact Media shares your information
-              with Dynasty Insurance Group, a licensed independent insurance agency, and US Health Advisors marketplace,
+              with Dynasty Insurance Group, a licensed independent insurance agency, and the US Health Advisors agent network,
               for the purpose of providing you with insurance coverage options.
             </p>
             <h3 className="text-xl font-semibold mb-2 mt-4">4.1 Licensed Insurance Agents</h3>
@@ -217,7 +217,7 @@ export default function PrivacyPolicyPage() {
             <h3 className="text-xl font-semibold mb-2 mt-6">Do Not Sell or Share My Personal Information</h3>
             <p className="text-muted-foreground leading-relaxed mb-3">
               Holy Impact Media shares your contact information with licensed insurance partners (including Dynasty
-              Insurance Group and US Health Advisors marketplace) so they can provide you with insurance coverage
+              Insurance Group and the US Health Advisors agent network) so they can provide you with insurance coverage
               options. Under the CCPA, this transfer may be considered a "sale" or "sharing" of personal information.
               You have the right to opt out at any time.
             </p>

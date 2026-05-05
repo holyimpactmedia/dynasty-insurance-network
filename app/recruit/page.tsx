@@ -215,7 +215,7 @@ export default function AgentRecruitingPage() {
                 {
                   title: "Exclusive Healthcare Leads",
                   description:
-                    "Pre-qualified ACA leads sent directly to your phone. TCPA compliant. No competition. 80%+ answer rate.",
+                    "Pre-qualified private health insurance leads sent directly to your phone. TCPA compliant. No competition. 80%+ answer rate.",
                   icon: Phone,
                   highlight: "Top Benefit",
                 },

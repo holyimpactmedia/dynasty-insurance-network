@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 const TITLE = "Small Business Group Health Insurance"
 const DESC =
-  "Private PPO group plans for businesses with 2 to 50 employees. Up to 50% federal tax credit, 100% deductible employer premiums, and broader networks than ACA marketplace HMOs."
+  "Private PPO group health insurance plans for businesses with 2 to 50 employees. Up to 50% federal tax credit, 100% deductible employer premiums, and broad nationwide networks."
 const SHORT_DESC =
   "Group PPO plans for 2 to 50 employees. Up to 50% federal tax credit. 100% deductible."
 

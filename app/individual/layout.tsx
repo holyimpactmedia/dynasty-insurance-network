@@ -1,11 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
 
-const TITLE = "Individual Health Insurance Without ACA Help"
+const TITLE = "Private Individual Health Insurance Plans"
 const DESC =
-  "Private PPO plans for healthy adults aged 18 to 63 who earn too much for ACA subsidies. See any doctor, no referrals, nationwide networks. Get matched in 90 seconds."
+  "Private PPO health insurance plans for healthy adults aged 18 to 63. See any doctor, skip referrals, and get nationwide network coverage. Match in 90 seconds with a licensed specialist."
 const SHORT_DESC =
-  "Private PPO plans for healthy adults priced out of ACA subsidies. See any doctor, no referrals."
+  "Private PPO plans for healthy adults. See any doctor, no referrals, nationwide coverage."
 
 export const metadata: Metadata = {
   title: TITLE,

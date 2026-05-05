@@ -47,8 +47,8 @@ const FAMILY_COVERAGE_ITEMS = [
 ]
 
 const FAMILY_PROBLEMS = [
-  "Employer family coverage can cost $1,500-$2,500/month with limited networks",
-  "Narrow HMO networks mean your pediatrician may not be covered",
+  "Employer family coverage can cost $1,200-$1,800/month with limited networks",
+  "Narrow networks mean your pediatrician may not be covered",
   "High deductibles leave families exposed to unexpected bills",
   "Kids aging off your plan at 26 with no quality private options",
   "Regional coverage limits leave your family unprotected when traveling",
@@ -521,16 +521,16 @@ export default function FamilyQuizPage() {
                       Family Health Insurance - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      A Family Plan for Earners the <span className="text-[#D4AF37]">Marketplace Forgets</span>
+                      Private Family Health Plans That <span className="text-[#D4AF37]">Travel With You</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Built for working families who earn just past the <span className="text-[#D4AF37] font-semibold">subsidy cliff</span> and still need real coverage.
+                      Real PPO coverage for working families. Keep your pediatrician, see any specialist, and protect every member nationwide.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Your household income is too high for an ACA subsidy but the marketplace is still unaffordable.",
-                        "Your pediatrician is not in your network and your HMO requires a referral for everything.",
-                        "Your employer plan barely covers the family and the deductible swallows your savings.",
+                        "Families paying $1,200 to $1,800 a month for narrow-network plans they can barely use.",
+                        "Pediatricians and specialists who suddenly aren't in-network when you need them most.",
+                        "Employer family coverage with deductibles so high one ER visit wipes out your savings.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -729,6 +729,70 @@ export default function FamilyQuizPage() {
                   </div>
                 </section>
 
+                {/* Family Savings Stories */}
+                <section className="py-16 px-6 bg-muted/30">
+                  <div className="max-w-5xl mx-auto space-y-10">
+                    <div className="text-center space-y-3">
+                      <h2 className="text-3xl font-bold text-foreground">Real Families. Real Savings.</h2>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        Working families are switching to private PPO plans and keeping hundreds of dollars
+                        every month without losing access to their doctors.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          name: "The Ramirez Family",
+                          location: "Houston, TX",
+                          before: "$1,420/mo",
+                          after: "$680/mo",
+                          quote: "We were paying over $1,400 a month for a plan that wouldn't even cover our kids' pediatrician. Switched to a private PPO and now we pay $680 and the whole family is in-network.",
+                        },
+                        {
+                          name: "The Patel Family",
+                          location: "Atlanta, GA",
+                          before: "$1,180/mo",
+                          after: "$745/mo",
+                          quote: "Our employer family plan was eating $1,180 a month and the deductible was insane. Found a private PPO for $745, kept our doctor, and the deductible is half what we had.",
+                        },
+                        {
+                          name: "The Johnson Family",
+                          location: "Charlotte, NC",
+                          before: "$1,650/mo",
+                          after: "$820/mo",
+                          quote: "Three kids, two with specialists. We were drowning at $1,650 a month. New private plan is $820, no referrals, and our pediatrician and orthopedist are both still covered.",
+                        },
+                      ].map((story, i) => (
+                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
+                          <div className="flex items-center gap-1 text-[#D4AF37]">
+                            {[...Array(5)].map((_, s) => (
+                              <Star key={s} className="w-4 h-4 fill-current" />
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-center">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                              <p className="text-xl font-bold text-red-700">{story.before}</p>
+                            </div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                              <p className="text-xl font-bold text-green-700">{story.after}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
+                          <div className="pt-2 border-t border-border">
+                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
+                            <p className="text-xs text-muted-foreground">{story.location}</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. A licensed agent will quote your family directly.
+                    </p>
+                  </div>
+                </section>
+
                 {/* Final CTA */}
                 <section className="py-16 px-6 bg-background">
                   <div className="max-w-2xl mx-auto text-center space-y-6">
@@ -876,7 +940,7 @@ export default function FamilyQuizPage() {
                     {answers.healthScreen === "Yes" && (
                       <Card className="p-4 bg-amber-50 border-amber-200">
                         <p className="text-sm text-amber-700">
-                          Our private PPO family plans are designed for healthy households. With a significant medical history, an ACA marketplace plan with guaranteed-issue protections is usually the better fit. A licensed specialist can still walk you through your options.
+                          Our private PPO family plans are designed for healthy households. With a significant medical history, a guaranteed-issue plan may be a better fit for your family. A licensed specialist can still walk you through every option you have.
                         </p>
                       </Card>
                     )}

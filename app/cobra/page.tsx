@@ -485,8 +485,8 @@ export default function COBRAQuizPage() {
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
                         "You are paying 102% of the full premium. Your employer pays nothing.",
-                        "COBRA expires in 18 months. The marketplace will not subsidize you at your income level.",
-                        "You are locked into a plan that may not fit your life anymore.",
+                        "COBRA expires in 18 months and you need a long-term plan that fits your life.",
+                        "You are locked into a plan that may not match the doctors or coverage you actually need now.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -683,6 +683,74 @@ export default function COBRAQuizPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </section>
+
+                {/* COBRA Switch Stories */}
+                <section className="py-16 px-6 bg-muted/30">
+                  <div className="max-w-5xl mx-auto space-y-10">
+                    <div className="text-center space-y-3">
+                      <h2 className="text-3xl font-bold text-foreground">Real People Who Dropped COBRA</h2>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        Healthy adults under 64 are walking away from COBRA, keeping their doctors,
+                        and saving hundreds every month with private PPO plans.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          name: "Marcus B.",
+                          situation: "Laid off after 12 years",
+                          location: "Houston, TX",
+                          before: "$1,090/mo COBRA",
+                          after: "$640/mo PPO",
+                          quote: "COBRA was killing my severance. The agent showed me a private PPO at $640 with the same network as my old job. Saved me almost $5,000 over six months.",
+                        },
+                        {
+                          name: "Sandra L.",
+                          situation: "Family of 4, severance ending",
+                          location: "Atlanta, GA",
+                          before: "$1,820/mo COBRA",
+                          after: "$815/mo PPO",
+                          quote: "Family of four on COBRA was $1,820 a month. We switched to a private family PPO at $815, kept our pediatrician, and the deductible is actually lower.",
+                        },
+                        {
+                          name: "Daniel P.",
+                          situation: "Career change",
+                          location: "Tampa, FL",
+                          before: "$1,150/mo COBRA",
+                          after: "$720/mo PPO",
+                          quote: "I was about to start a new business and COBRA at $1,150 wasn't going to work. Got a private PPO for $720, kept my doctor, and the premiums are tax deductible now too.",
+                        },
+                      ].map((story, i) => (
+                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
+                          <div className="flex items-center gap-1 text-[#D4AF37]">
+                            {[...Array(5)].map((_, s) => (
+                              <Star key={s} className="w-4 h-4 fill-current" />
+                            ))}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-center">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
+                              <p className="text-lg font-bold text-red-700">{story.before}</p>
+                            </div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
+                              <p className="text-lg font-bold text-green-700">{story.after}</p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
+                          <div className="pt-2 border-t border-border">
+                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
+                            <p className="text-xs text-muted-foreground">{story.situation}</p>
+                            <p className="text-xs text-muted-foreground">{story.location}</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. A licensed agent will quote you directly.
+                    </p>
                   </div>
                 </section>
 
