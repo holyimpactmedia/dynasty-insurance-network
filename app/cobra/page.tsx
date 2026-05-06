@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
+import { ExitIntentDialog } from "@/components/ExitIntentDialog"
 import {
   Shield,
   ChevronLeft,
@@ -112,16 +113,27 @@ export default function COBRAQuizPage() {
     }
   }, [])
 
-  // Exit intent
+  // Exit intent — desktop, one-shot per session, post-landing only.
   useEffect(() => {
+    if (showThankYou) return
+    if (currentStep <= 0 || currentStep > TOTAL_STEPS) return
+    if (typeof window === "undefined") return
+
+    const SESSION_KEY = "exitIntentShown_cobra"
+    if (sessionStorage.getItem(SESSION_KEY)) return
+
+    const isCoarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches
+    if (isCoarsePointer) return
+
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && currentStep > 0 && currentStep < TOTAL_STEPS + 1 && !showExitIntent) {
+      if (e.clientY <= 0 && !showExitIntent) {
         setShowExitIntent(true)
+        sessionStorage.setItem(SESSION_KEY, "1")
       }
     }
     document.addEventListener("mouseleave", handleMouseLeave)
     return () => document.removeEventListener("mouseleave", handleMouseLeave)
-  }, [currentStep, showExitIntent])
+  }, [currentStep, showExitIntent, showThankYou])
 
   const updateAnswer = (key: string, value: any) => {
     setAnswers((prev) => ({ ...prev, [key]: value }))
@@ -268,57 +280,19 @@ export default function COBRAQuizPage() {
         </Button>
       )}
 
-      {/* Exit intent modal */}
-      {showExitIntent && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl p-8 max-w-md w-full relative"
-          >
-            <button
-              onClick={() => setShowExitIntent(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto">
-                <DollarSign className="w-8 h-8 text-[#D4AF37]" />
-              </div>
-              <h3 className="text-2xl font-bold text-foreground">Stop Overpaying for COBRA</h3>
-              <p className="text-muted-foreground">
-                Enter your email and we&apos;ll send you our private guide to COBRA alternatives, premium PPO plans
-                built for executives between roles.
-              </p>
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                value={answers.exitEmail || ""}
-                onChange={(e) => updateAnswer("exitEmail", e.target.value)}
-                className="h-12"
-              />
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setShowExitIntent(false)} className="flex-1">
-                  Continue Quiz
-                </Button>
-                <Button
-                  onClick={() => {
-                    if (answers.exitEmail && validateEmail(answers.exitEmail)) {
-                      updateAnswer("email", answers.exitEmail)
-                      setShowExitIntent(false)
-                    }
-                  }}
-                  className="flex-1 bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90"
-                >
-                  Send Guide
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+      <ExitIntentDialog
+        open={showExitIntent}
+        onClose={() => setShowExitIntent(false)}
+        onContinue={() => setShowExitIntent(false)}
+        progress={progress}
+        savingsAmount="$5,400"
+        headline="Every month on COBRA is money you'll never get back."
+        beforeLabel="Was paying"
+        beforeValue="$1,090/mo COBRA"
+        afterLabel="Now pays"
+        afterValue="$640/mo PPO"
+        comparisonName="Marcus B. — Houston, TX"
+      />
 
       {/* Step content */}
       <div className={currentStep === 0 && !showThankYou ? "flex-1" : "flex-1 flex items-start justify-center px-4 py-6 sm:px-6 sm:items-center"}>
