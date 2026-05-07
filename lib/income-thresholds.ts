@@ -1,13 +1,18 @@
 // 2026 income thresholds used to qualify private PPO leads.
 // Numbers are the 400% Federal Poverty Level cutoffs for 2026, supplied by
-// the carrier as the minimum "above-subsidy" buyer profile. Households at or
-// below these levels typically qualify for heavily subsidized plans elsewhere
-// and are not the private-PPO clientele these funnels target.
+// the carrier as the "ideal" above-subsidy buyer profile. Households well
+// below these levels typically qualify for heavily subsidized plans
+// elsewhere and are not the core private-PPO clientele these funnels target.
 //
-// Funnel income brackets must start AT OR ABOVE the corresponding threshold
-// for the household size. Family quizzes resolve the threshold dynamically
-// based on the user's selected household size; individual / self-employed
-// quizzes use the single-person threshold.
+// Per Sam (2026-05-07): "We sell individuals at $40k a lot." So for the
+// individual / self-employed funnels (household of 1) we keep a single
+// secondary tier starting at $40K — these are still qualified buyers,
+// they're just below the FPL ideal. Above that, brackets walk up through
+// the higher-income segments Sam called "ideal."
+//
+// Family / multi-person households stay strict above the household-aware
+// FPL line — a $40K family of 4 absolutely qualifies for heavy subsidies
+// and is not the right fit for an off-exchange private PPO.
 
 export const INCOME_THRESHOLDS_2026 = {
   individual: 63840,
@@ -30,8 +35,10 @@ export function thresholdForHouseholdSize(size: HouseholdSize): number {
 }
 
 // Income brackets for individual / self-employed (single earner, household of 1).
-// Floor sits above the $63,840 individual threshold.
+// Floor at $40K captures the "we sell $40k individuals a lot" segment Sam
+// flagged; the $65K+ tiers are the FPL-ideal target.
 export const INDIVIDUAL_INCOME_BRACKETS = [
+  "$40,000 – $65,000",
   "$65,000 – $90,000",
   "$90,000 – $125,000",
   "$125,000 – $200,000",
