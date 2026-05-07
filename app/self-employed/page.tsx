@@ -61,7 +61,7 @@ const SE_PROBLEMS = [
 
 const SE_ADVANTAGES = [
   "Private PPO plans with nationwide coverage for mobile entrepreneurs",
-  "May qualify for the federal self-employed health insurance deduction (IRC §162(l)) up to net self-employment income — talk to your CPA",
+  "May qualify for the federal self-employed health insurance deduction (IRC §162(l)) up to net self-employment income - talk to your CPA",
   "HSA-eligible options when paired with a qualifying high-deductible plan",
   "See any doctor or specialist without referrals or waiting",
   "Flexible enrollment options for business owners and contractors",
@@ -109,7 +109,7 @@ export default function SelfEmployedPage() {
     }
   }, [])
 
-  // Exit intent — desktop, one-shot per session, post-landing only.
+  // Exit intent - desktop, one-shot per session, post-landing only.
   useEffect(() => {
     if (showThankYou) return
     if (currentStep <= 0 || currentStep > TOTAL_STEPS) return
@@ -268,12 +268,12 @@ export default function SelfEmployedPage() {
         onContinue={() => setShowExitIntent(false)}
         progress={progress}
         savingsAmount="$5,280"
-        headline="A real PPO + a 100% deductible — gone if you walk away."
+        headline="A real PPO + a 100% deductible - gone if you walk away."
         beforeLabel="Was paying"
         beforeValue="$1,120/mo"
         afterLabel="Now pays"
         afterValue="$680/mo"
-        comparisonName="Carlos M. — Real estate, Houston, TX"
+        comparisonName="Carlos M. - Real estate, Houston, TX"
       />
 
       {/* Step content */}

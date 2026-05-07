@@ -28,7 +28,7 @@ export async function sendLeadConfirmation({
   const unsubscribeUrl = `${siteUrl}/api/unsubscribe?email=${encodeURIComponent(email)}`
   const unsubscribeMailto = process.env.UNSUBSCRIBE_EMAIL || 'unsubscribe@holyimpactmedia.com'
   const physicalAddress = process.env.HOLY_IMPACT_MAILING_ADDRESS
-    || 'Holy Impact Media, LLC, [Mailing Address On File] &mdash; contact privacy@holyimpactmedia.com for our registered postal address'
+    || 'Holy Impact Media, LLC, [Mailing Address On File] - contact privacy@holyimpactmedia.com for our registered postal address'
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -127,7 +127,7 @@ export async function sendLeadConfirmation({
           <tr>
             <td style="background-color: #f8f9fa; padding: 24px 32px; border-top: 1px solid #eeeeee;">
               <p style="margin: 0 0 10px 0; color: #666666; font-size: 12px; line-height: 1.5; text-align: center;">
-                <strong>Holy Impact Media, LLC</strong> &mdash; Marketing &amp; Lead Generation Services<br />
+                <strong>Holy Impact Media, LLC</strong> - Marketing &amp; Lead Generation Services<br />
                 ${physicalAddress}
               </p>
               <p style="margin: 0 0 8px 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">

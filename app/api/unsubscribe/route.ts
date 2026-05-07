@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/admin'
 //
 // Both paths attempt to write to an `email_suppressions` row. If Supabase is
 // not configured or the table is missing, we still return success to the
-// requester — CAN-SPAM is satisfied as long as the unsubscribe is honored
+// requester - CAN-SPAM is satisfied as long as the unsubscribe is honored
 // within 10 business days, and the suppression list can be backfilled from
 // logs if needed.
 
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       const formData = await request.formData()
       email = String(formData.get('email') || '')
     } catch {
-      // body might be empty / not form-encoded — that's fine
+      // body might be empty / not form-encoded - that's fine
     }
   }
   await recordSuppression(email, 'one-click')

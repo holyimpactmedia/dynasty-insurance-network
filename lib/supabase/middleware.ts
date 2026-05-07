@@ -54,7 +54,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Admin-only routes — non-admins get redirected to their agent dashboard
+  // Admin-only routes - non-admins get redirected to their agent dashboard
   const adminPaths = ["/dashboard/admin", "/dashboard/projections", "/dashboard/routing"]
   const isAdminPath = adminPaths.some((p) => pathname.startsWith(p))
 

@@ -166,5 +166,5 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
   }
 }
 
-// Hot-lead SMS to agents removed — leads now route to USHA Marketplace.
+// Hot-lead SMS to agents removed - leads now route to USHA Marketplace.
 // Admin email notifications are fired from the leads API route instead.

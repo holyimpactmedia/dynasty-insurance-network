@@ -70,13 +70,13 @@ export async function notifyAdmin(
   params: AdminNotificationParams,
 ): Promise<{ success: boolean; error?: string }> {
   if (!process.env.RESEND_API_KEY) {
-    console.warn('[notifyAdmin] RESEND_API_KEY not set — skipping admin notification')
+    console.warn('[notifyAdmin] RESEND_API_KEY not set - skipping admin notification')
     return { success: false, error: 'RESEND_API_KEY not configured' }
   }
 
   const adminEmail = process.env.ADMIN_EMAIL
   if (!adminEmail) {
-    console.warn('[notifyAdmin] ADMIN_EMAIL not set — skipping admin notification')
+    console.warn('[notifyAdmin] ADMIN_EMAIL not set - skipping admin notification')
     return { success: false, error: 'ADMIN_EMAIL not configured' }
   }
 
@@ -238,7 +238,7 @@ export async function notifyAdmin(
       <tr>
         <td style="background:#f8fafc;border-top:1px solid #e5e7eb;padding:16px 32px;">
           <p style="margin:0;color:#9ca3af;font-size:12px;">
-            Dynasty Insurance Network &mdash; Internal Admin Alert &mdash; ${new Date().toLocaleString('en-US', { timeZoneName: 'short' })}
+            Dynasty Insurance Network - Internal Admin Alert - ${new Date().toLocaleString('en-US', { timeZoneName: 'short' })}
           </p>
         </td>
       </tr>

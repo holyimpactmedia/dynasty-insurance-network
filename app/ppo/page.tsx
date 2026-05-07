@@ -113,7 +113,7 @@ export default function PPOQuizPage() {
     }
   }, [])
 
-  // Exit intent — desktop, one-shot per session, only during the quiz.
+  // Exit intent - desktop, one-shot per session, only during the quiz.
   useEffect(() => {
     if (!showQuiz || showThankYou) return
     if (typeof window === "undefined") return
@@ -617,7 +617,7 @@ export default function PPOQuizPage() {
         beforeValue="$1,090/mo"
         afterLabel="Now pays"
         afterValue="$640/mo"
-        comparisonName="Marcus T. — Dallas, TX"
+        comparisonName="Marcus T. - Dallas, TX"
       />
 
           <div className="flex-1 flex items-start justify-center px-4 py-6 sm:px-6 sm:items-center">
@@ -925,7 +925,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 7 — Name */}
+                {/* Step 7 - Name */}
                 {currentStep === 7 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">

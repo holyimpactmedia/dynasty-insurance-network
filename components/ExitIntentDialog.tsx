@@ -152,7 +152,7 @@ export function ExitIntentDialog({
                 </p>
               </div>
 
-              {/* Real before/after — matches the testimonials on the page */}
+              {/* Real before/after - matches the testimonials on the page */}
               <div className="rounded-xl border-2 border-[#D4AF37]/30 bg-gradient-to-br from-[#D4AF37]/5 to-transparent p-4">
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <div className="rounded-lg border border-red-200 bg-red-50 p-3">
@@ -184,7 +184,7 @@ export function ExitIntentDialog({
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
 
-              {/* Subtle dismissal — keeps friction low for genuine non-fits */}
+              {/* Subtle dismissal - keeps friction low for genuine non-fits */}
               <button
                 onClick={onClose}
                 className="block w-full text-center text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"

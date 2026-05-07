@@ -1,7 +1,7 @@
 /**
  * States where Holy Impact Media routes leads to Dynasty Insurance Group.
  * Visitors from any other state see a friendly note that we do not currently
- * service their area. Single source of truth — every funnel imports from here.
+ * service their area. Single source of truth - every funnel imports from here.
  */
 export const SERVICED_STATES = [
   "Alabama",

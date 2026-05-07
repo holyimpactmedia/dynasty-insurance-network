@@ -112,7 +112,7 @@ export default function FamilyQuizPage() {
     }
   }, [])
 
-  // Exit intent — one-shot per browser session, desktop only (mouseleave on
+  // Exit intent - one-shot per browser session, desktop only (mouseleave on
   // touch devices fires unpredictably). Skips the landing page and skips
   // anyone who has already submitted.
   useEffect(() => {
@@ -338,7 +338,7 @@ export default function FamilyQuizPage() {
         beforeValue="$1,420/mo"
         afterLabel="Now pays"
         afterValue="$680/mo"
-        comparisonName="The Ramirez Family — Houston, TX"
+        comparisonName="The Ramirez Family - Houston, TX"
       />
 
       {/* Step content */}

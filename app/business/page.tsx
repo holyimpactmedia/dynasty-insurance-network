@@ -111,7 +111,7 @@ export default function BusinessPage() {
     }
   }, [])
 
-  // Exit intent — desktop, one-shot per session, post-landing only.
+  // Exit intent - desktop, one-shot per session, post-landing only.
   useEffect(() => {
     if (showThankYou) return
     if (currentStep <= 0 || currentStep > TOTAL_STEPS) return
@@ -276,7 +276,7 @@ export default function BusinessPage() {
         beforeValue="$1,180/employee"
         afterLabel="Now pays"
         afterValue="$720/employee"
-        comparisonName="Anthony R. — Construction, Houston, TX"
+        comparisonName="Anthony R. - Construction, Houston, TX"
       />
 
       {/* Step content */}

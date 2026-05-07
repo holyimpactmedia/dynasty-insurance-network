@@ -6,7 +6,7 @@ import { ShieldCheck } from "lucide-react"
  * The carrier and its legal counsel review the site for two unspoken
  * questions: (1) "what product category is this actually?" and (2) "is this
  * being sold as a marketplace alternative?". This block answers both in one
- * line — the products are off-exchange ACA-compliant individual major medical
+ * line - the products are off-exchange ACA-compliant individual major medical
  * plans (the same product category sold on Healthcare.gov, just purchased
  * privately without subsidies). That framing protects benefit claims (mental
  * health, preventive care, no pre-existing condition exclusions) and makes

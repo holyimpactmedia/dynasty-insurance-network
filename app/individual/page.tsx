@@ -124,7 +124,7 @@ export default function HealthcareQuizPage() {
     }
   }, [])
 
-  // Exit intent — desktop, one-shot per session, post-landing only.
+  // Exit intent - desktop, one-shot per session, post-landing only.
   useEffect(() => {
     if (showThankYou) return
     if (currentStep <= 0 || currentStep >= 8) return
@@ -315,7 +315,7 @@ export default function HealthcareQuizPage() {
         beforeValue="$1,080/mo"
         afterLabel="Now pays"
         afterValue="$640/mo"
-        comparisonName="David K. — Dallas, TX"
+        comparisonName="David K. - Dallas, TX"
       />
 
       {/* Step Content */}

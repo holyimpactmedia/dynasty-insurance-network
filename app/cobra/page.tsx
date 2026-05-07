@@ -50,7 +50,7 @@ const COVERAGE_ITEMS = [
 ]
 
 const COBRA_PROBLEMS = [
-  "Costs up to 102% of your full premium — your former employer's share plus yours",
+  "Costs up to 102% of your full premium - your former employer's share plus yours",
   "Locked into your old employer's plan and network with no flexibility",
   "Must pay in full each billing cycle or lose coverage with limited grace",
   "Standard COBRA expires after 18 months (some qualifying events extend to 29 or 36 months)",
@@ -114,7 +114,7 @@ export default function COBRAQuizPage() {
     }
   }, [])
 
-  // Exit intent — desktop, one-shot per session, post-landing only.
+  // Exit intent - desktop, one-shot per session, post-landing only.
   useEffect(() => {
     if (showThankYou) return
     if (currentStep <= 0 || currentStep > TOTAL_STEPS) return
@@ -292,7 +292,7 @@ export default function COBRAQuizPage() {
         beforeValue="$1,090/mo COBRA"
         afterLabel="Now pays"
         afterValue="$640/mo PPO"
-        comparisonName="Marcus B. — Houston, TX"
+        comparisonName="Marcus B. - Houston, TX"
       />
 
       {/* Step content */}

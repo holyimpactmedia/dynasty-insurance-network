@@ -1,6 +1,6 @@
 // USHA Marketplace / LeadArena lead submission integration.
 //
-// API docs are not publicly available — request credentials from:
+// API docs are not publicly available - request credentials from:
 //   support@leadarena.com  |  https://knowledge.ushamarketplace.com/supportcenter
 //
 // Required Supabase columns to track submission status:
@@ -9,8 +9,8 @@
 //   ALTER TABLE leads ADD COLUMN usha_lead_id text;
 //
 // Required env vars (set in Vercel dashboard):
-//   USHA_API_URL    — e.g. https://app.ushamarketplace.com/api/v1/leads
-//   USHA_API_KEY    — API key or Bearer token provided by USHA/LeadArena
+//   USHA_API_URL    - e.g. https://app.ushamarketplace.com/api/v1/leads
+//   USHA_API_KEY    - API key or Bearer token provided by USHA/LeadArena
 
 import { createClient } from '@/lib/supabase/admin'
 
@@ -48,7 +48,7 @@ export interface UshaPostResult {
 
 /**
  * Posts a lead to the USHA Marketplace API.
- * Returns 'disabled' if env vars are not yet configured — safe to call unconditionally.
+ * Returns 'disabled' if env vars are not yet configured - safe to call unconditionally.
  * When API credentials are available, fill in the fetch call below with the correct
  * endpoint, auth header format, and request body shape from the USHA API spec.
  */
@@ -61,7 +61,7 @@ export async function postLeadToUsha(
 
   // Gracefully skip if not yet configured
   if (!apiUrl || !apiKey) {
-    console.log('[usha] USHA_API_URL or USHA_API_KEY not configured — skipping lead post')
+    console.log('[usha] USHA_API_URL or USHA_API_KEY not configured - skipping lead post')
     return { success: false, status: 'disabled' }
   }
 
@@ -103,7 +103,7 @@ export async function postLeadToUsha(
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => response.statusText)
-      console.error(`[usha] Lead post failed: HTTP ${response.status} — ${errorText}`)
+      console.error(`[usha] Lead post failed: HTTP ${response.status} - ${errorText}`)
 
       // Update Supabase with failed status
       await updateUshaStatus(leadId, 'failed', null)

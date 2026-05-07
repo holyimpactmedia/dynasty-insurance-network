@@ -29,10 +29,10 @@ const funnels = [
     description:
       "Compare private PPO plans with nationwide coverage and doctor freedom. Quick 2-minute quiz to find your best options.",
     highlights: [
-      "Nationwide PPO networks",
+      "Nationwide PPO networks accepted",
       "No referrals required",
       "Keep your preferred doctors",
-      "Nationwide PPO networks accepted",
+      "Coverage that works wherever you travel",
     ],
     cta: "Find Individual Plans",
     ctaStyle: "bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90",
@@ -84,7 +84,7 @@ const funnels = [
     title: "Self-Employed Coverage",
     subtitle: "May qualify for tax deduction",
     description:
-      "Entrepreneurs and contractors deserve real coverage with flexibility. Eligible self-employed earners may deduct 100% of premiums up to net self-employment income — your CPA can confirm.",
+      "Entrepreneurs and contractors deserve real coverage with flexibility. Eligible self-employed earners may deduct 100% of premiums up to net self-employment income - your CPA can confirm.",
     highlights: [
       "Self-employed health insurance deduction may apply",
       "HSA-eligible options when paired with a qualifying HDHP",
