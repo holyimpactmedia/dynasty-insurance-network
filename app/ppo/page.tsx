@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
-import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -153,6 +152,15 @@ export default function PPOQuizPage() {
 
   const handleContactSubmit = () => {
     const newErrors: Record<string, string> = {}
+    const ageNum = Number.parseInt(answers.age)
+    if (!answers.age || Number.isNaN(ageNum)) {
+      newErrors.age = "Please enter your age"
+    } else if (ageNum < 18 || ageNum >= 64) {
+      newErrors.age = "Our private PPO plans serve adults aged 18 to 63"
+    }
+    if (!answers.govCoverage) {
+      newErrors.govCoverage = "Please answer to continue"
+    }
     if (!answers.email || !validateEmail(answers.email)) {
       newErrors.email = "Please enter a valid email address"
     }
@@ -213,6 +221,7 @@ export default function PPOQuizPage() {
             currentSituation: answers.currentSituation,
             priority: answers.priority,
             budget: answers.budget,
+            govCoverage: answers.govCoverage,
           },
           utmSource: urlParams.get("utm_source"),
           utmMedium: urlParams.get("utm_medium"),
@@ -300,11 +309,6 @@ export default function PPOQuizPage() {
                 </div>
               ))}
             </div>
-          </section>
-
-          {/* Product Disclosure */}
-          <section className="py-8 px-6 bg-background">
-            <ProductDisclosure />
           </section>
 
           {/* Problem Agitation: HMO Restrictions */}
@@ -874,6 +878,45 @@ export default function PPOQuizPage() {
                       <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
+                      <div>
+                        <Input
+                          type="number"
+                          placeholder="Age *"
+                          value={answers.age || ""}
+                          onChange={(e) => updateAnswer("age", e.target.value)}
+                          min={18}
+                          max={100}
+                          className={`h-12 ${errors.age ? "border-red-500" : ""}`}
+                        />
+                        {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">
+                          Currently enrolled in Medicaid or Medicare?
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {["No", "Yes"].map((opt) => (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => updateAnswer("govCoverage", opt)}
+                              className={`p-3 rounded-lg border-2 font-semibold transition-all ${
+                                answers.govCoverage === opt
+                                  ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                                  : "border-border hover:border-[#D4AF37]"
+                              }`}
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                        {answers.govCoverage === "Yes" && (
+                          <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
+                            Our private PPO plans are designed for adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
+                          </p>
+                        )}
+                        {errors.govCoverage && <p className="text-red-500 text-xs">{errors.govCoverage}</p>}
+                      </div>
                       <div>
                         <Input
                           type="email"

@@ -39,10 +39,11 @@ export default function TermsOfUsePage() {
           <section>
             <h2 className="text-2xl font-semibold mb-3">3. Plans Presented</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Health plans presented through this Site are ACA-compliant individual major medical insurance plans,
-              purchased off-exchange (without federal premium tax credits or cost-sharing reductions). Plan
-              availability, premiums, deductibles, and benefit design vary by carrier, household composition, age,
-              tobacco use, state, and underwriting. Final plan terms are determined by the issuing carrier.
+              Health plans presented through this Site are private health insurance products available off-exchange
+              (purchased directly through licensed independent insurance agents, without federal premium tax credits
+              or cost-sharing reductions). Plan availability, premiums, deductibles, and benefit design vary by
+              carrier, household composition, age, tobacco use, state, and underwriting. Final plan terms are
+              determined by the issuing carrier.
             </p>
           </section>
 

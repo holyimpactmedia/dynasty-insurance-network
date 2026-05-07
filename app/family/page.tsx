@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
-import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -215,6 +214,7 @@ export default function FamilyQuizPage() {
           lastName: answers.lastName,
           email: answers.email,
           phone: answers.phone,
+          age: answers.primaryAge,
           state: answers.state,
           incomeRange: answers.income,
           tcpaConsent: answers.tcpaConsent,
@@ -226,6 +226,8 @@ export default function FamilyQuizPage() {
             priority: answers.priority,
             currentCoverage: answers.currentCoverage,
             income: answers.income,
+            healthScreen: answers.healthScreen,
+            govCoverage: answers.govCoverage,
           },
           utmSource: urlParams.get("utm_source"),
           utmMedium: urlParams.get("utm_medium"),
@@ -544,11 +546,6 @@ export default function FamilyQuizPage() {
                       </div>
                     ))}
                   </div>
-                </section>
-
-                {/* Product Disclosure */}
-                <section className="py-8 px-6 bg-background">
-                  <ProductDisclosure />
                 </section>
 
                 {/* Problem Agitation */}
@@ -930,16 +927,45 @@ export default function FamilyQuizPage() {
                     )}
                   </div>
 
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-foreground">
+                      Is anyone on the plan currently enrolled in Medicaid or Medicare?
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {["No", "Yes"].map((opt) => (
+                        <Card
+                          key={opt}
+                          className={`p-4 cursor-pointer border-2 text-center font-semibold transition-all ${
+                            answers.govCoverage === opt
+                              ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                              : "border-border hover:border-[#D4AF37]"
+                          }`}
+                          onClick={() => updateAnswer("govCoverage", opt)}
+                        >
+                          {opt}
+                        </Card>
+                      ))}
+                    </div>
+                    {answers.govCoverage === "Yes" && (
+                      <Card className="p-4 bg-blue-50 border-blue-200">
+                        <p className="text-sm text-blue-700">
+                          Our private PPO plans are designed for households not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through every option you have on your call.
+                        </p>
+                      </Card>
+                    )}
+                  </div>
+
                   <Button
                     onClick={() => {
                       const age = Number.parseInt(answers.primaryAge)
-                      if (age >= 18 && age <= 63 && answers.healthScreen) nextStep()
+                      if (age >= 18 && age <= 63 && answers.healthScreen && answers.govCoverage) nextStep()
                     }}
                     disabled={
                       !answers.primaryAge ||
                       Number.parseInt(answers.primaryAge) >= 64 ||
                       Number.parseInt(answers.primaryAge) < 18 ||
-                      !answers.healthScreen
+                      !answers.healthScreen ||
+                      !answers.govCoverage
                     }
                     className="w-full h-12 bg-[#0A1128] text-white hover:bg-[#0A1128]/90"
                   >

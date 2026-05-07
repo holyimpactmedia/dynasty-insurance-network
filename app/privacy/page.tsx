@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-muted-foreground leading-relaxed mb-2">We use the information we collect to:</p>
             <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
               <li>Connect you with licensed insurance agents who can present coverage options</li>
-              <li>Provide private major medical PPO plan recommendations</li>
+              <li>Provide private health insurance plan recommendations</li>
               <li>Communicate with you about insurance products and follow up on your inquiry</li>
               <li>Respond to your inquiries and provide customer support</li>
               <li>Improve the Site and our services</li>

@@ -102,7 +102,7 @@ export function Footer() {
             agency and is not affiliated with or endorsed by any government entity, Healthcare.gov, the Health
             Insurance Marketplace, or the Centers for Medicare &amp; Medicaid Services. Holy Impact Media connects
             consumers with Dynasty Insurance Group and its licensed agents. We may receive compensation for leads
-            provided. All plans presented are ACA-compliant individual major medical insurance, sold off-exchange.
+            provided.
           </p>
         </div>
       </div>

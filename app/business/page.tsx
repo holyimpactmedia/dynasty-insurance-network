@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
-import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -481,11 +480,6 @@ export default function BusinessPage() {
                       </div>
                     ))}
                   </div>
-                </section>
-
-                {/* Product Disclosure */}
-                <section className="py-8 px-6 bg-background">
-                  <ProductDisclosure />
                 </section>
 
                 {/* Problem Agitation */}

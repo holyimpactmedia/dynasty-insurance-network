@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
-import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -246,6 +245,10 @@ export default function HealthcareQuizPage() {
           priorities: answers.priorities,
           tcpaConsent: answers.tcpaConsent,
           trustedFormCertUrl,
+          quizAnswers: {
+            healthScreen: answers.healthScreen,
+            govCoverage: answers.govCoverage,
+          },
           utmSource: urlParams.get('utm_source'),
           utmMedium: urlParams.get('utm_medium'),
           utmCampaign: urlParams.get('utm_campaign'),
@@ -760,11 +763,6 @@ export default function HealthcareQuizPage() {
                       </div>
                     </section>
 
-                    {/* Product Disclosure */}
-                    <section className="py-8 px-6 bg-background">
-                      <ProductDisclosure />
-                    </section>
-
                     {/* Problem Agitation */}
                     <section className="py-16 px-6 bg-background">
                       <div className="max-w-4xl mx-auto space-y-12">
@@ -1162,10 +1160,41 @@ export default function HealthcareQuizPage() {
                         )}
                       </div>
 
+                      <div className="space-y-3">
+                        <label className="text-sm font-semibold text-foreground">
+                          Are you currently enrolled in Medicaid or Medicare?
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {["No", "Yes"].map((opt) => (
+                            <Card
+                              key={opt}
+                              className={`p-4 cursor-pointer border-2 text-center font-semibold transition-all ${
+                                answers.govCoverage === opt
+                                  ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                                  : "border-border hover:border-[#D4AF37]"
+                              }`}
+                              onClick={() => updateAnswer("govCoverage", opt)}
+                            >
+                              {opt}
+                            </Card>
+                          ))}
+                        </div>
+                        {answers.govCoverage === "Yes" && (
+                          <Card className="p-4 bg-blue-50 border-blue-200">
+                            <div className="flex items-start gap-3">
+                              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <p className="text-sm text-blue-700">
+                                Our private PPO plans are designed for adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through every option you have on your call.
+                              </p>
+                            </div>
+                          </Card>
+                        )}
+                      </div>
+
                       <Button
                         onClick={() => {
                           const age = Number.parseInt(answers.age)
-                          if (age >= 18 && age <= 63 && answers.healthScreen) {
+                          if (age >= 18 && age <= 63 && answers.healthScreen && answers.govCoverage) {
                             nextStep()
                           } else if (!age) {
                             setErrors({ ...errors, age: "Please enter your age" })
@@ -1175,7 +1204,8 @@ export default function HealthcareQuizPage() {
                           !answers.age ||
                           Number.parseInt(answers.age) >= 64 ||
                           Number.parseInt(answers.age) < 18 ||
-                          !answers.healthScreen
+                          !answers.healthScreen ||
+                          !answers.govCoverage
                         }
                         className="w-full h-12 bg-[#0A1128] text-white hover:bg-[#0A1128]/90"
                       >
