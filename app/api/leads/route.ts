@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown'
 
     const tcpaConsentAt = new Date().toISOString()
-    const resolvedFunnelType = funnelType || 'healthcare_aca'
+    const resolvedFunnelType = funnelType || 'private_health'
 
     // Try to insert the lead. If Supabase is unavailable or the insert fails,
     // we still proceed with downstream notifications and return success to the

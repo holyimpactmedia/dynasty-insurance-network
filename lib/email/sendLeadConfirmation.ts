@@ -21,6 +21,15 @@ export async function sendLeadConfirmation({
   const resend = new Resend(process.env.RESEND_API_KEY)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@holyimpactmedia.com'
 
+  // CAN-SPAM compliance: unsubscribe mechanism + physical postal address.
+  // Override these via env vars when the registered business address is set.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dynastyinsurancegroup.com'
+  const siteHost = siteUrl.replace(/^https?:\/\//, '')
+  const unsubscribeUrl = `${siteUrl}/api/unsubscribe?email=${encodeURIComponent(email)}`
+  const unsubscribeMailto = process.env.UNSUBSCRIBE_EMAIL || 'unsubscribe@holyimpactmedia.com'
+  const physicalAddress = process.env.HOLY_IMPACT_MAILING_ADDRESS
+    || 'Holy Impact Media, LLC, [Mailing Address On File] &mdash; contact privacy@holyimpactmedia.com for our registered postal address'
+
   const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -48,7 +57,7 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                You recently requested health insurance information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 2 hours at the phone number or email you provided.
+                You recently requested health insurance information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->
@@ -114,11 +123,22 @@ export async function sendLeadConfirmation({
             </td>
           </tr>
           
-          <!-- Footer -->
+          <!-- CAN-SPAM Footer -->
           <tr>
             <td style="background-color: #f8f9fa; padding: 24px 32px; border-top: 1px solid #eeeeee;">
-              <p style="margin: 0; color: #999999; font-size: 12px; line-height: 1.5; text-align: center;">
-                Holy Impact Media, LLC &mdash; Marketing &amp; Lead Generation Services | This email was sent because you submitted a request at our website.
+              <p style="margin: 0 0 10px 0; color: #666666; font-size: 12px; line-height: 1.5; text-align: center;">
+                <strong>Holy Impact Media, LLC</strong> &mdash; Marketing &amp; Lead Generation Services<br />
+                ${physicalAddress}
+              </p>
+              <p style="margin: 0 0 8px 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">
+                You received this email because you submitted a request for health insurance information at our website. We are not affiliated with any government entity, Healthcare.gov, or CMS.
+              </p>
+              <p style="margin: 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">
+                <a href="${unsubscribeUrl}" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
+                &nbsp;&middot;&nbsp;
+                <a href="mailto:${unsubscribeMailto}" style="color: #666666; text-decoration: underline;">Unsubscribe by email</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://${siteHost}/privacy" style="color: #666666; text-decoration: underline;">Privacy</a>
               </p>
             </td>
           </tr>
@@ -136,6 +156,11 @@ export async function sendLeadConfirmation({
       to: email,
       subject: `Your Coverage Options Are Being Prepared, ${firstName}`,
       html: htmlContent,
+      headers: {
+        // RFC 8058 one-click unsubscribe + RFC 2369 mailto fallback
+        'List-Unsubscribe': `<${unsubscribeUrl}>, <mailto:${unsubscribeMailto}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
     })
 
     if (error) {

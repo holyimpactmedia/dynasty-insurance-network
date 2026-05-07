@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+const HOLY_IMPACT_ADDRESS = process.env.NEXT_PUBLIC_HOLY_IMPACT_ADDRESS
+
 export function Footer() {
   return (
     <footer className="bg-[#0A1128] text-white mt-auto">
@@ -91,12 +93,16 @@ export function Footer() {
           <p className="mb-2">
             &copy; 2026 Holy Impact Media, LLC. All rights reserved.
           </p>
+          {HOLY_IMPACT_ADDRESS && (
+            <p className="text-xs text-gray-500 mb-2">{HOLY_IMPACT_ADDRESS}</p>
+          )}
           <p className="text-xs max-w-3xl mx-auto">
             This website is operated by Holy Impact Media, LLC, a marketing company and lead generation service.
             Holy Impact Media is not an insurance agency. Dynasty Insurance Group is an independent licensed insurance
-            agency and is not affiliated with or endorsed by any government entity, Healthcare.gov, or the Centers for
-            Medicare &amp; Medicaid Services. Holy Impact Media connects consumers with Dynasty Insurance Group and its
-            licensed agents. We may receive compensation for leads provided.
+            agency and is not affiliated with or endorsed by any government entity, Healthcare.gov, the Health
+            Insurance Marketplace, or the Centers for Medicare &amp; Medicaid Services. Holy Impact Media connects
+            consumers with Dynasty Insurance Group and its licensed agents. We may receive compensation for leads
+            provided. All plans presented are ACA-compliant individual major medical insurance, sold off-exchange.
           </p>
         </div>
       </div>

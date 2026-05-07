@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -64,8 +65,8 @@ const INDIV_PROBLEMS = [
 const INDIV_ADVANTAGES = [
   "Private PPO plans designed for healthy adults who want real choice",
   "Keep your doctors. See any specialist. No referrals required.",
-  "Trusted carrier networks: Blue Cross, Cigna, Aetna, United Healthcare",
-  "Coverage that travels with you across all 50 states",
+  "Major carrier networks accepted, depending on availability in your state",
+  "Nationwide PPO networks accepted at hospitals and physicians across the country",
   "Lower premiums than COBRA and broader networks than narrow-network plans",
   "A licensed specialist who walks you through every private-market option you have",
 ]
@@ -84,13 +85,6 @@ export default function HealthcareQuizPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null)
-  const [daysUntilDeadline] = useState(() => {
-    const deadline = new Date("2026-01-15")
-    const today = new Date()
-    const diffTime = deadline.getTime() - today.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return Math.max(0, diffDays)
-  })
 
   // LocalStorage persistence
   useEffect(() => {
@@ -281,33 +275,6 @@ export default function HealthcareQuizPage() {
 
   const filteredStates = US_STATES.filter((state) => state.toLowerCase().includes(stateSearch.toLowerCase()))
 
-  const calculateHealthcareRate = () => {
-    let baseRate = 450 // Average private PPO rate
-
-    // Age adjustments (healthcare is heavily age-dependent)
-    const age = Number.parseInt(answers.age) || 30
-    if (age >= 18 && age <= 29) baseRate = 250
-    else if (age >= 30 && age <= 39) baseRate = 300
-    else if (age >= 40 && age <= 49) baseRate = 400
-    else if (age >= 50 && age <= 59) baseRate = 650
-    else if (age >= 60 && age <= 64) baseRate = 850
-
-    // Household size multiplier
-    const householdMultiplier =
-      {
-        "Just me": 1,
-        "Me + spouse": 2,
-        "Me + children": 1.8,
-        "Family (3+ people)": 2.5,
-      }[answers.householdSize] || 1
-
-    baseRate *= householdMultiplier
-
-    return {
-      fullPrice: Math.round(baseRate),
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full py-4 px-6 flex items-center justify-center border-b bg-primary">
@@ -364,7 +331,6 @@ export default function HealthcareQuizPage() {
           >
             {showThankYou ? (
               (() => {
-                const rates = calculateHealthcareRate()
                 return (
                   <div className="space-y-8 pb-12">
                     {/* Hero Section */}
@@ -794,6 +760,11 @@ export default function HealthcareQuizPage() {
                       </div>
                     </section>
 
+                    {/* Product Disclosure */}
+                    <section className="py-8 px-6 bg-background">
+                      <ProductDisclosure />
+                    </section>
+
                     {/* Problem Agitation */}
                     <section className="py-16 px-6 bg-background">
                       <div className="max-w-4xl mx-auto space-y-12">
@@ -941,7 +912,7 @@ export default function HealthcareQuizPage() {
                             { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                             { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We're compensated by the carriers." },
                             { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                            { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                            { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                           ].map((item, i) => (
                             <div key={i} className="flex items-start gap-4">
                               <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">
@@ -1314,7 +1285,7 @@ export default function HealthcareQuizPage() {
                         {
                           label: "Coverage that travels with me",
                           icon: Globe,
-                          desc: "Nationwide and international care across all 50 states",
+                          desc: "Nationwide PPO networks accepted at hospitals and physicians across the country",
                         },
                         {
                           label: "Prescription coverage",
@@ -1481,24 +1452,6 @@ export default function HealthcareQuizPage() {
                         </div>
                       </div>
 
-                      <Card className="p-4 bg-muted/50">
-                        <div className="flex items-start gap-3">
-                          <input
-                            type="checkbox"
-                            id="tcpaConsent"
-                            checked={answers.tcpaConsent || false}
-                            onChange={(e) => updateAnswer("tcpaConsent", e.target.checked)}
-                            className="mt-1 w-5 h-5 rounded border-gray-300 flex-shrink-0"
-                          />
-                          <label htmlFor="tcpaConsent" className="text-sm text-muted-foreground leading-relaxed">
-                            I agree to receive my personalized healthcare rates. If I provided a phone number, I consent
-                            to be contacted by licensed insurance agents via phone, email, or text. I understand I can
-                            opt out anytime by replying STOP.
-                          </label>
-                        </div>
-                        {errors.tcpaConsent && <p className="text-sm text-red-500 mt-2">{errors.tcpaConsent}</p>}
-                      </Card>
-
                       {submitError && (
                         <div className="text-sm text-red-500 bg-red-50 p-3 rounded-lg mt-4">
                           {submitError}
@@ -1506,18 +1459,16 @@ export default function HealthcareQuizPage() {
                       )}
 
                       <Button
-                        onClick={() => {
-                          if (!answers.tcpaConsent) {
-                            setErrors({ tcpaConsent: "Please consent to receive your rates" })
-                            return
-                          }
-                          handleNameSubmit()
-                        }}
+                        onClick={handleNameSubmit}
                         disabled={isSubmitting}
                         className="w-full h-12 bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90 mt-6 disabled:opacity-50"
                       >
-                        {isSubmitting ? "Submitting..." : "Get My Healthcare Rates"}
+                        {isSubmitting ? "Submitting..." : "Match Me With a Licensed Specialist"}
                       </Button>
+                      <p className="text-xs text-muted-foreground text-center">
+                        Your specialist will walk you through real plan options on your call. Final premiums are quoted
+                        by the carrier.
+                      </p>
                     </div>
                   </div>
                 )}

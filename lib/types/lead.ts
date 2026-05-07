@@ -58,12 +58,18 @@ export type LeadListItem = Pick<
 >
 
 export const FUNNEL_LABELS: Record<string, string> = {
-  healthcare_aca: 'ACA / Individual',
+  private_health: 'Individual',
+  individual: 'Individual',
+  // Legacy keys retained for historical lead rows written before the rename
+  healthcare_aca: 'Individual',
+  healthcare: 'Individual',
+  aca: 'Individual',
   family: 'Family',
   cobra: 'COBRA',
   self_employed: 'Self-Employed',
   ppo: 'PPO',
   business: 'Small Business',
+  small_business: 'Small Business',
 }
 
 export const STATUS_LABELS: Record<string, string> = {

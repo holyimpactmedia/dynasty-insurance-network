@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -60,11 +61,11 @@ const SE_PROBLEMS = [
 
 const SE_ADVANTAGES = [
   "Private PPO plans with nationwide coverage for mobile entrepreneurs",
-  "100% of premiums may be tax deductible as a business expense",
-  "HSA-eligible plans let you save pre-tax dollars for medical costs",
+  "May qualify for the federal self-employed health insurance deduction (IRC §162(l)) up to net self-employment income — talk to your CPA",
+  "HSA-eligible options when paired with a qualifying high-deductible plan",
   "See any doctor or specialist without referrals or waiting",
   "Flexible enrollment options for business owners and contractors",
-  "Plans tailored to high earners who need premium coverage",
+  "Plans tailored to working entrepreneurs who want real PPO coverage",
 ]
 
 const US_STATES = SERVICED_STATES
@@ -468,7 +469,7 @@ export default function SelfEmployedPage() {
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
                       { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO Networks" },
-                      { icon: <FileText className="w-4 h-4 flex-shrink-0" />, text: "100% Tax Deductible Premiums" },
+                      { icon: <FileText className="w-4 h-4 flex-shrink-0" />, text: "Self-employed health-insurance deduction" },
                       { icon: <PiggyBank className="w-4 h-4 flex-shrink-0" />, text: "HSA-Eligible Plans Available" },
                       { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No Referrals Required" },
                     ].map((item, i) => (
@@ -478,6 +479,11 @@ export default function SelfEmployedPage() {
                       </div>
                     ))}
                   </div>
+                </section>
+
+                {/* Product Disclosure */}
+                <section className="py-8 px-6 bg-background">
+                  <ProductDisclosure />
                 </section>
 
                 {/* Problem Agitation */}
@@ -627,7 +633,7 @@ export default function SelfEmployedPage() {
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">

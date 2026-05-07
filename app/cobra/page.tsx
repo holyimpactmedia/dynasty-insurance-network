@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -49,12 +50,12 @@ const COVERAGE_ITEMS = [
 ]
 
 const COBRA_PROBLEMS = [
-  "Costs 102% of your full premium, employer share plus yours",
-  "Locked into your old employer's narrow network with no flexibility",
-  "Must pay in full each month or lose coverage immediately",
-  "Coverage expires after 18 months with no extension",
-  "No flexibility. Same plan even if it no longer fits your needs.",
-  "Premiums can increase annually with zero notice",
+  "Costs up to 102% of your full premium — your former employer's share plus yours",
+  "Locked into your old employer's plan and network with no flexibility",
+  "Must pay in full each billing cycle or lose coverage with limited grace",
+  "Standard COBRA expires after 18 months (some qualifying events extend to 29 or 36 months)",
+  "Same plan even if it no longer fits your life or budget",
+  "Premiums can increase as the underlying group plan rates change at renewal",
 ]
 
 const ALTERNATIVE_ADVANTAGES = [
@@ -484,8 +485,8 @@ export default function COBRAQuizPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Avg COBRA premium: $850/month" },
-                      { icon: <TrendingDown className="w-4 h-4 flex-shrink-0" />, text: "Save 40-60% vs COBRA" },
+                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "COBRA: hundreds to thousands/mo" },
+                      { icon: <TrendingDown className="w-4 h-4 flex-shrink-0" />, text: "Most clients save 30-50%" },
                       { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO Networks" },
                       { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No Referrals Required" },
                     ].map((item, i) => (
@@ -495,6 +496,11 @@ export default function COBRAQuizPage() {
                       </div>
                     ))}
                   </div>
+                </section>
+
+                {/* Product Disclosure */}
+                <section className="py-8 px-6 bg-background">
+                  <ProductDisclosure />
                 </section>
 
                 {/* Problem Agitation */}
@@ -644,7 +650,7 @@ export default function COBRAQuizPage() {
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">

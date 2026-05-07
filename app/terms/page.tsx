@@ -11,49 +11,65 @@ export default function TermsOfUsePage() {
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold text-foreground mb-4">Terms of Use</h1>
-        <p className="text-sm text-muted-foreground mb-8">Last Updated: February 23, 2026</p>
+        <p className="text-sm text-muted-foreground mb-8">Last Updated: May 7, 2026</p>
 
         <div className="prose prose-sm max-w-none space-y-6 text-foreground">
           <section>
             <h2 className="text-2xl font-semibold mb-3">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By accessing and using this website (the "Site") operated by Holy Impact Media, LLC, you accept and agree to be bound by
-              the terms and provision of this agreement. If you do not agree to abide by the above, please do not use
-              this service.
+              By accessing and using this website (the &ldquo;Site&rdquo;), you accept and agree to be bound by these Terms of Use
+              (&ldquo;Terms&rdquo;). The Site is owned and operated by Holy Impact Media, LLC (&ldquo;Holy Impact Media,&rdquo; &ldquo;we,&rdquo;
+              &ldquo;us,&rdquo; or &ldquo;our&rdquo;), a marketing and lead-generation company. If you do not agree to these Terms, do not use
+              the Site.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold mb-3">2. Nature of Service</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Dynasty Insurance Group is a team of licensed insurance agents and is not affiliated with, endorsed by, or
-              representing any government entity, Healthcare.gov, or the Centers for Medicare &amp; Medicaid Services (CMS).
-              Our licensed agents help consumers evaluate and enroll in health insurance plans available in their state.
+              Holy Impact Media operates this Site to connect consumers with licensed independent insurance agents,
+              including Dynasty Insurance Group. Holy Impact Media is not an insurance agency, broker, or carrier and
+              does not provide insurance advice or sell insurance products. Dynasty Insurance Group is an independent
+              licensed insurance agency. Neither Holy Impact Media nor Dynasty Insurance Group is affiliated with,
+              endorsed by, or representing any government entity, Healthcare.gov, the Health Insurance Marketplace, or
+              the Centers for Medicare &amp; Medicaid Services (CMS).
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">3. No Guarantee of Rates</h2>
+            <h2 className="text-2xl font-semibold mb-3">3. Plans Presented</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Any rate estimates or plan illustrations provided on this Site are estimates only and are not guarantees
-              of actual rates. Final premium rates and plan availability are determined by insurance carriers based on
-              verified information including but not limited to age, location, household size, tobacco use,
-              underwriting, and plan selection.
+              Health plans presented through this Site are ACA-compliant individual major medical insurance plans,
+              purchased off-exchange (without federal premium tax credits or cost-sharing reductions). Plan
+              availability, premiums, deductibles, and benefit design vary by carrier, household composition, age,
+              tobacco use, state, and underwriting. Final plan terms are determined by the issuing carrier.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">4. Agent Compensation</h2>
+            <h2 className="text-2xl font-semibold mb-3">4. No Guarantee of Rates or Coverage</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Dynasty and its licensed insurance agents may receive compensation from insurance carriers for policies
-              sold. This compensation does not affect the premium rates you pay, which are set by the insurance
-              carriers. Our agents are licensed to sell insurance products in the states where they operate.
+              Any rate estimates, savings illustrations, or plan examples on the Site are illustrative only and are not
+              guarantees of actual premiums, savings, or eligibility. Final premiums and plan availability are
+              determined by carriers based on verified information including age, location, household size, tobacco
+              use, underwriting, and plan selection. Past savings cited in testimonials reflect those individuals&apos;
+              outcomes and are not a promise of comparable results for any other consumer.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">5. Use of Site and Eligibility</h2>
-            <p className="text-muted-foreground leading-relaxed mb-2">By using this Site, you represent and warrant that:</p>
+            <h2 className="text-2xl font-semibold mb-3">5. Agent Compensation</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Holy Impact Media may receive compensation when leads we generate enroll in coverage with a licensed
+              insurance partner, including Dynasty Insurance Group. Licensed agents may receive commissions or other
+              compensation from insurance carriers for policies sold. This compensation does not affect the premium
+              rates you pay, which are set by the carriers.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-3">6. Use of Site and Eligibility</h2>
+            <p className="text-muted-foreground leading-relaxed mb-2">By using the Site, you represent and warrant that:</p>
             <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
               <li>You are at least 18 years of age</li>
               <li>You have the legal capacity to enter into binding contracts</li>
@@ -64,120 +80,173 @@ export default function TermsOfUsePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">6. Information Accuracy</h2>
+            <h2 className="text-2xl font-semibold mb-3">7. Information Accuracy</h2>
             <p className="text-muted-foreground leading-relaxed">
-              You agree to provide accurate, current, and complete information when submitting forms or providing
-              information through the Site. Providing false or misleading information may affect your eligibility for
-              insurance coverage and could result in legal consequences.
+              You agree to provide accurate, current, and complete information when submitting forms. Providing false
+              or misleading information may affect your eligibility for insurance coverage and could carry legal
+              consequences with the carrier.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">7. Third-Party Links and Services</h2>
+            <h2 className="text-2xl font-semibold mb-3">8. Third-Party Links and Services</h2>
             <p className="text-muted-foreground leading-relaxed">
-              This Site may contain links to third-party websites or services that are not owned or controlled by
-              Dynasty. We have no control over, and assume no responsibility for, the content, privacy policies, or
-              practices of any third-party websites or services. You acknowledge and agree that Dynasty shall not be
-              responsible or liable for any damage or loss caused by your use of any third-party content, goods, or
-              services.
+              The Site may contain links to third-party websites or services that Holy Impact Media does not own or
+              control. We have no responsibility for the content, privacy practices, or services of those third
+              parties. You access them at your own risk.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">8. Intellectual Property</h2>
+            <h2 className="text-2xl font-semibold mb-3">9. Intellectual Property</h2>
             <p className="text-muted-foreground leading-relaxed">
-              The Site and its original content, features, and functionality are owned by Dynasty and are protected by
-              international copyright, trademark, patent, trade secret, and other intellectual property laws. You may
-              not reproduce, distribute, modify, or create derivative works of any content from the Site without express
-              written permission.
+              The Site and its original content, features, and functionality are owned by Holy Impact Media and are
+              protected by United States copyright, trademark, and other intellectual property laws. You may not
+              reproduce, distribute, modify, or create derivative works of any content from the Site without our
+              express prior written permission.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">9. Disclaimer of Warranties</h2>
+            <h2 className="text-2xl font-semibold mb-3">10. Disclaimer of Warranties</h2>
             <p className="text-muted-foreground leading-relaxed">
-              THE SITE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. DYNASTY MAKES NO REPRESENTATIONS OR
-              WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, AS TO THE OPERATION OF THE SITE OR THE INFORMATION, CONTENT,
-              OR MATERIALS INCLUDED ON THE SITE. YOU EXPRESSLY AGREE THAT YOUR USE OF THE SITE IS AT YOUR SOLE RISK.
-              DYNASTY DOES NOT WARRANT THAT THE SITE WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE.
+              THE SITE IS PROVIDED ON AN &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; BASIS. HOLY IMPACT MEDIA AND ITS LICENSED
+              INSURANCE PARTNERS MAKE NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, AS TO THE
+              OPERATION OF THE SITE OR THE INFORMATION, CONTENT, OR MATERIALS INCLUDED ON IT. YOUR USE OF THE SITE IS
+              AT YOUR SOLE RISK. WE DO NOT WARRANT THAT THE SITE WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">10. Limitation of Liability</h2>
+            <h2 className="text-2xl font-semibold mb-3">11. Limitation of Liability</h2>
             <p className="text-muted-foreground leading-relaxed">
-              TO THE FULLEST EXTENT PERMITTED BY LAW, DYNASTY SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
-              CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR
-              INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE
-              SITE.
+              TO THE FULLEST EXTENT PERMITTED BY LAW, HOLY IMPACT MEDIA, ITS AFFILIATES, AND ITS LICENSED INSURANCE
+              PARTNERS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES,
+              OR ANY LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE
+              SITE OR INTERACTIONS WITH PARTNERS WE INTRODUCE YOU TO. OUR AGGREGATE LIABILITY SHALL NOT EXCEED THE
+              GREATER OF $100 OR AMOUNTS YOU PAID US IN THE PRIOR 12 MONTHS (WHICH IS TYPICALLY ZERO, AS THE SITE IS
+              FREE TO USE).
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">11. Indemnification</h2>
+            <h2 className="text-2xl font-semibold mb-3">12. Indemnification</h2>
             <p className="text-muted-foreground leading-relaxed">
-              You agree to indemnify, defend, and hold harmless Dynasty, its officers, directors, employees, agents, and
-              affiliates from any claims, liabilities, damages, losses, or expenses, including reasonable attorneys'
-              fees, arising out of or in any way connected with your access to or use of the Site or your violation of
-              these Terms.
+              You agree to indemnify, defend, and hold harmless Holy Impact Media, its officers, directors, employees,
+              agents, affiliates, and licensed insurance partners from any claims, liabilities, damages, losses, or
+              expenses, including reasonable attorneys&apos; fees, arising out of or connected with your access to or use
+              of the Site, your violation of these Terms, or your violation of any third-party right.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">12. TCPA Compliance</h2>
+            <h2 className="text-2xl font-semibold mb-3">13. Communications Consent (TCPA &amp; State Laws)</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By providing your phone number and agreeing to our terms, you consent to receive calls, text messages, and
-              communications from Holy Impact Media and its licensed insurance partners, including Dynasty Insurance
-              Group. Reply STOP to opt out of SMS at any time.
+              By submitting your contact information through the Site and checking the consent box on a quiz form, you
+              provide express written consent under the Telephone Consumer Protection Act (TCPA), the Florida
+              Telephone Solicitation Act (FTSA), and any other applicable state telemarketing laws to be contacted by
+              Holy Impact Media and its licensed insurance partners (including Dynasty Insurance Group) by phone
+              calls, text messages (including via autodialer or prerecorded message), and email regarding health
+              insurance options. Consent is not required as a condition of any purchase. You may revoke consent at any
+              time by replying STOP to a text, replying STOP or unsubscribing from email, or emailing
+              privacy@holyimpactmedia.com to be added to our internal Do-Not-Call list. We honor the National Do Not
+              Call Registry as required by law.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">13. Modifications to Terms</h2>
+            <h2 className="text-2xl font-semibold mb-3">14. Modifications to Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Dynasty reserves the right to modify or replace these Terms at any time at our sole discretion. If a
-              revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
-              Continued use of the Site after changes constitutes acceptance of the modified Terms.
+              Holy Impact Media may modify these Terms at any time. If a revision is material, we will provide at
+              least 30 days&apos; notice prior to the new Terms taking effect, by posting the updated Terms with a new
+              &ldquo;Last Updated&rdquo; date. Continued use of the Site after changes constitutes acceptance of the modified
+              Terms.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">14. Governing Law and Dispute Resolution</h2>
+            <h2 className="text-2xl font-semibold mb-3">15. Governing Law</h2>
             <p className="text-muted-foreground leading-relaxed">
-              These Terms shall be governed by and construed in accordance with the laws of the United States and the
-              state in which Dynasty operates, without regard to its conflict of law provisions. Any disputes arising
-              from these Terms or your use of the Site shall be resolved through binding arbitration in accordance with
-              the rules of the American Arbitration Association.
+              These Terms are governed by and construed in accordance with the laws of the State of Florida, without
+              regard to its conflict-of-law principles. Subject to Section 16 (Arbitration), the state and federal
+              courts located in Florida shall have exclusive jurisdiction over any disputes not subject to
+              arbitration.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">15. Severability</h2>
+            <h2 className="text-2xl font-semibold mb-3">16. Binding Arbitration &amp; Class Action Waiver</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">PLEASE READ CAREFULLY. THIS SECTION AFFECTS YOUR LEGAL RIGHTS.</strong>
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">Arbitration.</strong> You and Holy Impact Media agree that any
+              dispute, claim, or controversy arising out of or relating to these Terms, the Site, or your use of the
+              Site will be resolved by binding individual arbitration administered by the American Arbitration
+              Association (AAA) under its Consumer Arbitration Rules, or by JAMS under its Streamlined Arbitration
+              Rules &amp; Procedures (your choice). The arbitration will be conducted in the State of Florida (or, at
+              your election, by phone or video). Judgment on the award may be entered in any court having
+              jurisdiction. The Federal Arbitration Act governs the interpretation and enforcement of this Section.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">Class Action Waiver.</strong> You and Holy Impact Media each agree
+              that disputes will be resolved only on an individual basis and not as a plaintiff or class member in any
+              purported class, collective, consolidated, or representative proceeding. The arbitrator may not
+              consolidate more than one person&apos;s claims and may not preside over any form of class proceeding. If
+              this class-action waiver is found unenforceable, the rest of this Section 16 (the agreement to
+              arbitrate) is also unenforceable, and any claims will be heard by a court under Section 15.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">Mass-Arbitration Procedures.</strong> If 25 or more substantially
+              similar individual arbitration demands are filed against Holy Impact Media within a 60-day period and
+              represented by the same counsel or coordinated counsel, the parties agree those demands will be batched
+              and resolved under AAA&apos;s Mass Arbitration Supplementary Rules.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">Carve-Outs.</strong> Either party may bring (i) an individual action
+              in small-claims court for any claim within that court&apos;s jurisdiction, (ii) an action seeking only
+              injunctive or equitable relief to protect intellectual property, and (iii) any claim that cannot
+              lawfully be subject to a pre-dispute arbitration agreement (including, where applicable, certain
+              consumer-protection claims).
+            </p>
             <p className="text-muted-foreground leading-relaxed">
-              If any provision of these Terms is held to be invalid or unenforceable, such provision shall be struck and
-              the remaining provisions shall remain in full force and effect.
+              <strong className="text-foreground">30-Day Right to Reject.</strong> You may reject this arbitration
+              section by emailing <a href="mailto:legal@holyimpactmedia.com" className="text-[#D4AF37] underline">legal@holyimpactmedia.com</a>{" "}
+              with the subject &ldquo;Arbitration Opt-Out&rdquo; within 30 days of first using the Site. Your rejection
+              will not affect any other portion of these Terms.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3">16. Contact Information</h2>
+            <h2 className="text-2xl font-semibold mb-3">17. Severability</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you have any questions about these Terms of Use, please contact us at:
+              If any provision of these Terms is held invalid or unenforceable, that provision shall be struck and the
+              remaining provisions shall remain in full force and effect, except as expressly provided in Section 16
+              regarding the class-action waiver.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-3">18. Relationship to Insurance Partners</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Holy Impact Media, LLC is a marketing and lead-generation company, not a licensed insurance agency.
+              Dynasty Insurance Group is an independent licensed insurance agency that purchases qualified leads from
+              Holy Impact Media and contacts consumers regarding insurance coverage options. Holy Impact Media does
+              not provide insurance advice or sell insurance products. Holy Impact Media has no ownership interest in
+              Dynasty Insurance Group, and Dynasty Insurance Group has no ownership interest in Holy Impact Media.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-3">19. Contact Information</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              For questions about these Terms or to submit notices required under Section 16:
             </p>
             <div className="mt-3 text-muted-foreground">
               <p className="font-medium">Holy Impact Media, LLC</p>
-              <p>Email: legal@holyimpactmedia.com</p>
+              <p>Attn: Legal</p>
+              <p>Email: <a href="mailto:legal@holyimpactmedia.com" className="text-[#D4AF37] underline">legal@holyimpactmedia.com</a></p>
             </div>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold mb-3">17. Relationship to Insurance Partners</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Holy Impact Media, LLC is a marketing and lead generation company, not a licensed insurance agency.
-              Dynasty Insurance Group is an independent licensed insurance agency that purchases leads from Holy Impact
-              Media and contacts consumers regarding insurance coverage options. Holy Impact Media does not provide
-              insurance advice or sell insurance products.
-            </p>
           </section>
         </div>
       </main>

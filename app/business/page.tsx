@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -50,20 +51,20 @@ const BIZ_COVERAGE_ITEMS = [
 ]
 
 const BIZ_PROBLEMS = [
-  "Individual plans cost your team 30–50% more than a small-group plan would",
-  "You can't recruit good people if you don't offer health benefits",
+  "Team members on individual plans often pay more than a group plan would cost per head",
+  "Recruiting and retention suffer when you don't offer benefits",
   "Premiums climb every renewal with no broker actively negotiating for you",
   "Narrow-network plans frustrate your team and make recruiting harder",
-  "Your CPA keeps reminding you about the small business health-insurance tax credit you're not using",
+  "You may be missing the federal Section 45R small-business tax credit",
   "You're stitching together coverage piecemeal instead of one clean plan",
 ]
 
 const BIZ_ADVANTAGES = [
   "Small-group PPO plans built for businesses with 2–50 employees",
-  "Trusted carrier networks: Blue Cross, Cigna, Aetna, and United Healthcare",
-  "Employer-paid premiums are 100% tax deductible as a business expense",
-  "Small Business Health Care Tax Credit covers up to 50% of premiums for qualifying employers",
-  "Retain your team: benefits are the #1 reason employees stay past year two",
+  "Major carrier networks accepted, depending on availability in your state",
+  "Employer-paid premiums are generally tax deductible as a business expense",
+  "Some employers may qualify for up to a 50% federal tax credit (Section 45R, requires SHOP enrollment and other criteria)",
+  "Retain your team: benefits are a top reason employees stay past year two",
   "One licensed benefits specialist handles enrollment, renewal, and compliance",
 ]
 
@@ -338,9 +339,9 @@ export default function BusinessPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       {[
-                        { label: "vs. Individual Plans", value: "30–50%", sub: "lower per person" },
-                        { label: "Tax Credit", value: "Up to 50%", sub: "of employer premiums" },
-                        { label: "Premium Deduction", value: "100%", sub: "business expense" },
+                        { label: "vs. Individual Plans", value: "Often less", sub: "per employee" },
+                        { label: "Tax Credit", value: "Up to 50%", sub: "Section 45R, if eligible" },
+                        { label: "Premium Deduction", value: "100%", sub: "of employer share, generally" },
                       ].map((item, i) => (
                         <div key={i} className="bg-white/10 rounded-xl p-4">
                           <p className="text-xs text-gray-400 mb-1">{item.label}</p>
@@ -443,7 +444,7 @@ export default function BusinessPage() {
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Your team members are buying individual plans that cost 30 to 50% more than a group plan would.",
+                        "Team members buying individual coverage on their own often pay more than a small-group plan would cost per employee.",
                         "Every dollar you spend on group premiums is a deductible business expense.",
                         "Your competitors offer benefits. Do you?",
                       ].map((q, i) => (
@@ -469,10 +470,10 @@ export default function BusinessPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Turnover is 3x higher without benefits" },
-                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Group plans 30–50% cheaper per person" },
-                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Tax credit covers up to 50% of premiums" },
-                      { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "100% of employer premiums are deductible" },
+                      { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "Benefits are a top retention driver" },
+                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Group rates often beat individual" },
+                      { icon: <Award className="w-4 h-4 flex-shrink-0" />, text: "Section 45R credit may apply (qualifications required)" },
+                      { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "Employer-paid premiums generally deductible" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                         {item.icon}
@@ -480,6 +481,11 @@ export default function BusinessPage() {
                       </div>
                     ))}
                   </div>
+                </section>
+
+                {/* Product Disclosure */}
+                <section className="py-8 px-6 bg-background">
+                  <ProductDisclosure />
                 </section>
 
                 {/* Problem Agitation */}
@@ -630,7 +636,7 @@ export default function BusinessPage() {
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A dedicated benefits strategist contacts you within 5 minutes." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">

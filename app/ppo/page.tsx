@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -288,7 +289,7 @@ export default function PPOQuizPage() {
           <section className="bg-[#D4AF37] py-5 px-6">
             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-              { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide networks. All 50 states." },
+              { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO networks accepted" },
               { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No referrals. Ever." },
               { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "Keep your doctors" },
               { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free specialist consultation" },
@@ -299,6 +300,11 @@ export default function PPOQuizPage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* Product Disclosure */}
+          <section className="py-8 px-6 bg-background">
+            <ProductDisclosure />
           </section>
 
           {/* Problem Agitation: HMO Restrictions */}
@@ -450,7 +456,7 @@ export default function PPOQuizPage() {
                   { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                   { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We're compensated by the carriers." },
                   { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 bg-white/5 rounded-xl p-4">
                     <div className="w-10 h-10 bg-[#D4AF37]/20 rounded-lg flex items-center justify-center text-[#D4AF37] flex-shrink-0">
@@ -659,7 +665,7 @@ export default function PPOQuizPage() {
                           { label: "Network", hmo: "Narrow, limited doctors", ppo: "Any doctor, nationwide" },
                           { label: "Referrals", hmo: "Required for specialists", ppo: "Never needed" },
                           { label: "Out-of-Network", hmo: "Not covered", ppo: "Covered (higher cost share)" },
-                          { label: "Deductible", hmo: "Often $5,000–$8,000", ppo: "Often $1,500–$3,500" },
+                          { label: "Deductible", hmo: "Varies by plan tier", ppo: "Varies by plan tier" },
                         ].map((row, i) => (
                           <div key={i} className="bg-white/5 rounded-lg p-3 space-y-2">
                             <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide">{row.label}</p>
@@ -919,7 +925,7 @@ export default function PPOQuizPage() {
                   </div>
                 )}
 
-                {/* Step 7 �� Name */}
+                {/* Step 7 — Name */}
                 {currentStep === 7 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">

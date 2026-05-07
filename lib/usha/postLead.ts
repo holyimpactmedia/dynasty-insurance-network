@@ -35,7 +35,7 @@ export interface UshaLeadPayload {
   utmMedium: string | null
   utmCampaign: string | null
   ipAddress: string | null
-  leadType: string  // e.g. 'aca', 'cobra', 'family'
+  leadType: string  // e.g. 'private_health', 'cobra', 'family', 'ppo', 'self_employed', 'business'
 }
 
 export interface UshaPostResult {

@@ -20,12 +20,18 @@ const PARTNERS = [
 ]
 
 const FUNNEL_LABELS: Record<string, string> = {
-  aca: "Healthcare ACA",
-  healthcare: "Healthcare ACA",
+  // Legacy values retained for historical leads written before the rename.
+  aca: "Individual",
+  healthcare: "Individual",
+  healthcare_aca: "Individual",
+  private_health: "Individual",
+  individual: "Individual",
   cobra: "COBRA",
   family: "Family",
+  ppo: "PPO",
   self_employed: "Self-Employed",
   small_business: "Small Business",
+  business: "Small Business",
 }
 
 export default async function ProjectionsDashboard() {
@@ -106,7 +112,7 @@ export default async function ProjectionsDashboard() {
   // Funnel breakdown
   const funnelMap: Record<string, { leads: number; sold: number }> = {}
   funnelBreakdown.forEach((lead) => {
-    const key = lead.funnel_type || "aca"
+    const key = lead.funnel_type || "private_health"
     if (!funnelMap[key]) funnelMap[key] = { leads: 0, sold: 0 }
     funnelMap[key].leads++
     if (lead.status === "sold") funnelMap[key].sold++

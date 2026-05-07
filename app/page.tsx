@@ -32,7 +32,7 @@ const funnels = [
       "Nationwide PPO networks",
       "No referrals required",
       "Keep your preferred doctors",
-      "Coverage in all 50 states",
+      "Nationwide PPO networks accepted",
     ],
     cta: "Find Individual Plans",
     ctaStyle: "bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90",
@@ -63,14 +63,14 @@ const funnels = [
     tag: "Lost Job Coverage",
     tagColor: "bg-red-100 text-red-700",
     title: "COBRA Alternatives",
-    subtitle: "Save 40-60% vs COBRA",
+    subtitle: "Often less than COBRA",
     description:
-      "Recently lost employer coverage? Most people save 40-60% by switching from COBRA to a private PPO alternative. Check your options in 90 seconds.",
+      "Recently lost employer coverage? Many healthy adults pay less on a private PPO than on COBRA. Check your options in 90 seconds.",
     highlights: [
-      "Average COBRA costs $850+/month",
-      "Private alternatives with better value",
+      "COBRA can run from hundreds to thousands per month",
+      "Private alternatives with better value for healthy adults",
       "Nationwide network coverage",
-      "Flexible enrollment for job loss",
+      "Loss-of-coverage qualifying event for enrollment",
     ],
     cta: "Compare COBRA Alternatives",
     ctaStyle: "bg-red-600 text-white hover:bg-red-700",
@@ -82,12 +82,12 @@ const funnels = [
     tag: "Entrepreneurs & Contractors",
     tagColor: "bg-amber-100 text-amber-700",
     title: "Self-Employed Coverage",
-    subtitle: "100% Tax Deductible",
+    subtitle: "May qualify for tax deduction",
     description:
-      "Entrepreneurs and contractors deserve premium coverage with flexibility. Your premiums may be fully tax deductible with HSA-eligible plans available.",
+      "Entrepreneurs and contractors deserve real coverage with flexibility. Eligible self-employed earners may deduct 100% of premiums up to net self-employment income — your CPA can confirm.",
     highlights: [
-      "100% premium tax deductible",
-      "HSA-eligible options available",
+      "Self-employed health insurance deduction may apply",
+      "HSA-eligible options when paired with a qualifying HDHP",
       "Nationwide PPO networks",
       "See any doctor without referrals",
     ],
@@ -163,7 +163,7 @@ export default function PlansPage() {
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
               Private PPO health insurance plans for healthy adults and families aged <span className="text-[#D4AF37] font-semibold">18 to 63</span>.
-              Keep your doctor, see any specialist, and travel with coverage that works in all 50 states.
+              Keep your doctor, see any specialist, and use nationwide PPO networks accepted at hospitals and physicians across the country.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Concierge Service</span>

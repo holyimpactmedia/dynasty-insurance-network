@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Footer } from "@/components/Footer"
 import { ExitIntentDialog } from "@/components/ExitIntentDialog"
+import { ProductDisclosure } from "@/components/ProductDisclosure"
 import {
   Shield,
   ChevronLeft,
@@ -42,7 +43,7 @@ import {
 const FAMILY_COVERAGE_ITEMS = [
   { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Routine checkups, vaccines, and specialist visits for kids" },
   { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling for all family members" },
-  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "Referrals to any specialist in the network" },
+  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "See any specialist directly, no referrals required" },
   { icon: <Globe className="w-5 h-5" />, label: "Nationwide Network", desc: "Coverage wherever your family travels" },
   { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER visits covered at any hospital" },
   { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on plans available for the whole family" },
@@ -63,7 +64,7 @@ const FAMILY_ADVANTAGES = [
   "Private PPO plans with nationwide coverage for your entire family",
   "Pediatric specialists accessible without referrals or waiting",
   "Keep your family's doctors, including pediatricians and OB-GYNs",
-  "Coverage that travels with you across all 50 states",
+  "Nationwide PPO networks accepted at hospitals and physicians across the country",
   "Comprehensive dental and vision add-ons available",
   "Flexible enrollment options for growing families",
 ]
@@ -545,6 +546,11 @@ export default function FamilyQuizPage() {
                   </div>
                 </section>
 
+                {/* Product Disclosure */}
+                <section className="py-8 px-6 bg-background">
+                  <ProductDisclosure />
+                </section>
+
                 {/* Problem Agitation */}
                 <section className="py-16 px-6 bg-background">
                   <div className="max-w-4xl mx-auto space-y-12">
@@ -679,8 +685,8 @@ export default function FamilyQuizPage() {
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
                         Dynasty Insurance Group finds private PPO family plans that let your kids see their
-                        pediatrician without a referral. Plans where you can travel anywhere and still
-                        be covered. Plans that say yes.
+                        pediatrician without a referral, and that work with nationwide carrier networks so a
+                        family trip never means an out-of-network bill.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
                         One call. No pressure. We handle the comparison work for you.
@@ -691,7 +697,7 @@ export default function FamilyQuizPage() {
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We never sell your information to third parties." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don’t sell your information to advertisers. Your details go only to our licensed insurance partners." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">

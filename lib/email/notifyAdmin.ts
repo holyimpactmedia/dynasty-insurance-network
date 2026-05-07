@@ -85,12 +85,18 @@ export async function notifyAdmin(
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dynasty.app'
 
   const funnelLabel: Record<string, string> = {
-    healthcare_aca: 'ACA / Individual',
+    private_health: 'Individual',
+    individual: 'Individual',
+    // Legacy keys retained for historical leads
+    healthcare_aca: 'Individual',
+    healthcare: 'Individual',
+    aca: 'Individual',
     family: 'Family',
     cobra: 'COBRA',
     self_employed: 'Self-Employed',
     ppo: 'PPO',
     business: 'Small Business',
+    small_business: 'Small Business',
   }
 
   const urgency = params.aiUrgency ?? null
