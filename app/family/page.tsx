@@ -734,7 +734,7 @@ export default function FamilyQuizPage() {
                           location: "Atlanta, GA",
                           before: "$1,180/mo",
                           after: "$745/mo",
-                          quote: "Our employer family plan was eating $1,180 a month and the deductible was insane. Found a private PPO for $745, kept our doctor, and the deductible is half what we had.",
+                          quote: "Our employer family plan was eating $1,180 a month and the deductible was painfully high. Found a private PPO for $745, kept our doctor, and the deductible is half what we had.",
                         },
                         {
                           name: "The Johnson Family",
@@ -893,7 +893,7 @@ export default function FamilyQuizPage() {
                     {answers.primaryAge && Number.parseInt(answers.primaryAge) >= 64 && (
                       <Card className="p-4 bg-blue-50 border-blue-200">
                         <p className="text-sm text-blue-700">
-                          Age 64+ qualifies for Medicare options. We focus on private PPO plans for ages 18–63. A licensed Medicare specialist can still help.
+                          At 64+, you may qualify for Medicare options. Our private PPO plans are designed for healthy adults under 65. A licensed Medicare specialist can still help.
                         </p>
                       </Card>
                     )}

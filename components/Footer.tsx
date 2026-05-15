@@ -11,7 +11,7 @@ export function Footer() {
           <div className="space-y-3">
             <img src="/images/logo.avif" alt="Dynasty" className="h-20 md:h-24 w-auto mx-auto md:mx-0" />
             <p className="text-sm text-gray-400">
-              Independent insurance agency helping Americans find quality healthcare coverage.
+              Licensed insurance agents helping Americans find quality healthcare coverage.
             </p>
           </div>
 
@@ -98,8 +98,8 @@ export function Footer() {
           )}
           <p className="text-xs max-w-3xl mx-auto">
             This website is operated by Holy Impact Media, LLC, a marketing company and lead generation service.
-            Holy Impact Media is not an insurance agency. Dynasty Insurance Group is an independent licensed insurance
-            agency and is not affiliated with or endorsed by any government entity, Healthcare.gov, the Health
+            Holy Impact Media is not an insurance agency. Dynasty Insurance Group is operated by independent licensed
+            insurance agents and is not affiliated with or endorsed by any government entity, Healthcare.gov, the Health
             Insurance Marketplace, or the Centers for Medicare &amp; Medicaid Services. Holy Impact Media connects
             consumers with Dynasty Insurance Group and its licensed agents. We may receive compensation for leads
             provided.

@@ -1109,7 +1109,7 @@ export default function HealthcareQuizPage() {
                             if (age >= 64) {
                               setErrors({
                                 ...errors,
-                                age: "Age 64+ qualifies for Medicare options. We focus on private PPO plans for ages 18–63. We can refer you to a licensed Medicare specialist.",
+                                age: "At 64+, you may qualify for Medicare options. Our private PPO plans are designed for healthy adults under 65. We can refer you to a licensed Medicare specialist.",
                               })
                             } else {
                               setErrors({ ...errors, age: "" })

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | Dynasty Insurance Group",
   },
   description:
-    "Private PPO health insurance plans for healthy Americans aged 18 to 63. See any doctor, skip referrals, and get nationwide network coverage. Match with a licensed specialist in 90 seconds.",
+    "Private PPO health insurance plans for healthy Americans under 65. See any doctor, skip referrals, and get nationwide network coverage. Get matched in 90 seconds.",
   keywords: [
     "private health insurance",
     "PPO plans",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "Dynasty Insurance Group",
     title: "Dynasty Insurance Group | Private Health Insurance Plans",
     description:
-      "Private PPO health insurance plans for healthy Americans aged 18 to 63. See any doctor. No referrals. Nationwide networks.",
+      "Private PPO health insurance plans for healthy Americans under 65. See any doctor. No referrals. Nationwide networks.",
     images: [
       {
         url: "/og/home.jpg",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     creator: "@DynastyInsGroup",
     title: "Dynasty Insurance Group | Private Health Insurance Plans",
     description:
-      "Private PPO health insurance plans for healthy adults. See any doctor. No referrals. Match in 90 seconds.",
+      "Private PPO health insurance plans for healthy adults. See any doctor. No referrals. Get matched in 90 seconds.",
     images: ["/og/home.jpg"],
   },
   robots: {
@@ -111,7 +111,7 @@ export default function RootLayout({
                   url: siteUrl,
                   logo: `${siteUrl}/images/logo.avif`,
                   description:
-                    "Private PPO health insurance plans for healthy Americans aged 18 to 63.",
+                    "Private PPO health insurance plans for healthy Americans under 65.",
                   sameAs: [],
                 },
                 {

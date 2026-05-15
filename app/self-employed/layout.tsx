@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 
 const TITLE = "Self-Employed Health Insurance That Deducts"
 const DESC =
-  "Private PPO plans for 1099 workers, freelancers, and contractors aged 18 to 63. Nationwide coverage, no referrals, and premiums that may be 100% tax deductible."
+  "Private PPO plans for healthy 1099 workers, freelancers, and contractors under 65. Nationwide coverage, no referrals, and premiums that may be 100% tax deductible."
 const SHORT_DESC =
-  "Private PPO plans for 1099 workers. Nationwide coverage. Premiums often 100% tax deductible."
+  "Private PPO plans for 1099 workers. Nationwide coverage. Premiums may be 100% tax deductible for qualifying self-employed filers."
 
 export const metadata: Metadata = {
   title: TITLE,

@@ -156,13 +156,13 @@ export default function PlansPage() {
           <div className="relative max-w-3xl mx-auto text-center space-y-5">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-medium">
               <Award className="w-4 h-4" />
-              Licensed Insurance Agency
+              Licensed Insurance Agents
             </div>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
               Private Health Coverage Built for <span className="text-[#D4AF37]">Working Americans</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
-              Private PPO health insurance plans for healthy adults and families aged <span className="text-[#D4AF37] font-semibold">18 to 63</span>.
+              Private PPO health insurance plans for healthy adults and families <span className="text-[#D4AF37] font-semibold">under 65</span>.
               Keep your doctor, see any specialist, and use nationwide PPO networks accepted at hospitals and physicians across the country.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">

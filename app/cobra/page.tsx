@@ -158,7 +158,7 @@ export default function COBRAQuizPage() {
     if (!answers.age || Number.isNaN(ageNum)) {
       newErrors.age = "Please enter your age"
     } else if (ageNum < 18 || ageNum >= 64) {
-      newErrors.age = "Our private PPO alternatives serve adults aged 18 to 63"
+      newErrors.age = "These plans are available to healthy adults under 65"
     }
     if (!answers.govCoverage) {
       newErrors.govCoverage = "Please answer to continue"
@@ -462,10 +462,10 @@ export default function COBRAQuizPage() {
                       COBRA Alternatives - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      COBRA Is <span className="text-[#D4AF37]">Eating Your Severance</span>. Private PPO Is <span className="text-[#D4AF37]">Half the Cost</span>.
+                      COBRA Is <span className="text-[#D4AF37]">Expensive</span>. A Private PPO Can <span className="text-[#D4AF37]">Cost Half</span>.
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Healthy adults under 64 can replace COBRA with a private PPO and keep their doctors. Often for <span className="text-[#D4AF37] font-semibold">30 to 60% less</span> per month.
+                      Healthy adults under 65 can replace COBRA with a private PPO and keep their doctors. Many clients save <span className="text-[#D4AF37] font-semibold">30 to 60%</span> per month.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
@@ -677,7 +677,7 @@ export default function COBRAQuizPage() {
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">Real People Who Dropped COBRA</h2>
                       <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Healthy adults under 64 are walking away from COBRA, keeping their doctors,
+                        Healthy adults under 65 are walking away from COBRA, keeping their doctors,
                         and saving hundreds every month with private PPO plans.
                       </p>
                     </div>

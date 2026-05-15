@@ -153,7 +153,7 @@ export default function SelfEmployedPage() {
     if (!answers.age || Number.isNaN(ageNum)) {
       newErrors.age = "Please enter your age"
     } else if (ageNum < 18 || ageNum >= 64) {
-      newErrors.age = "Our private PPO plans serve adults aged 18 to 63"
+      newErrors.age = "These plans are available to healthy adults under 65"
     }
     if (!answers.govCoverage) {
       newErrors.govCoverage = "Please answer to continue"
@@ -448,7 +448,7 @@ export default function SelfEmployedPage() {
                       1099 Income. No Employer Plan. Bad Options. <span className="text-[#D4AF37]">We Fix That.</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Private PPO plans built for self-employed Americans aged <span className="text-[#D4AF37] font-semibold">18 to 63</span>. Premiums you can <span className="text-[#D4AF37] font-semibold">actually deduct</span>.
+                      Private PPO plans built for <span className="text-[#D4AF37] font-semibold">healthy</span> self-employed Americans <span className="text-[#D4AF37] font-semibold">under 65</span>. Premiums you can <span className="text-[#D4AF37] font-semibold">actually deduct</span>.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[

@@ -1,7 +1,7 @@
 # SEO Strategy: Holy Impact Media → Dynasty Insurance Group
 
 **Owner:** Holy Impact Media (operator)
-**Routes leads to:** Dynasty Insurance Group (licensed insurance agency)
+**Routes leads to:** Dynasty Insurance Group (independent licensed insurance agents)
 **Last updated:** 2026
 **Status:** Living document — review quarterly
 
@@ -11,7 +11,7 @@
 
 The cheapest qualified leads in private health insurance come from **long-tail, intent-rich organic search** — not paid auctions on broad terms. This document is the playbook for owning those queries, ranked by ROI and timed for a 90-day execution window. Every tactic is checked against TCPA, FTC, CCPA, and FTC Endorsement Guides so we ship growth without inviting enforcement.
 
-The ICP is healthy adults aged 18 to 63 with household income above the ACA subsidy cliff ($60K+ individual / $130K+ family of four), often self-employed or small-business, in 30 specific states. They search for terms like *"what to do when you make too much for Obamacare"* and *"best COBRA alternative"* — high-intent, low-competition queries that convert at 5–15% versus 1–2% on broad insurance terms.
+The ICP is healthy adults under 65 with household income above the ACA subsidy cliff ($60K+ individual / $130K+ family of four), often self-employed or small-business, in 30 specific states. They search for terms like *"what to do when you make too much for Obamacare"* and *"best COBRA alternative"* — high-intent, low-competition queries that convert at 5–15% versus 1–2% on broad insurance terms.
 
 **Targets, 12 months out:**
 
@@ -29,7 +29,7 @@ The ICP is healthy adults aged 18 to 63 with household income above the ACA subs
 
 | Dimension | Definition |
 |---|---|
-| Age | 18–63 (excludes Medicare segment by design) |
+| Age | Under 65 (excludes Medicare segment by design) |
 | Household income | $30K to $150K+ (sweet spot $60K–$125K) |
 | Health status | Generally healthy; no cancer/diabetes/heart disease in last 5 years |
 | Employment | W-2 with no employer plan, 1099/contractor, small business owner (2–50 employees) |

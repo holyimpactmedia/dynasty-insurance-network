@@ -61,8 +61,8 @@ as a condition of purchase. Message and data rates may apply.
    affect the rates you pay."
 
 4. **No Government Affiliation:**
-   "We are an independent insurance agency, not affiliated with or endorsed by any 
-   government entity or Healthcare.gov."
+   "Dynasty Insurance Group is operated by independent licensed insurance agents and is not
+   affiliated with or endorsed by any government entity or Healthcare.gov."
 
 ---
 

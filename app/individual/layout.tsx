@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 const TITLE = "Private Individual Health Insurance Plans"
 const DESC =
-  "Private PPO health insurance plans for healthy adults aged 18 to 63. See any doctor, skip referrals, and get nationwide network coverage. Match in 90 seconds with a licensed specialist."
+  "Private PPO health insurance plans for healthy adults under 65. See any doctor, skip referrals, and get nationwide network coverage. Get matched in 90 seconds."
 const SHORT_DESC =
   "Private PPO plans for healthy adults. See any doctor, no referrals, nationwide coverage."
 

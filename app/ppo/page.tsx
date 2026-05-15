@@ -156,7 +156,7 @@ export default function PPOQuizPage() {
     if (!answers.age || Number.isNaN(ageNum)) {
       newErrors.age = "Please enter your age"
     } else if (ageNum < 18 || ageNum >= 64) {
-      newErrors.age = "Our private PPO plans serve adults aged 18 to 63"
+      newErrors.age = "These plans are available to healthy adults under 65"
     }
     if (!answers.govCoverage) {
       newErrors.govCoverage = "Please answer to continue"
@@ -268,7 +268,7 @@ export default function PPOQuizPage() {
                 Stop <span className="text-[#D4AF37]">Asking Permission</span> to See a Doctor
               </h1>
               <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                Private PPO plans for healthy adults under 64. See <span className="text-[#D4AF37] font-semibold">any specialist</span>, skip the referrals, and pay <span className="text-[#D4AF37] font-semibold">less than COBRA</span>.
+                Private PPO plans for healthy adults under 65. See <span className="text-[#D4AF37] font-semibold">any specialist</span>, skip the referrals, and pay <span className="text-[#D4AF37] font-semibold">less than COBRA</span>.
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
@@ -509,7 +509,7 @@ export default function PPOQuizPage() {
                     location: "Atlanta, GA",
                     before: "$1,480/mo",
                     after: "$820/mo",
-                    text: "We needed a plan that covered our daughter's pediatric specialist out of state. We went from $1,480 a month to $820 on a nationwide PPO that actually covers her doctor. Amazing service.",
+                    text: "We needed a plan that covered our daughter's pediatric specialist out of state. We went from $1,480 a month to $820 on a nationwide PPO that actually covers her doctor. Great experience.",
                     stars: 5,
                   },
                 ].map((review, i) => (

@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 const TITLE = "Private PPO Plans Without Asking Permission"
 const DESC =
-  "Stop asking your HMO for permission to see a doctor. Private PPO plans for healthy adults under 64. See any specialist, skip the referrals, and pay less than COBRA."
+  "Stop asking your HMO for permission to see a doctor. Private PPO plans for healthy adults under 65. See any specialist, skip the referrals, and pay less than COBRA."
 const SHORT_DESC =
   "Private PPO plans. See any specialist. No referrals. Pay less than COBRA."
 

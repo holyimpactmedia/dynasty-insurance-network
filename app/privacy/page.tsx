@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold mb-3">4. Information Sharing and Disclosure</h2>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Lead Recipients:</strong> Holy Impact Media shares your information
-              with Dynasty Insurance Group, a licensed independent insurance agency, and the US Health Advisors agent
+              with Dynasty Insurance Group, operated by licensed independent insurance agents, and the US Health Advisors agent
               network so that licensed agents can present you with coverage options. Compensation we receive for
               providing qualified leads is described in our Terms of Use.
             </p>

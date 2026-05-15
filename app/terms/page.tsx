@@ -29,8 +29,8 @@ export default function TermsOfUsePage() {
             <p className="text-muted-foreground leading-relaxed">
               Holy Impact Media operates this Site to connect consumers with licensed independent insurance agents,
               including Dynasty Insurance Group. Holy Impact Media is not an insurance agency, broker, or carrier and
-              does not provide insurance advice or sell insurance products. Dynasty Insurance Group is an independent
-              licensed insurance agency. Neither Holy Impact Media nor Dynasty Insurance Group is affiliated with,
+              does not provide insurance advice or sell insurance products. Dynasty Insurance Group is operated by
+              independent licensed insurance agents. Neither Holy Impact Media nor Dynasty Insurance Group is affiliated with,
               endorsed by, or representing any government entity, Healthcare.gov, the Health Insurance Marketplace, or
               the Centers for Medicare &amp; Medicaid Services (CMS).
             </p>
@@ -231,8 +231,8 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">18. Relationship to Insurance Partners</h2>
             <p className="text-muted-foreground leading-relaxed">
               Holy Impact Media, LLC is a marketing and lead-generation company, not a licensed insurance agency.
-              Dynasty Insurance Group is an independent licensed insurance agency that purchases qualified leads from
-              Holy Impact Media and contacts consumers regarding insurance coverage options. Holy Impact Media does
+              Dynasty Insurance Group is operated by independent licensed insurance agents who purchase qualified leads
+              from Holy Impact Media and contact consumers regarding insurance coverage options. Holy Impact Media does
               not provide insurance advice or sell insurance products. Holy Impact Media has no ownership interest in
               Dynasty Insurance Group, and Dynasty Insurance Group has no ownership interest in Holy Impact Media.
             </p>
