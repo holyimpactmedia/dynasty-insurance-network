@@ -502,7 +502,73 @@ export default function AdminDashboardClient({
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile: tappable contact cards (the table scrolls sideways, which is
+            awkward on phones). Email/phone are tap-to-contact links. */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {leads.length === 0 ? (
+            <div className="text-center text-gray-400 py-16">
+              {loading ? "Loading…" : "No leads match your filters."}
+            </div>
+          ) : (
+            leads.map((lead) => (
+              <button
+                key={lead.id}
+                type="button"
+                onClick={() => {
+                  setSelectedLead(lead)
+                  setDrawerOpen(true)
+                }}
+                className="block w-full text-left p-4 active:bg-blue-50/60"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-semibold text-gray-900 truncate">
+                      {lead.first_name} {lead.last_name}
+                    </div>
+                    <div className="font-mono text-xs text-gray-400">{lead.reference_number}</div>
+                  </div>
+                  <AIScoreBadge score={lead.ai_score} reasons={lead.ai_score_reasons} />
+                </div>
+                <div className="mt-2 space-y-1">
+                  <a
+                    href={`mailto:${lead.email}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="block truncate text-sm text-blue-600"
+                  >
+                    {lead.email}
+                  </a>
+                  {lead.phone && (
+                    <a
+                      href={`tel:${lead.phone}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="block text-sm text-gray-600"
+                    >
+                      {lead.phone}
+                    </a>
+                  )}
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-gray-500">
+                    {FUNNEL_LABELS[lead.funnel_type ?? ""] ?? lead.funnel_type ?? "N/A"}
+                  </span>
+                  {lead.state && <span className="text-xs text-gray-400">· {lead.state}</span>}
+                  <MarketplaceBadge status={lead.usha_status} />
+                  {lead.tcpa_consent ? (
+                    <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">TCPA</Badge>
+                  ) : (
+                    <Badge className="bg-red-100 text-red-700 border-red-200 text-xs">No TCPA</Badge>
+                  )}
+                  <span className="ml-auto whitespace-nowrap text-xs text-gray-400">
+                    {getTimeAgo(new Date(lead.created_at))}
+                  </span>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: table */}
+        <div className="hidden md:block overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50">

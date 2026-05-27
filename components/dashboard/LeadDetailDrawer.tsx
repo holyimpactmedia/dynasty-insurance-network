@@ -125,7 +125,7 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose() }}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[540px] overflow-y-auto p-0"
+        className="w-full sm:max-w-[540px] overflow-y-auto p-0 [&_[data-slot=sheet-content-close]]:top-5 [&_[data-slot=sheet-content-close]]:right-5 [&_[data-slot=sheet-content-close]]:bg-white/10 [&_[data-slot=sheet-content-close]]:text-white [&_[data-slot=sheet-content-close]]:opacity-90 [&_[data-slot=sheet-content-close]]:hover:bg-white/20 [&_[data-slot=sheet-content-close]]:hover:opacity-100"
       >
         {/* ── header ── */}
         <SheetHeader className="bg-gradient-to-br from-[#0A1128] to-[#1a2744] px-6 py-5">
