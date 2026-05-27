@@ -17,7 +17,7 @@ export default function RealVsProjectedChart({ data }: { data: DataPoint[] }) {
         <YAxis stroke="#6b7280" allowDecimals={false} />
         <Tooltip
           contentStyle={{ backgroundColor: "white", border: "1px solid #e5e7eb", borderRadius: "8px" }}
-          formatter={(value: number, name: string) => [value, name === "projected" ? "Projected" : "Actual"]}
+          formatter={(value, name) => [value as number | string, name === "projected" ? "Projected" : "Actual"]}
         />
         <Legend formatter={(value) => value === "projected" ? "Projected" : "Actual"} />
         <Line

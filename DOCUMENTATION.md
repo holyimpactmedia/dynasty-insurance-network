@@ -1,5 +1,7 @@
 # DYNASTY LEAD GENERATION SYSTEM - COMPLETE DOCUMENTATION
 
+> **New engineering docs live in [`docs/`](./docs/README.md).** Start there — pipeline, schema, security model, and runbook each have a dedicated file with a single source of truth. This page remains the historical product overview.
+
 ## PROJECT CONTEXT
 
 **Application:** Dynasty Lead Generation System - Healthcare Insurance Lead Capture & Agent Management Platform  

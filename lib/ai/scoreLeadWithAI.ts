@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/admin'
 
 interface Lead {
-  id: string
+  id: string | null
   referenceNumber: string
   firstName: string
   lastName: string
@@ -116,19 +116,29 @@ Return ONLY valid JSON in this exact format, no markdown:
  * This is the main function to call from the leads API.
  */
 export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
+  if (!lead.id) {
+    console.warn('scoreAndUpdateLead: lead has no id, skipping')
+    return
+  }
   const supabase = createClient()
+  if (!supabase) {
+    console.error('scoreAndUpdateLead: Supabase admin client not configured')
+    return
+  }
 
   try {
     const scoreResult = await scoreLeadWithAI(lead)
 
     if (scoreResult) {
-      // Update the lead with the AI score
+      // Write the AI score back onto the lead. `ai_scored_at` stamps when the
+      // scoring stage of the pipeline completed (used by the dashboard timeline).
       const { error: updateError } = await supabase
         .from('leads')
         .update({
           ai_score: scoreResult.score,
           ai_score_reasons: scoreResult.reasons,
           predicted_close_rate: scoreResult.predictedCloseRate,
+          ai_scored_at: new Date().toISOString(),
         })
         .eq('id', lead.id)
 
@@ -137,26 +147,6 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
         return
       }
 
-      // Insert a lead_events row for the scoring
-      const { error: eventError } = await supabase
-        .from('lead_events')
-        .insert({
-          lead_id: lead.id,
-          event_type: 'scored',
-          event_data: {
-            score: scoreResult.score,
-            urgencyLevel: scoreResult.urgencyLevel,
-            predictedCloseRate: scoreResult.predictedCloseRate,
-            reasons: scoreResult.reasons,
-            recommendedApproach: scoreResult.recommendedApproach,
-          },
-        })
-
-      if (eventError) {
-        console.error('Error inserting lead_events for scoring:', eventError)
-      }
-
-      // Expose score result so callers (e.g. admin email) can enrich their payload
       console.log(`Lead ${lead.referenceNumber} scored: ${scoreResult.score}/100 (${scoreResult.urgencyLevel})`)
     } else {
       console.log(`Lead ${lead.referenceNumber} could not be scored`)

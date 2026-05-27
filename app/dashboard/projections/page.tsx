@@ -1,131 +1,109 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Calendar, RefreshCw, TrendingUp, DollarSign, BarChart2, Users } from "lucide-react"
+import { Calendar, RefreshCw, TrendingUp, DollarSign, BarChart2, Users } from "lucide-react"
 import ProjectionsCalculators from "@/components/dashboard/ProjectionsCalculators"
 import RealVsProjectedChart from "@/components/dashboard/RealVsProjectedChart"
+import { PrintButton } from "@/components/dashboard/PrintButton"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
-
-const SELL_PRICE = 28
-const ACQUISITION_COST = 10
-const GROSS_MARGIN_PER_LEAD = SELL_PRICE - ACQUISITION_COST // $18
+import { requireAdmin } from "@/lib/auth/requireAdmin"
+import { BUSINESS_TZ } from "@/lib/time/ranges"
+import { splitShares } from "@/lib/finance/splitShares"
+import { FUNNEL_LABELS } from "@/lib/types/lead"
+import { toZonedTime } from "date-fns-tz"
+import { format } from "date-fns"
 
 const PARTNERS = [
-  { name: "Marvin Antoine", role: "Developer", share: 0.25 },
-  { name: "Samuel Lamy", share: 0.25 },
-  { name: "Kendrick Perkins", share: 0.25 },
-  { name: "Dorian Ziggler", share: 0.25 },
+  { name: "Marvin Antoine", role: "Developer", share: 1 },
+  { name: "Samuel Lamy", share: 1 },
+  { name: "Kendrick Perkins", share: 1 },
+  { name: "Dorian Ziggler", share: 1 },
 ]
 
-const FUNNEL_LABELS: Record<string, string> = {
-  // Legacy values retained for historical leads written before the rename.
-  aca: "Individual",
-  healthcare: "Individual",
-  healthcare_aca: "Individual",
-  private_health: "Individual",
-  individual: "Individual",
-  cobra: "COBRA",
-  family: "Family",
-  ppo: "PPO",
-  self_employed: "Self-Employed",
-  small_business: "Small Business",
-  business: "Small Business",
+// Baseline projection (leads received per day) — a visual floor for the chart.
+const PROJECTED_PER_DAY = 5
+
+interface PipelineStatsRow {
+  total_leads: number
+  leads_today: number
+  leads_month: number
+  sent_count: number
+  sent_revenue: number
+  sent_revenue_month: number
+  tcpa_verified: number
+}
+
+interface FunnelRow {
+  funnel_type: string
+  leads: number
+  sent: number
+  revenue: number
 }
 
 export default async function ProjectionsDashboard() {
   const supabase = await createClient()
   if (!supabase) return <SetupRequired page="projections" />
+  await requireAdmin()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/auth/login?redirectTo=/dashboard/projections")
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
-  const role = (user.user_metadata as { role?: string } | null)?.role
-  if (role !== "admin") redirect("/dashboard/agent")
-
-  const now = new Date()
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-  const thirtyDaysAgo = new Date(now)
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-  const safeCount = async (q: PromiseLike<{ count: number | null }>) => {
-    try { return (await q).count ?? 0 } catch { return 0 }
-  }
-  const safeData = async <T,>(q: PromiseLike<{ data: T | null }>): Promise<T> => {
-    try { return ((await q).data ?? []) as T } catch { return [] as T }
-  }
-
-  // Fetch all data in parallel: error-tolerant per query
-  const [totalLeads, soldLeads, soldLeadsThisMonth, recentLeads, funnelBreakdown] = await Promise.all([
-    safeCount(supabase.from("leads").select("*", { count: "exact", head: true })),
-    safeData<{ gross_margin: number | null; sell_price: number | null; acquisition_cost: number | null }[]>(
-      supabase.from("leads").select("gross_margin, sell_price, acquisition_cost").eq("status", "sold")
-    ),
-    safeData<{ gross_margin: number | null; sell_price: number | null; acquisition_cost: number | null }[]>(
-      supabase.from("leads")
-        .select("gross_margin, sell_price, acquisition_cost")
-        .eq("status", "sold")
-        .gte("created_at", startOfMonth.toISOString())
-    ),
-    safeData<{ created_at: string; status: string; funnel_type: string | null }[]>(
-      supabase.from("leads")
-        .select("created_at, status, funnel_type")
+  const [statsRows, funnelRows, recentRows] = await Promise.all([
+    (async (): Promise<PipelineStatsRow[]> => {
+      const { data } = await supabase.rpc("get_pipeline_stats")
+      return (data as PipelineStatsRow[] | null) ?? []
+    })(),
+    (async (): Promise<FunnelRow[]> => {
+      const { data } = await supabase.rpc("get_funnel_breakdown")
+      return (data as FunnelRow[] | null) ?? []
+    })(),
+    (async (): Promise<{ created_at: string }[]> => {
+      const { data } = await supabase
+        .from("leads")
+        .select("created_at")
         .gte("created_at", thirtyDaysAgo.toISOString())
         .order("created_at", { ascending: true })
-    ),
-    safeData<{ funnel_type: string | null; status: string }[]>(
-      supabase.from("leads").select("funnel_type, status")
-    ),
+      return (data as { created_at: string }[] | null) ?? []
+    })(),
   ])
 
-  // All-time financials
-  const allTimeSoldCount = soldLeads.length
-  const allTimeRevenue = allTimeSoldCount * SELL_PRICE
-  const allTimeGrossMargin = allTimeSoldCount * GROSS_MARGIN_PER_LEAD
+  const s = statsRows[0]
+  const totalLeads = s?.total_leads ?? 0
+  const sentCount = s?.sent_count ?? 0
+  const allTimeRevenue = Number(s?.sent_revenue ?? 0)
+  const monthRevenue = Number(s?.sent_revenue_month ?? 0)
 
-  // This month financials
-  const thisMonthSoldCount = soldLeadsThisMonth.length
-  const thisMonthGrossMargin = thisMonthSoldCount * GROSS_MARGIN_PER_LEAD
-
-  // Build last-30-days actual vs projected chart data
-  const dailyActual: Record<string, number> = {}
-  recentLeads.forEach((lead) => {
-    const day = lead.created_at.split("T")[0]
-    dailyActual[day] = (dailyActual[day] || 0) + 1
-  })
-
-  // Projected: assume ~5 leads/day as baseline projection
-  const PROJECTED_PER_DAY = 5
+  // Real-vs-projected: bucket the last 30 ET days.
+  const dailyCounts = new Map<string, number>()
+  for (const r of recentRows) {
+    const zoned = toZonedTime(new Date(r.created_at), BUSINESS_TZ)
+    const key = format(zoned, "yyyy-MM-dd")
+    dailyCounts.set(key, (dailyCounts.get(key) ?? 0) + 1)
+  }
+  const zonedNow = toZonedTime(new Date(), BUSINESS_TZ)
   const chartData = Array.from({ length: 30 }, (_, i) => {
-    const date = new Date(thirtyDaysAgo)
-    date.setDate(date.getDate() + i)
-    const key = date.toISOString().split("T")[0]
-    const label = `${date.getMonth() + 1}/${date.getDate()}`
+    const d = new Date(zonedNow)
+    d.setDate(d.getDate() - (29 - i))
+    const key = format(d, "yyyy-MM-dd")
     return {
-      date: label,
+      date: format(d, "M/d"),
       projected: PROJECTED_PER_DAY,
-      actual: dailyActual[key] || 0,
+      actual: dailyCounts.get(key) ?? 0,
     }
   })
 
-  // Funnel breakdown
-  const funnelMap: Record<string, { leads: number; sold: number }> = {}
-  funnelBreakdown.forEach((lead) => {
-    const key = lead.funnel_type || "private_health"
-    if (!funnelMap[key]) funnelMap[key] = { leads: 0, sold: 0 }
-    funnelMap[key].leads++
-    if (lead.status === "sold") funnelMap[key].sold++
-  })
+  // Partner splits — Hamilton method so the rows sum exactly to the total.
+  const weights = PARTNERS.map((p) => p.share)
+  const allTimeSplit = splitShares(allTimeRevenue, weights)
+  const monthSplit = splitShares(monthRevenue, weights)
 
-  const funnelRows = Object.entries(funnelMap).map(([key, val]) => ({
-    key,
-    label: FUNNEL_LABELS[key] || key,
-    leads: val.leads,
-    sold: val.sold,
-    convRate: val.leads > 0 ? ((val.sold / val.leads) * 100).toFixed(1) : "0.0",
-    revenue: val.sold * SELL_PRICE,
-  }))
+  // Funnel breakdown rows.
+  const funnelTotalLeads = funnelRows.reduce((sum, r) => sum + r.leads, 0)
+  const funnelTotalSent = funnelRows.reduce((sum, r) => sum + r.sent, 0)
+  const funnelTotalRevenue = funnelRows.reduce(
+    (sum, r) => sum + Number(r.revenue ?? 0),
+    0,
+  )
 
   async function handleRefresh() {
     "use server"
@@ -134,11 +112,13 @@ export default async function ProjectionsDashboard() {
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Financial Projections</h1>
-          <p className="text-sm text-gray-500">Real Performance + ROI Modeling</p>
+          <h1 className="text-2xl font-bold text-gray-900">Pass-through Financials</h1>
+          <p className="text-sm text-gray-500">
+            Revenue = leads sent to marketplace × sell price · live
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <form action={handleRefresh}>
@@ -147,33 +127,27 @@ export default async function ProjectionsDashboard() {
               Refresh
             </Button>
           </form>
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export PDF
-          </Button>
-          <Button className="bg-[#1e3a8a] hover:bg-[#1e3a8a]/90">
-            <Calendar className="w-4 h-4 mr-2" />
-            Present Mode
-          </Button>
+          <PrintButton />
         </div>
       </div>
 
-      {/* ─── REAL PERFORMANCE SECTION ─── */}
-      <div className="mb-10">
+      {/* Real Performance */}
+      <section className="mb-10">
         <div className="flex items-center gap-2 mb-5">
           <TrendingUp className="w-5 h-5 text-[#1e3a8a]" />
           <h2 className="text-xl font-bold text-gray-900">Real Performance</h2>
-          <span className="text-xs bg-green-100 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-medium">Live Data</span>
+          <span className="text-xs bg-green-100 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-medium">
+            Live Data
+          </span>
         </div>
 
-        {/* Metrics Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="p-5">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Users className="w-5 h-5 text-blue-600" />
               </div>
-              <div className="text-sm text-gray-500 font-medium">Total Leads</div>
+              <div className="text-sm text-gray-500 font-medium">Leads Received</div>
             </div>
             <div className="text-3xl font-bold text-gray-900">{totalLeads.toLocaleString()}</div>
             <div className="text-xs text-gray-400 mt-1">All time</div>
@@ -182,23 +156,23 @@ export default async function ProjectionsDashboard() {
           <Card className="p-5">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-green-600" />
+                <BarChart2 className="w-5 h-5 text-green-600" />
               </div>
-              <div className="text-sm text-gray-500 font-medium">Total Revenue</div>
+              <div className="text-sm text-gray-500 font-medium">Sent to Marketplace</div>
             </div>
-            <div className="text-3xl font-bold text-gray-900">${allTimeRevenue.toLocaleString()}</div>
-            <div className="text-xs text-gray-400 mt-1">{allTimeSoldCount} leads sold × ${SELL_PRICE}</div>
+            <div className="text-3xl font-bold text-gray-900">{sentCount.toLocaleString()}</div>
+            <div className="text-xs text-gray-400 mt-1">usha_status = sent</div>
           </Card>
 
           <Card className="p-5">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <BarChart2 className="w-5 h-5 text-amber-600" />
+                <DollarSign className="w-5 h-5 text-amber-600" />
               </div>
-              <div className="text-sm text-gray-500 font-medium">Gross Margin</div>
+              <div className="text-sm text-gray-500 font-medium">Revenue (All Time)</div>
             </div>
-            <div className="text-3xl font-bold text-gray-900">${allTimeGrossMargin.toLocaleString()}</div>
-            <div className="text-xs text-gray-400 mt-1">Revenue − acquisition costs</div>
+            <div className="text-3xl font-bold text-gray-900">${allTimeRevenue.toLocaleString()}</div>
+            <div className="text-xs text-gray-400 mt-1">SUM(sell_price) of sent leads</div>
           </Card>
 
           <Card className="p-5 border-[#D4AF37] border-2">
@@ -206,27 +180,25 @@ export default async function ProjectionsDashboard() {
               <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-yellow-600" />
               </div>
-              <div className="text-sm text-gray-500 font-medium">Your Net (75%)</div>
+              <div className="text-sm text-gray-500 font-medium">Revenue (This Month)</div>
             </div>
-            <div className="text-3xl font-bold text-[#1e3a8a]">${(allTimeGrossMargin * 0.75).toLocaleString()}</div>
-            <div className="text-xs text-gray-400 mt-1">After 25% dev share</div>
+            <div className="text-3xl font-bold text-[#1e3a8a]">${monthRevenue.toLocaleString()}</div>
+            <div className="text-xs text-gray-400 mt-1">Month-to-date</div>
           </Card>
         </div>
 
-        {/* Real vs Projected Chart */}
         <Card className="p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="font-semibold text-gray-900">Real vs Projected Leads - Last 30 Days</h3>
-              <p className="text-sm text-gray-500 mt-0.5">Dashed gold = projected ({PROJECTED_PER_DAY}/day baseline) · Solid navy = actual</p>
-            </div>
+          <div className="mb-4">
+            <h3 className="font-semibold text-gray-900">Real vs Projected Leads — Last 30 Days</h3>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Dashed gold = projected baseline ({PROJECTED_PER_DAY}/day) · Solid navy = actual received
+            </p>
           </div>
           <div className="h-64">
             <RealVsProjectedChart data={chartData} />
           </div>
         </Card>
 
-        {/* Partner Revenue Split */}
         <Card className="p-6 mb-8">
           <h3 className="font-semibold text-gray-900 mb-4">Partner Revenue Split</h3>
           <div className="overflow-x-auto">
@@ -241,35 +213,39 @@ export default async function ProjectionsDashboard() {
               </thead>
               <tbody>
                 {PARTNERS.map((partner, i) => (
-                  <tr key={i} className="border-b hover:bg-gray-50">
+                  <tr key={partner.name} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4">
                       <div className="font-medium text-gray-900">{partner.name}</div>
                       {partner.role && <div className="text-xs text-gray-400">{partner.role}</div>}
                     </td>
-                    <td className="py-3 px-4 text-gray-600">{(partner.share * 100).toFixed(0)}%</td>
+                    <td className="py-3 px-4 text-gray-600">25%</td>
                     <td className="py-3 px-4 text-right font-semibold text-gray-900">
-                      ${Math.floor(thisMonthGrossMargin * partner.share).toLocaleString()}
+                      ${monthSplit[i].toLocaleString()}
                     </td>
                     <td className="py-3 px-4 text-right font-bold text-[#1e3a8a]">
-                      ${Math.floor(allTimeGrossMargin * partner.share).toLocaleString()}
+                      ${allTimeSplit[i].toLocaleString()}
                     </td>
                   </tr>
                 ))}
                 <tr className="bg-gray-50 font-semibold">
                   <td className="py-3 px-4 text-gray-900">Total</td>
                   <td className="py-3 px-4 text-gray-600">100%</td>
-                  <td className="py-3 px-4 text-right text-gray-900">${thisMonthGrossMargin.toLocaleString()}</td>
-                  <td className="py-3 px-4 text-right text-[#1e3a8a]">${allTimeGrossMargin.toLocaleString()}</td>
+                  <td className="py-3 px-4 text-right text-gray-900">
+                    ${Math.round(monthRevenue).toLocaleString()}
+                  </td>
+                  <td className="py-3 px-4 text-right text-[#1e3a8a]">
+                    ${Math.round(allTimeRevenue).toLocaleString()}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-3">
-            Gross margin = ${SELL_PRICE} sell price − ${ACQUISITION_COST} acquisition cost = ${GROSS_MARGIN_PER_LEAD}/lead
+            Split via the largest-remainder method so the partner rows always sum exactly to the total.
+            Acquisition cost is not modeled per-row; the ROI calculator below handles cost/margin scenarios.
           </p>
         </Card>
 
-        {/* Funnel Performance Breakdown */}
         <Card className="p-6 mb-8">
           <h3 className="font-semibold text-gray-900 mb-4">Funnel Performance Breakdown</h3>
           <div className="overflow-x-auto">
@@ -278,8 +254,8 @@ export default async function ProjectionsDashboard() {
                 <tr className="border-b bg-gray-50">
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Funnel</th>
                   <th className="text-right py-3 px-4 font-semibold text-gray-700">Leads</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Sold</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Conv Rate</th>
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Sent</th>
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Send Rate</th>
                   <th className="text-right py-3 px-4 font-semibold text-gray-700">Revenue</th>
                 </tr>
               </thead>
@@ -289,49 +265,67 @@ export default async function ProjectionsDashboard() {
                     <td colSpan={5} className="py-6 text-center text-gray-400">No lead data yet</td>
                   </tr>
                 ) : (
-                  funnelRows.map((row) => (
-                    <tr key={row.key} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium text-gray-900">{row.label}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.leads.toLocaleString()}</td>
-                      <td className="py-3 px-4 text-right text-gray-700">{row.sold.toLocaleString()}</td>
-                      <td className="py-3 px-4 text-right">
-                        <span className={`font-semibold ${Number(row.convRate) >= 15 ? "text-green-600" : Number(row.convRate) >= 8 ? "text-amber-600" : "text-gray-600"}`}>
-                          {row.convRate}%
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right font-semibold text-[#1e3a8a]">
-                        ${row.revenue.toLocaleString()}
-                      </td>
-                    </tr>
-                  ))
+                  funnelRows.map((row) => {
+                    const sendRate =
+                      row.leads > 0 ? ((row.sent / row.leads) * 100).toFixed(1) : "0.0"
+                    return (
+                      <tr key={row.funnel_type} className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-4 font-medium text-gray-900">
+                          {FUNNEL_LABELS[row.funnel_type] ?? row.funnel_type}
+                        </td>
+                        <td className="py-3 px-4 text-right text-gray-700">{row.leads.toLocaleString()}</td>
+                        <td className="py-3 px-4 text-right text-gray-700">{row.sent.toLocaleString()}</td>
+                        <td className="py-3 px-4 text-right">
+                          <span
+                            className={`font-semibold ${
+                              Number(sendRate) >= 60
+                                ? "text-green-600"
+                                : Number(sendRate) >= 30
+                                  ? "text-amber-600"
+                                  : "text-gray-600"
+                            }`}
+                          >
+                            {sendRate}%
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right font-semibold text-[#1e3a8a]">
+                          ${Number(row.revenue ?? 0).toLocaleString()}
+                        </td>
+                      </tr>
+                    )
+                  })
                 )}
                 {funnelRows.length > 0 && (
                   <tr className="bg-gray-50 font-semibold">
                     <td className="py-3 px-4 text-gray-900">Total</td>
-                    <td className="py-3 px-4 text-right text-gray-900">{funnelRows.reduce((s, r) => s + r.leads, 0).toLocaleString()}</td>
-                    <td className="py-3 px-4 text-right text-gray-900">{funnelRows.reduce((s, r) => s + r.sold, 0).toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right text-gray-900">{funnelTotalLeads.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right text-gray-900">{funnelTotalSent.toLocaleString()}</td>
                     <td className="py-3 px-4 text-right text-gray-900">
-                      {funnelRows.reduce((s, r) => s + r.leads, 0) > 0
-                        ? ((funnelRows.reduce((s, r) => s + r.sold, 0) / funnelRows.reduce((s, r) => s + r.leads, 0)) * 100).toFixed(1)
-                        : "0.0"}%
+                      {funnelTotalLeads > 0
+                        ? ((funnelTotalSent / funnelTotalLeads) * 100).toFixed(1)
+                        : "0.0"}
+                      %
                     </td>
-                    <td className="py-3 px-4 text-right text-[#1e3a8a]">${funnelRows.reduce((s, r) => s + r.revenue, 0).toLocaleString()}</td>
+                    <td className="py-3 px-4 text-right text-[#1e3a8a]">
+                      ${funnelTotalRevenue.toLocaleString()}
+                    </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
         </Card>
-      </div>
+      </section>
 
-      {/* ─── SEPARATOR ─── */}
+      {/* Separator */}
       <div className="flex items-center gap-4 mb-8">
         <div className="flex-1 border-t border-gray-200" />
-        <span className="text-sm text-gray-400 font-medium whitespace-nowrap">Projections & Calculators</span>
+        <span className="text-sm text-gray-400 font-medium whitespace-nowrap flex items-center gap-2">
+          <Calendar className="w-4 h-4" /> Projections &amp; Calculators
+        </span>
         <div className="flex-1 border-t border-gray-200" />
       </div>
 
-      {/* ─── EXISTING CALCULATORS (unchanged) ─── */}
       <ProjectionsCalculators />
     </div>
   )

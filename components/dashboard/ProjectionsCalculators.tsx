@@ -273,7 +273,7 @@ export default function ProjectionsCalculators() {
               <YAxis stroke="#6b7280" />
               <Tooltip
                 contentStyle={{ backgroundColor: "white", border: "1px solid #e5e7eb", borderRadius: "8px" }}
-                formatter={(value: number) => `$${value.toLocaleString()}`}
+                formatter={(value) => `$${Number(value).toLocaleString()}`}
               />
               <Legend />
               <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} name="Revenue" />

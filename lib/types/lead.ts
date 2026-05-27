@@ -25,12 +25,14 @@ export interface Lead {
   utm_medium: string | null
   utm_campaign: string | null
   ip_address: string | null
+  quiz_answers: Record<string, unknown> | null
   status: string
   ai_score: number | null
   ai_score_reasons: string[] | null
   predicted_close_rate: number | null
+  ai_scored_at: string | null
   sell_price: number | null
-  // USHA Marketplace integration fields (add columns in Supabase before these populate)
+  // Marketplace (USHA) submission state
   usha_status: 'pending' | 'sent' | 'failed' | null
   usha_sent_at: string | null
   usha_lead_id: string | null

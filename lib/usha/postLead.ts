@@ -46,108 +46,123 @@ export interface UshaPostResult {
   error?: string
 }
 
+const MAX_ATTEMPTS = 3 // 1 initial attempt + 2 retries
+const isRetryable = (httpStatus: number): boolean =>
+  httpStatus === 429 || httpStatus >= 500
+
 /**
  * Posts a lead to the USHA Marketplace API.
- * Returns 'disabled' if env vars are not yet configured - safe to call unconditionally.
- * When API credentials are available, fill in the fetch call below with the correct
- * endpoint, auth header format, and request body shape from the USHA API spec.
+ *
+ * Feature-flagged: requires `USHA_ENABLED=true` plus `USHA_API_URL` /
+ * `USHA_API_KEY`. When disabled, the lead is marked `usha_status='pending'`
+ * so the dashboard shows it awaiting marketplace submission (not a blank).
+ *
+ * Transient failures (network errors, HTTP 429/5xx) are retried with backoff.
+ * The request body field mapping is the ONLY part still deferred until the
+ * LeadArena/USHA API spec is available (see the TODOs below).
  */
 export async function postLeadToUsha(
-  leadId: string,
+  leadId: string | null,
   payload: UshaLeadPayload,
 ): Promise<UshaPostResult> {
   const apiUrl = process.env.USHA_API_URL
   const apiKey = process.env.USHA_API_KEY
+  const enabled =
+    process.env.USHA_ENABLED === 'true' && !!apiUrl && !!apiKey
 
-  // Gracefully skip if not yet configured
-  if (!apiUrl || !apiKey) {
-    console.log('[usha] USHA_API_URL or USHA_API_KEY not configured - skipping lead post')
+  if (!enabled) {
+    console.log('[usha] disabled (USHA_ENABLED!=true or credentials missing) - marking lead pending')
+    await updateUshaStatus(leadId, 'pending')
     return { success: false, status: 'disabled' }
   }
 
-  try {
-    // TODO: Replace the body shape below with the exact field names from the USHA API spec.
-    // Common patterns for lead marketplace APIs:
-    //   - REST POST with JSON body + Authorization: Bearer <key> header
-    //   - REST POST with JSON body + X-API-Key: <key> header
-    //   - Form-encoded POST with api_key field
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // TODO: Confirm header name with USHA (Bearer token vs API key header)
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        // TODO: Map to USHA's exact field names once API spec is available
-        first_name: payload.firstName,
-        last_name: payload.lastName,
-        email: payload.email,
-        phone: payload.phone,
-        age: payload.age,
-        state: payload.state,
-        income_range: payload.incomeRange,
-        household_size: payload.householdSize,
-        qualifying_event: payload.qualifyingEvent,
-        tcpa_consent: payload.tcpaConsent,
-        tcpa_timestamp: payload.tcpaConsentAt,
-        trusted_form_cert_url: payload.trustedFormCertUrl,
-        source_reference: payload.referenceNumber,
-        utm_source: payload.utmSource,
-        utm_medium: payload.utmMedium,
-        utm_campaign: payload.utmCampaign,
-        ip_address: payload.ipAddress,
-        lead_type: payload.leadType,
-      }),
-    })
+  let lastError = 'unknown error'
 
-    if (!response.ok) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      // TODO: Replace the body shape below with the exact field names from the
+      // USHA API spec. TODO: Confirm the auth header format (Bearer vs X-API-Key).
+      const response = await fetch(apiUrl as string, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          first_name: payload.firstName,
+          last_name: payload.lastName,
+          email: payload.email,
+          phone: payload.phone,
+          age: payload.age,
+          state: payload.state,
+          income_range: payload.incomeRange,
+          household_size: payload.householdSize,
+          qualifying_event: payload.qualifyingEvent,
+          tcpa_consent: payload.tcpaConsent,
+          tcpa_timestamp: payload.tcpaConsentAt,
+          trusted_form_cert_url: payload.trustedFormCertUrl,
+          source_reference: payload.referenceNumber,
+          utm_source: payload.utmSource,
+          utm_medium: payload.utmMedium,
+          utm_campaign: payload.utmCampaign,
+          ip_address: payload.ipAddress,
+          lead_type: payload.leadType,
+        }),
+      })
+
+      if (response.ok) {
+        // TODO: Confirm USHA's lead-ID field name once the API spec is available.
+        const responseData = (await response.json().catch(() => ({}))) as Record<string, unknown>
+        const ushaLeadId = (responseData.lead_id ?? responseData.id ?? responseData.leadId) as
+          | string
+          | undefined
+        await updateUshaStatus(leadId, 'sent', ushaLeadId ?? null)
+        console.log(`[usha] Lead ${payload.referenceNumber} posted. USHA ID: ${ushaLeadId ?? 'unknown'}`)
+        return { success: true, status: 'sent', ushaLeadId }
+      }
+
       const errorText = await response.text().catch(() => response.statusText)
-      console.error(`[usha] Lead post failed: HTTP ${response.status} - ${errorText}`)
-
-      // Update Supabase with failed status
-      await updateUshaStatus(leadId, 'failed', null)
-
-      return { success: false, status: 'failed', error: `HTTP ${response.status}: ${errorText}` }
+      lastError = `HTTP ${response.status}: ${errorText}`
+      if (!isRetryable(response.status) || attempt === MAX_ATTEMPTS) {
+        console.error(`[usha] Lead post failed (attempt ${attempt}/${MAX_ATTEMPTS}): ${lastError}`)
+        await updateUshaStatus(leadId, 'failed')
+        return { success: false, status: 'failed', error: lastError }
+      }
+      console.warn(`[usha] attempt ${attempt} failed (${lastError}); retrying`)
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : 'Unknown error'
+      if (attempt === MAX_ATTEMPTS) {
+        console.error(`[usha] Lead post errored after ${MAX_ATTEMPTS} attempts: ${lastError}`)
+        await updateUshaStatus(leadId, 'failed')
+        return { success: false, status: 'failed', error: lastError }
+      }
+      console.warn(`[usha] attempt ${attempt} threw (${lastError}); retrying`)
     }
 
-    // TODO: Parse the response to extract USHA's lead ID field name
-    const responseData = await response.json().catch(() => ({})) as Record<string, unknown>
-    const ushaLeadId = (responseData.lead_id ?? responseData.id ?? responseData.leadId) as string | undefined
-
-    // Update Supabase with success status
-    await updateUshaStatus(leadId, 'sent', ushaLeadId ?? null)
-
-    console.log(`[usha] Lead ${payload.referenceNumber} posted successfully. USHA ID: ${ushaLeadId ?? 'unknown'}`)
-    return { success: true, status: 'sent', ushaLeadId }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    console.error('[usha] Unexpected error posting lead:', message)
-
-    await updateUshaStatus(leadId, 'failed', null)
-
-    return { success: false, status: 'failed', error: message }
+    // Exponential-ish backoff before the next attempt.
+    await new Promise((resolve) => setTimeout(resolve, 500 * attempt))
   }
+
+  await updateUshaStatus(leadId, 'failed')
+  return { success: false, status: 'failed', error: lastError }
 }
 
-/** Updates the lead record in Supabase with the USHA submission result. */
+/** Updates the lead record in Supabase with the USHA submission status. */
 async function updateUshaStatus(
-  leadId: string,
-  status: 'sent' | 'failed',
-  ushaLeadId: string | null,
+  leadId: string | null,
+  status: 'pending' | 'sent' | 'failed',
+  ushaLeadId: string | null = null,
 ): Promise<void> {
+  if (!leadId) return
   try {
     const supabase = createClient()
-    await supabase
-      .from('leads')
-      .update({
-        usha_status: status,
-        usha_sent_at: new Date().toISOString(),
-        ...(ushaLeadId && { usha_lead_id: ushaLeadId }),
-      })
-      .eq('id', leadId)
+    if (!supabase) return
+    const update: Record<string, unknown> = { usha_status: status }
+    // Only a real submission attempt stamps a time; 'pending' has not been sent.
+    if (status !== 'pending') update.usha_sent_at = new Date().toISOString()
+    if (ushaLeadId) update.usha_lead_id = ushaLeadId
+    await supabase.from('leads').update(update).eq('id', leadId)
   } catch (err) {
-    // Non-fatal: columns may not exist yet
     console.warn('[usha] Could not update usha_status on lead record:', err)
   }
 }

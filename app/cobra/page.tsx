@@ -794,7 +794,7 @@ export default function COBRAQuizPage() {
                           }`}
                         >
                           <div className="flex items-center gap-4">
-                            <span className="text-2xl">{option.icon}</span>
+                            <span className="text-2xl">{(option as { icon?: string }).icon}</span>
                             <div>
                               <div className="font-semibold text-foreground">{option.label}</div>
                               <div className="text-sm text-muted-foreground">{option.desc}</div>

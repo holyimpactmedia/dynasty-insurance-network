@@ -25,6 +25,7 @@ import {
   Calendar,
   Globe,
   Cpu,
+  ListChecks,
 } from "lucide-react"
 
 interface LeadDetailDrawerProps {
@@ -216,6 +217,31 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
             <Row label="Income Range" value={fmt(lead.income_range)} />
             <Row label="Coverage Priority" value={fmt(lead.priorities)} />
           </Section>
+
+          {lead.quiz_answers && Object.keys(lead.quiz_answers).length > 0 && (
+            <>
+              <Separator />
+              <Section icon={ListChecks} title="Quiz Responses">
+                {Object.entries(lead.quiz_answers).map(([key, value]) => (
+                  <Row
+                    key={key}
+                    label={key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    value={
+                      Array.isArray(value)
+                        ? value.join(", ")
+                        : value == null
+                          ? "N/A"
+                          : typeof value === "object"
+                            ? JSON.stringify(value)
+                            : String(value)
+                    }
+                  />
+                ))}
+              </Section>
+            </>
+          )}
 
           <Separator />
 

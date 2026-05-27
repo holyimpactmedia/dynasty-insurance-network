@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import { createClient } from '@/lib/supabase/admin'
 import { sendLeadConfirmation } from '@/lib/email/sendLeadConfirmation'
-import { notifyAgentsOfNewLead } from '@/lib/sms/notifyAgents'
 import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
 import { postLeadToUsha } from '@/lib/usha/postLead'
 import { notifyAdmin } from '@/lib/email/notifyAdmin'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // Generate a unique reference number for leads
 function generateReferenceNumber(): string {
@@ -13,11 +13,15 @@ function generateReferenceNumber(): string {
   return `HL-${timestamp}-${random}`
 }
 
+// A repeat submission of the same email inside this window is treated as a
+// duplicate: we return success without re-inserting or re-spending money on
+// AI scoring / USHA / email.
+const DEDUP_WINDOW_MS = 10 * 60 * 1000
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Extract lead data from the request
     const {
       firstName,
       lastName,
@@ -35,53 +39,81 @@ export async function POST(request: NextRequest) {
       utmMedium,
       utmCampaign,
       funnelType,
+      quizAnswers,
     } = body
 
-    // Validate required fields
+    // Required fields
     if (!firstName || !lastName || !email) {
       return NextResponse.json(
         { error: 'Missing required fields: firstName, lastName, email' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
-    // Validate TCPA consent
+    // TCPA consent is mandatory
     if (!tcpaConsent) {
       return NextResponse.json(
         { error: 'TCPA consent is required' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
-    const supabase = createClient()
-    const referenceNumber = generateReferenceNumber()
-
-    // Get client IP address
+    // Client IP (best-effort, used for rate limiting + lead attribution)
     const forwardedFor = request.headers.get('x-forwarded-for')
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown'
 
+    // Rate limit: /api/leads is public and spends money per call (Anthropic,
+    // Resend, USHA). Best-effort in-memory limiter; the dedup check below is
+    // the reliable backstop.
+    const rl = checkRateLimit(`leads:${ipAddress}`)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 },
+      )
+    }
+
+    const normalizedEmail = String(email).toLowerCase().trim()
+    const supabase = createClient()
+    const referenceNumber = generateReferenceNumber()
     const tcpaConsentAt = new Date().toISOString()
     const resolvedFunnelType = funnelType || 'private_health'
 
-    // Try to insert the lead. If Supabase is unavailable or the insert fails,
-    // we still proceed with downstream notifications and return success to the
-    // user so the form does not appear broken. The lead is preserved in the
-    // admin notification email.
+    // Lead record id/created_at, populated by a successful insert.
     let data: { id: string | null; created_at: string } = {
       id: null,
       created_at: new Date().toISOString(),
     }
 
     if (!supabase) {
-      console.warn('Supabase admin client not configured. Lead will be sent via email only.', { referenceNumber })
+      console.warn('Supabase admin client not configured. Lead sent via email only.', { referenceNumber })
     } else {
+      // Duplicate check: same email submitted recently => idempotent success.
+      const since = new Date(Date.now() - DEDUP_WINDOW_MS).toISOString()
+      const { data: dup } = await supabase
+        .from('leads')
+        .select('reference_number')
+        .eq('email', normalizedEmail)
+        .gte('created_at', since)
+        .limit(1)
+        .maybeSingle()
+
+      if (dup) {
+        console.log('Duplicate lead submission ignored:', { email: normalizedEmail })
+        return NextResponse.json({
+          success: true,
+          referenceNumber: (dup as { reference_number: string }).reference_number,
+          message: 'Lead already received',
+        })
+      }
+
       const { data: insertResult, error } = await supabase
         .from('leads')
         .insert({
           reference_number: referenceNumber,
           first_name: firstName,
           last_name: lastName,
-          email: email.toLowerCase().trim(),
+          email: normalizedEmail,
           phone: phone || null,
           age: age ? parseInt(age, 10) : null,
           state: state || null,
@@ -97,77 +129,85 @@ export async function POST(request: NextRequest) {
           utm_medium: utmMedium || null,
           utm_campaign: utmCampaign || null,
           ip_address: ipAddress,
+          quiz_answers: quizAnswers ?? null,
           status: 'new',
         })
         .select()
         .single()
 
       if (error) {
-        console.error('Error inserting lead (continuing with notifications):', error, { referenceNumber })
+        // Loud, not silent: the lead form must not break, but a failed insert
+        // is an operational problem, not a routine fallback.
+        console.error('LEAD INSERT FAILED (continuing with notifications):', error, { referenceNumber })
       } else if (insertResult) {
         data = insertResult
       }
     }
 
-    // ── Fire-and-forget async integrations (do not block the response) ──────
+    // ── Post-response pipeline ──────────────────────────────────────────────
+    // after() runs once the response is sent but keeps the function alive for
+    // the work, so on Vercel these integrations actually complete (a bare
+    // fire-and-forget promise can be frozen/killed after the response).
+    after(async () => {
+      // 1. Claim the TrustedForm certificate (TCPA compliance evidence).
+      if (trustedFormCertUrl) {
+        try {
+          await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              certificateUrl: trustedFormCertUrl,
+              leadId: data.id,
+              email: normalizedEmail,
+              phone,
+            }),
+          })
+        } catch (err) {
+          console.error('TrustedForm claim error:', err)
+        }
+      }
 
-    // 1. Claim TrustedForm certificate (TCPA compliance)
-    if (trustedFormCertUrl) {
-      fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          certificateUrl: trustedFormCertUrl,
-          leadId: data.id,
-          email,
-          phone,
-        }),
-      }).catch(err => console.error('TrustedForm claim error:', err))
-    }
+      // 2. Confirmation email to the consumer.
+      try {
+        await sendLeadConfirmation({ referenceNumber, firstName, email: normalizedEmail, phone })
+      } catch (err) {
+        console.error('Lead confirmation email error:', err)
+      }
 
-    // 2. Send confirmation email to the consumer
-    sendLeadConfirmation({
-      id: data.id,
-      referenceNumber,
-      firstName,
-      lastName,
-      email,
-      phone,
-      state,
-      trustedFormCertUrl,
-    }).catch(err => console.error('Lead confirmation email error:', err))
+      // 3. Post the lead to the USHA Marketplace, then notify the admin with
+      //    the result (the admin email surfaces a 'failed' marketplace post).
+      let ushaResult
+      try {
+        ushaResult = await postLeadToUsha(data.id, {
+          firstName,
+          lastName,
+          email: normalizedEmail,
+          phone: phone || null,
+          age: age ? parseInt(age, 10) : null,
+          state: state || null,
+          incomeRange: incomeRange || null,
+          householdSize: householdSize || null,
+          qualifyingEvent: qualifyingEvent || null,
+          tcpaConsent,
+          tcpaConsentAt,
+          trustedFormCertUrl: trustedFormCertUrl || null,
+          referenceNumber,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          ipAddress,
+          leadType: resolvedFunnelType,
+        })
+      } catch (err) {
+        console.error('USHA post error:', err)
+      }
 
-    // 3. Post lead to USHA Marketplace for agents to purchase
-    //    Also sends admin notification email with USHA result + full lead data
-    const ushaPayload = {
-      firstName,
-      lastName,
-      email,
-      phone: phone || null,
-      age: age ? parseInt(age, 10) : null,
-      state: state || null,
-      incomeRange: incomeRange || null,
-      householdSize: householdSize || null,
-      qualifyingEvent: qualifyingEvent || null,
-      tcpaConsent,
-      tcpaConsentAt,
-      trustedFormCertUrl: trustedFormCertUrl || null,
-      referenceNumber,
-      utmSource: utmSource || null,
-      utmMedium: utmMedium || null,
-      utmCampaign: utmCampaign || null,
-      ipAddress,
-      leadType: resolvedFunnelType,
-    }
-
-    postLeadToUsha(data.id, ushaPayload)
-      .then(ushaResult => {
-        // Send admin notification email after USHA post so we can include its status
-        notifyAdmin({
+      try {
+        await notifyAdmin({
           referenceNumber,
           firstName,
           lastName,
-          email,
+          email: normalizedEmail,
           phone: phone || null,
           age: age ? parseInt(age, 10) : null,
           state: state || null,
@@ -183,41 +223,40 @@ export async function POST(request: NextRequest) {
           tcpaConsentAt,
           trustedFormCertUrl: trustedFormCertUrl || null,
           ushaResult,
-        }).catch(err => console.error('Admin notification email error:', err))
-      })
-      .catch(err => console.error('USHA post error:', err))
+        })
+      } catch (err) {
+        console.error('Admin notification email error:', err)
+      }
 
-    // 4. Score lead with AI (async: updates the lead record in Supabase)
-    scoreAndUpdateLead({
-      id: data.id,
-      referenceNumber,
-      firstName,
-      lastName,
-      email,
-      phone,
-      age,
-      state,
-      householdSize,
-      incomeRange,
-      qualifyingEvent,
-      priorities,
-      created_at: data.created_at,
-    }).catch(err => console.error('AI scoring error:', err))
-
-    // notifyAgentsOfNewLead kept for legacy compatibility: not called in new flow.
-    // Leads route to USHA Marketplace instead.
-    void notifyAgentsOfNewLead
+      // 4. Score the lead with AI (updates the lead record in Supabase).
+      try {
+        await scoreAndUpdateLead({
+          id: data.id,
+          referenceNumber,
+          firstName,
+          lastName,
+          email: normalizedEmail,
+          phone,
+          age,
+          state,
+          householdSize,
+          incomeRange,
+          qualifyingEvent,
+          priorities,
+          created_at: data.created_at,
+        })
+      } catch (err) {
+        console.error('AI scoring error:', err)
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      referenceNumber: referenceNumber,
+      referenceNumber,
       message: 'Lead submitted successfully',
     })
   } catch (error) {
     console.error('Error processing lead submission:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -54,27 +54,20 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Admin-only routes - non-admins get redirected to their agent dashboard
-  const adminPaths = ["/dashboard/admin", "/dashboard/projections", "/dashboard/routing"]
-  const isAdminPath = adminPaths.some((p) => pathname.startsWith(p))
+  // Admin authorization is intentionally NOT enforced here: middleware cannot
+  // cheaply read the profiles table. The authoritative gate is requireAdmin()
+  // in the dashboard layout (a server component that runs before any page).
+  // Middleware only enforces authenticated-or-not.
 
-  if (isAdminPath && user) {
-    const role = (user.user_metadata as { role?: string } | null)?.role
-    if (role !== "admin") {
-      const url = request.nextUrl.clone()
-      url.pathname = "/dashboard/agent"
-      return NextResponse.redirect(url)
-    }
-  }
-
-  // If user is logged in and tries to access auth pages, redirect to dashboard
-  const authPaths = ["/auth/login", "/auth/signup"]
-  const isAuthPath = authPaths.some((p) => pathname.startsWith(p))
+  // Logged-in users on an auth page go to the dashboard; requireAdmin() will
+  // bounce them back home if they are not an admin.
+  // Signup is intentionally not exposed in the app; accounts are created from
+  // Supabase only. /auth/login is the sole interactive auth page.
+  const isAuthPath = pathname.startsWith("/auth/login")
 
   if (isAuthPath && user) {
     const url = request.nextUrl.clone()
-    const role = (user.user_metadata as { role?: string } | null)?.role
-    url.pathname = role === "admin" ? "/dashboard/admin" : "/dashboard/agent"
+    url.pathname = "/dashboard/admin"
     return NextResponse.redirect(url)
   }
 

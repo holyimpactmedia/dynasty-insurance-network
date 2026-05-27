@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
+import { safeRedirect } from "@/lib/auth/safeRedirect"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,7 +20,7 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get("redirectTo") || "/dashboard/agent"
+  const redirectTo = safeRedirect(searchParams.get("redirectTo"))
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -132,13 +133,7 @@ function LoginForm() {
             </div>
           </div>
 
-          <div className="mt-4 text-center space-y-2">
-            <p className="text-sm text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="text-[#D4AF37] hover:underline">
-                Create one
-              </Link>
-            </p>
+          <div className="mt-4 text-center">
             <Link href="/" className="text-sm text-gray-500 hover:text-gray-300 block">
               Back to home
             </Link>
