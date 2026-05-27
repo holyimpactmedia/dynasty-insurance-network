@@ -378,19 +378,19 @@ export default function AdminDashboardClient({
   const funnelTotal = funnels.reduce((s, f) => s + f.leads, 0)
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto">
+    <div className="p-4 sm:p-6 max-w-[1600px] mx-auto">
       {/* Page header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Lead Tracker</h1>
           <p className="text-sm text-gray-500">Dynasty Insurance Network: Admin</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={handleRefresh} disabled={loading}>
+          <Button variant="outline" className="flex-1 sm:flex-none" onClick={handleRefresh} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button variant="outline" onClick={handleExport}>
+          <Button variant="outline" className="flex-1 sm:flex-none" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
             Export CSV
           </Button>
@@ -458,8 +458,8 @@ export default function AdminDashboardClient({
 
       {/* Leads table */}
       <Card className="overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="p-4 border-b border-gray-100 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+          <div className="relative md:flex-1 md:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search name, email, phone, ref…"
@@ -469,7 +469,7 @@ export default function AdminDashboardClient({
             />
           </div>
           <Select value={filterFunnel} onValueChange={setFilterFunnel}>
-            <SelectTrigger className="w-40"><SelectValue placeholder="All funnels" /></SelectTrigger>
+            <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="All funnels" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All funnels</SelectItem>
               {Object.entries(FUNNEL_LABELS).map(([k, v]) => (
@@ -478,7 +478,7 @@ export default function AdminDashboardClient({
             </SelectContent>
           </Select>
           <Select value={filterMarketplace} onValueChange={setFilterMarketplace}>
-            <SelectTrigger className="w-40"><SelectValue placeholder="Marketplace" /></SelectTrigger>
+            <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="Marketplace" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All marketplace</SelectItem>
               <SelectItem value="sent">Sent</SelectItem>
@@ -488,7 +488,7 @@ export default function AdminDashboardClient({
             </SelectContent>
           </Select>
           <Select value={filterMinScore} onValueChange={setFilterMinScore}>
-            <SelectTrigger className="w-36"><SelectValue placeholder="Min AI score" /></SelectTrigger>
+            <SelectTrigger className="w-full md:w-36"><SelectValue placeholder="Min AI score" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="0">Any score</SelectItem>
               <SelectItem value="80">80+ (Hot)</SelectItem>
@@ -496,7 +496,7 @@ export default function AdminDashboardClient({
               <SelectItem value="45">45+ (Qualified)</SelectItem>
             </SelectContent>
           </Select>
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-2 md:ml-auto">
             <Badge className="bg-green-100 text-green-700 border-green-200">Live</Badge>
             <span className="text-sm text-gray-400">{totalCount} leads</span>
           </div>

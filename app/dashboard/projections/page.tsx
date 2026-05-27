@@ -111,9 +111,9 @@ export default async function ProjectionsDashboard() {
   }
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto">
+    <div className="p-4 sm:p-6 max-w-[1600px] mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col gap-3 mb-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Pass-through Financials</h1>
           <p className="text-sm text-gray-500">
