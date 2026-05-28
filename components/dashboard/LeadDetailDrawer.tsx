@@ -129,7 +129,9 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
       >
         {/* ── header ── */}
         <SheetHeader className="bg-gradient-to-br from-[#0A1128] to-[#1a2744] px-6 py-5">
-          <div className="flex items-start justify-between">
+          {/* pr-12 keeps the status badges clear of the absolute close button
+              in the top-right corner. */}
+          <div className="flex items-start justify-between pr-12">
             <div>
               <SheetTitle className="text-white text-xl font-bold">
                 {lead.first_name} {lead.last_name}
