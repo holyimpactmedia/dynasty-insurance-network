@@ -85,16 +85,20 @@ function Section({
           {title}
         </span>
       </div>
-      <div className="space-y-2 pl-6">{children}</div>
+      <div className="space-y-2 pl-4 sm:pl-6">{children}</div>
     </div>
   )
 }
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 text-sm">
-      <span className="text-gray-500 shrink-0 w-40">{label}</span>
-      <span className="text-gray-900 font-medium text-right">{value}</span>
+    <div className="flex items-start justify-between gap-3 text-sm sm:gap-4">
+      {/* Narrower label on mobile leaves more room for long values (emails, URLs). */}
+      <span className="text-gray-500 shrink-0 w-28 sm:w-40">{label}</span>
+      {/* min-w-0 + break-all so long emails / URLs wrap instead of overflowing. */}
+      <span className="text-gray-900 font-medium text-right flex-1 min-w-0 break-all">
+        {value}
+      </span>
     </div>
   )
 }
@@ -171,7 +175,7 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
         </SheetHeader>
 
         {/* ── body ── */}
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-4 py-6 space-y-6 sm:px-6">
 
           {/* Contact */}
           <Section icon={User} title="Contact Information">
