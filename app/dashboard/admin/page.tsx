@@ -7,7 +7,7 @@ import { toZonedTime } from "date-fns-tz"
 import { format } from "date-fns"
 import type { Lead } from "@/lib/types/lead"
 
-export const PAGE_SIZE = 50
+export const PAGE_SIZE = 25
 
 const LEAD_COLUMNS = `
   id, reference_number, first_name, last_name, email, phone, age,

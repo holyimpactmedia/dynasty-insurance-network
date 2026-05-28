@@ -458,47 +458,53 @@ export default function AdminDashboardClient({
 
       {/* Leads table */}
       <Card className="overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
-          <div className="relative md:flex-1 md:min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="p-4 border-b border-gray-100 space-y-3">
+          {/* Prominent search — the primary way to find a lead */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <Input
-              placeholder="Search name, email, phone, ref…"
+              type="search"
+              inputMode="search"
+              placeholder="Search name, email, phone, or reference…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-10 h-11 text-base"
             />
           </div>
-          <Select value={filterFunnel} onValueChange={setFilterFunnel}>
-            <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="All funnels" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All funnels</SelectItem>
-              {Object.entries(FUNNEL_LABELS).map(([k, v]) => (
-                <SelectItem key={k} value={k}>{v}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={filterMarketplace} onValueChange={setFilterMarketplace}>
-            <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="Marketplace" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All marketplace</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="none">Not sent</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterMinScore} onValueChange={setFilterMinScore}>
-            <SelectTrigger className="w-full md:w-36"><SelectValue placeholder="Min AI score" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Any score</SelectItem>
-              <SelectItem value="80">80+ (Hot)</SelectItem>
-              <SelectItem value="65">65+ (Warm)</SelectItem>
-              <SelectItem value="45">45+ (Qualified)</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex items-center gap-2 md:ml-auto">
-            <Badge className="bg-green-100 text-green-700 border-green-200">Live</Badge>
-            <span className="text-sm text-gray-400">{totalCount} leads</span>
+          {/* Secondary filters + live status */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Select value={filterFunnel} onValueChange={setFilterFunnel}>
+              <SelectTrigger className="flex-1 min-w-[110px] sm:flex-none sm:w-40"><SelectValue placeholder="All funnels" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All funnels</SelectItem>
+                {Object.entries(FUNNEL_LABELS).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterMarketplace} onValueChange={setFilterMarketplace}>
+              <SelectTrigger className="flex-1 min-w-[110px] sm:flex-none sm:w-40"><SelectValue placeholder="Marketplace" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All marketplace</SelectItem>
+                <SelectItem value="sent">Sent</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+                <SelectItem value="none">Not sent</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterMinScore} onValueChange={setFilterMinScore}>
+              <SelectTrigger className="flex-1 min-w-[110px] sm:flex-none sm:w-36"><SelectValue placeholder="Min AI score" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Any score</SelectItem>
+                <SelectItem value="80">80+ (Hot)</SelectItem>
+                <SelectItem value="65">65+ (Warm)</SelectItem>
+                <SelectItem value="45">45+ (Qualified)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex w-full items-center justify-end gap-2 sm:ml-auto sm:w-auto">
+              <Badge className="bg-green-100 text-green-700 border-green-200">Live</Badge>
+              <span className="text-sm text-gray-400">{totalCount} leads</span>
+            </div>
           </div>
         </div>
 
@@ -567,9 +573,10 @@ export default function AdminDashboardClient({
           )}
         </div>
 
-        {/* Desktop: table */}
+        {/* Desktop: table. Align cell padding (px-4) with the filter bar and
+            pagination (p-4) and give rows a bit more height. */}
         <div className="hidden md:block overflow-x-auto">
-          <Table>
+          <Table className="[&_th]:px-4 [&_td]:px-4 [&_td]:py-3">
             <TableHeader>
               <TableRow className="bg-gray-50">
                 <TableHead className="font-semibold text-gray-600">Reference</TableHead>
