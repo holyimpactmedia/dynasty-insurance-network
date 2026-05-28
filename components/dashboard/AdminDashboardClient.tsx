@@ -78,7 +78,8 @@ interface AdminDashboardClientProps {
   initialStats: DashboardStats
   initialLeads: Lead[]
   totalLeadCount: number
-  pageSize: number
+  pageSizeMobile: number
+  pageSizeDesktop: number
   initialDailyData: DailyCount[]
   funnelBreakdown: FunnelRow[]
   errored: boolean
@@ -146,7 +147,8 @@ export default function AdminDashboardClient({
   initialStats,
   initialLeads,
   totalLeadCount,
-  pageSize,
+  pageSizeMobile,
+  pageSizeDesktop,
   initialDailyData,
   funnelBreakdown,
   errored,
@@ -157,6 +159,9 @@ export default function AdminDashboardClient({
   const [funnels, setFunnels] = useState(funnelBreakdown)
   const [totalCount, setTotalCount] = useState(totalLeadCount)
   const [page, setPage] = useState(0)
+  // Initialized to the desktop size to match the server-rendered list; the
+  // matchMedia effect below narrows it to mobile on small screens.
+  const [pageSize, setPageSize] = useState(pageSizeDesktop)
   const [loading, setLoading] = useState(false)
   const [loadError, setLoadError] = useState(errored)
 
@@ -179,6 +184,10 @@ export default function AdminDashboardClient({
   // Latest filter values for the realtime handler (avoids stale closures).
   const filtersRef = useRef({ filtersActive, page })
   filtersRef.current = { filtersActive, page }
+
+  // Current page size, readable inside subscriptions without a stale closure.
+  const pageSizeRef = useRef(pageSize)
+  pageSizeRef.current = pageSize
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
 
@@ -210,16 +219,17 @@ export default function AdminDashboardClient({
   )
 
   const loadPage = useCallback(
-    async (targetPage: number) => {
+    async (targetPage: number, size?: number) => {
+      const effSize = size ?? pageSizeRef.current
       setLoading(true)
       const supabase = createClient()
-      const from = targetPage * pageSize
+      const from = targetPage * effSize
       const base = supabase
         .from("leads")
         .select(LEAD_COLUMNS, { count: "exact" })
       const { data, count, error } = await applyFilters(base)
         .order("created_at", { ascending: false })
-        .range(from, from + pageSize - 1)
+        .range(from, from + effSize - 1)
       if (error) {
         setLoadError(true)
       } else {
@@ -230,8 +240,27 @@ export default function AdminDashboardClient({
       }
       setLoading(false)
     },
-    [applyFilters, pageSize],
+    [applyFilters],
   )
+
+  // Responsive page size: 25 on phones, 50 on desktop. The server fetched the
+  // desktop size, so only small screens need to re-fetch (down to 25).
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    const apply = (matches: boolean) => {
+      const desired = matches ? pageSizeDesktop : pageSizeMobile
+      if (desired !== pageSizeRef.current) {
+        pageSizeRef.current = desired
+        setPageSize(desired)
+        loadPage(0, desired)
+      }
+    }
+    apply(mq.matches)
+    const handler = (e: MediaQueryListEvent) => apply(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageSizeMobile, pageSizeDesktop])
 
   // Re-query page 0 whenever a filter changes (debounced for the search box).
   useEffect(() => {
@@ -264,7 +293,7 @@ export default function AdminDashboardClient({
           if (fa || p !== 0) return
           setLeads((prev) => {
             if (prev.some((l) => l.id === newLead.id)) return prev // dedup
-            return [newLead, ...prev].slice(0, pageSize) // cap
+            return [newLead, ...prev].slice(0, pageSizeRef.current) // cap
           })
         },
       )
@@ -285,7 +314,9 @@ export default function AdminDashboardClient({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [pageSize])
+    // Subscribe once; the handler reads the current page size from pageSizeRef.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // ── refresh ──────────────────────────────────────────────────────────────────
   const handleRefresh = useCallback(async () => {

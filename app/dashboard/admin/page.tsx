@@ -7,7 +7,11 @@ import { toZonedTime } from "date-fns-tz"
 import { format } from "date-fns"
 import type { Lead } from "@/lib/types/lead"
 
-export const PAGE_SIZE = 25
+// Responsive page size: the client narrows to mobile on small screens
+// (the server can't see the viewport). The initial fetch uses the desktop
+// size so desktop renders without a re-fetch.
+export const PAGE_SIZE_MOBILE = 25
+export const PAGE_SIZE_DESKTOP = 50
 
 const LEAD_COLUMNS = `
   id, reference_number, first_name, last_name, email, phone, age,
@@ -56,7 +60,7 @@ export default async function AdminDashboard() {
         .from("leads")
         .select(LEAD_COLUMNS, { count: "exact" })
         .order("created_at", { ascending: false })
-        .range(0, PAGE_SIZE - 1)
+        .range(0, PAGE_SIZE_DESKTOP - 1)
       if (error) errored = true
       return { rows: ((data as unknown as Lead[] | null) ?? []), total: count ?? 0 }
     })(),
@@ -97,7 +101,8 @@ export default async function AdminDashboard() {
       initialStats={stats}
       initialLeads={leadsPage.rows}
       totalLeadCount={leadsPage.total}
-      pageSize={PAGE_SIZE}
+      pageSizeMobile={PAGE_SIZE_MOBILE}
+      pageSizeDesktop={PAGE_SIZE_DESKTOP}
       initialDailyData={dailyData}
       funnelBreakdown={funnelRows}
       errored={errored}
