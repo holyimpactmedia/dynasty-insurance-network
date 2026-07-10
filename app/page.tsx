@@ -104,7 +104,7 @@ export default function HomePage() {
               { icon: RefreshCw, t: "COBRA sticker shock", d: "Leaving a job? COBRA can cost a fortune for the same coverage you already had." },
               { icon: Briefcase, t: "Self-employed, on your own", d: "No HR, no group plan, no one to explain your options. Just you and a confusing marketplace." },
             ].map(({ icon: Icon, t, d }) => (
-              <Card key={t}>
+              <Card key={t} className="union-center-mobile">
                 <IconChip tint="#fdeef0"><Icon width={23} height={23} color="var(--color-red)" strokeWidth={1.7} /></IconChip>
                 <h3 className="font-display" style={cardTitle}>{t}</h3>
                 <p style={cardBody}>{d}</p>
@@ -170,7 +170,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,244px),1fr))", gap: 18 }}>
             {PATHS.map((p) => (
-              <button key={p.title} onClick={() => open(p.seg)} style={{ position: "relative", textAlign: "left", background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 18, padding: 24, cursor: "pointer", color: "#fff" }}>
+              <button key={p.title} onClick={() => open(p.seg)} className="union-path-card" style={{ position: "relative", textAlign: "left", background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 18, padding: 24, cursor: "pointer", color: "#fff" }}>
                 {p.popular && <span style={{ position: "absolute", top: 14, right: 14, background: "var(--color-red)", color: "#fff", fontSize: 10, fontWeight: 800, letterSpacing: ".4px", borderRadius: 6, padding: "4px 7px" }}>POPULAR</span>}
                 <p.icon width={26} height={26} color="var(--color-steel)" strokeWidth={1.6} />
                 <p className="font-display" style={{ fontWeight: 700, fontSize: 19, marginTop: 14 }}>{p.title}</p>
@@ -209,8 +209,8 @@ export default function HomePage() {
       {/* TESTIMONIALS */}
       <section style={{ ...section, background: "var(--color-surface)" }}>
         <div style={container}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between", marginBottom: 44 }}>
-            <div style={{ maxWidth: 560 }}>
+          <div className="union-row-center-mobile" style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between", marginBottom: 44 }}>
+            <div className="union-center-mobile" style={{ maxWidth: 560 }}>
               <Eyebrow>Member stories</Eyebrow>
               <H2 style={{ marginTop: 12 }}>Members love the freedom — and the follow-up.</H2>
             </div>
@@ -222,7 +222,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 20 }}>
             {TESTIMONIALS.map((t) => (
-              <figure key={t.name} className="union-center-mobile" style={{ margin: 0, background: "#fff", border: "1px solid var(--color-line)", borderRadius: 20, padding: 28 }}>
+              <figure key={t.name} className="union-center-mobile union-card" style={{ margin: 0, background: "#fff", border: "1px solid var(--color-line)", borderRadius: 20, padding: 28 }}>
                 <Stars size={16} />
                 <blockquote style={{ margin: "14px 0 18px", fontSize: 16, lineHeight: 1.6, color: "#2c3a4c", fontWeight: 500 }}>&ldquo;{t.quote}&rdquo;</blockquote>
                 <figcaption style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -320,7 +320,7 @@ function H2({ children, onDark, style }: { children: React.ReactNode; onDark?: b
   return <h2 className="font-display" style={{ fontWeight: 700, fontSize: "clamp(28px,4.2vw,42px)", lineHeight: 1.08, letterSpacing: "-1.1px", color: onDark ? "#fff" : "var(--color-navy)", textWrap: "balance", ...style }}>{children}</h2>
 }
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={className} style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: 28, boxShadow: "0 1px 2px rgba(10,37,64,.04)" }}>{children}</div>
+  return <div className={["union-card", className].filter(Boolean).join(" ")} style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: 28, boxShadow: "0 1px 2px rgba(10,37,64,.04)" }}>{children}</div>
 }
 function IconChip({ children, tint }: { children: React.ReactNode; tint: string }) {
   return <span style={{ width: 46, height: 46, borderRadius: 12, background: tint, display: "grid", placeItems: "center" }}>{children}</span>

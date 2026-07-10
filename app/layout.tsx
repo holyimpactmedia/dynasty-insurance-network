@@ -18,16 +18,16 @@ const publicSans = Public_Sans({
   display: "swap",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dynastyinsurancegroup.com"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://unionprivatehealthcare.com"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dynasty Insurance Group | Private Health Insurance Plans",
-    template: "%s | Dynasty Insurance Group",
+    default: "Union Private Healthcare | Private PPO Coverage, Matched Free",
+    template: "%s | Union Private Healthcare",
   },
   description:
-    "Private PPO health insurance plans for healthy Americans under 65. See any doctor, skip referrals, and get nationwide network coverage. Get matched in 90 seconds.",
+    "Union Private Healthcare is a free service that connects working Americans with the right private PPO plans — see any doctor, skip referrals, keep nationwide coverage. Get matched with a licensed agent in about 2 minutes.",
   keywords: [
     "private health insurance",
     "PPO plans",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     "family PPO plan",
     "small business group health insurance",
     "private health insurance for healthy adults",
-    "Dynasty Insurance Group",
+    "Union Private Healthcare",
   ],
   authors: [{ name: "Holy Impact Media", url: "https://holyimpactmedia.com" }],
   creator: "Holy Impact Media",
@@ -48,27 +48,25 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Dynasty Insurance Group",
-    title: "Dynasty Insurance Group | Private Health Insurance Plans",
+    siteName: "Union Private Healthcare",
+    title: "Union Private Healthcare | Private PPO Coverage, Matched Free",
     description:
-      "Private PPO health insurance plans for healthy Americans under 65. See any doctor. No referrals. Nationwide networks.",
+      "A free service that connects working Americans with the right private PPO plans. See any doctor. No referrals. Nationwide coverage.",
     images: [
       {
         url: "/og/home.jpg",
         width: 1200,
         height: 630,
-        alt: "Dynasty Insurance Group: Private Health Insurance Plans",
+        alt: "Union Private Healthcare: private PPO coverage, matched free",
         type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@DynastyInsGroup",
-    creator: "@DynastyInsGroup",
-    title: "Dynasty Insurance Group | Private Health Insurance Plans",
+    title: "Union Private Healthcare | Private PPO Coverage, Matched Free",
     description:
-      "Private PPO health insurance plans for healthy adults. See any doctor. No referrals. Get matched in 90 seconds.",
+      "A free service that connects you with the right private PPO plans and a licensed agent. See any doctor. No referrals.",
     images: ["/og/home.jpg"],
   },
   robots: {
@@ -118,24 +116,25 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   "@id": `${siteUrl}/#organization`,
-                  name: "Dynasty Insurance Group",
+                  name: "Union Private Healthcare",
                   url: siteUrl,
-                  logo: `${siteUrl}/images/logo.avif`,
                   description:
-                    "Private PPO health insurance plans for healthy Americans under 65.",
+                    "A free advisory service that connects working Americans with private PPO plans and the licensed agents who can help. Not an insurer or a government program.",
+                  parentOrganization: { "@type": "Organization", name: "Holy Impact Media, LLC" },
                   sameAs: [],
                 },
                 {
                   "@type": "Organization",
                   "name": "Holy Impact Media, LLC",
                   "url": "https://holyimpactmedia.com",
-                  "description": "Marketing and lead generation services",
+                  "description":
+                    "Operating company, doing business as Union Private Healthcare; marketing and lead-generation services.",
                 },
                 {
                   "@type": "WebSite",
                   "@id": `${siteUrl}/#website`,
                   url: siteUrl,
-                  name: "Dynasty Insurance Group",
+                  name: "Union Private Healthcare",
                   publisher: { "@id": `${siteUrl}/#organization` },
                   inLanguage: "en-US",
                 },

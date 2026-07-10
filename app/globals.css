@@ -228,3 +228,22 @@
     justify-content: center !important;
   }
 }
+
+/* Card hover lift on light sections (problem, why us, how it works, testimonials). */
+.union-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.union-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px -28px rgba(10, 37, 64, 0.28) !important;
+  border-color: #d5deea !important;
+}
+/* Coverage path cards on the navy section. */
+.union-path-card {
+  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+.union-path-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
