@@ -1,8 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { X, User, Users, Briefcase, RefreshCw, Building2, ArrowRight, Check } from "lucide-react"
+import { X, User, Users, Briefcase, RefreshCw, Building2, ArrowRight, Check, AlertCircle } from "lucide-react"
 import { UnionMark } from "./brand"
+import { injectTrustedFormId } from "@/lib/hooks/useTrustedForm"
+import { zipToStateName } from "@/lib/geo/zipToState"
 
 // Universal quiz entry (homepage + funnel CTAs open this). Step 0 routes by
 // segment; a CTA can pre-select a segment to skip it. Per-funnel detailed
@@ -19,6 +21,15 @@ const SEGMENTS: { value: Exclude<Segment, "">; title: string; sub: string; icon:
   { value: "small_business", title: "My small business", sub: "2–50 employees", icon: Building2 },
 ]
 
+// "See any doctor" / no explicit segment routes to the PPO bucket.
+const SEGMENT_TO_FUNNEL: Record<string, string> = {
+  individual: "individual",
+  family: "family",
+  self_employed: "self_employed",
+  cobra: "cobra",
+  small_business: "small_business",
+}
+
 const accent = "var(--color-red)"
 
 export function QuizModal({
@@ -33,11 +44,21 @@ export function QuizModal({
   const [step, setStep] = useState(0)
   const [a, setA] = useState<Record<string, string>>({})
   const [done, setDone] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Set the TrustedForm form id once so the global TrustedForm script mints a
+  // cert for this quiz (TCPA consent evidence).
+  useEffect(() => {
+    injectTrustedFormId("union-homepage-quiz")
+  }, [])
 
   // Reset + pre-route when opened.
   useEffect(() => {
     if (open) {
       setDone(false)
+      setError(null)
+      setSubmitting(false)
       setA(segment ? { segment } : {})
       setStep(segment ? 1 : 0)
     }
@@ -67,10 +88,50 @@ export function QuizModal({
     : step === 2 ? !!a.household && !!a.hasCoverage && !!a.tobacco
     : (a.firstName || "").trim().length >= 2 && (a.lastName || "").trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email || "") && (a.phone || "").replace(/\D/g, "").length === 10 && a.consent === "yes"
 
-  const submit = () => {
-    // TODO(wire): POST to /api/leads with universal fields + the per-funnel
-    // detailed questions (kept for lead quality). Deferred per plan.
-    setDone(true)
+  const submit = async () => {
+    if (submitting) return // guard against double-submit
+    setSubmitting(true)
+    setError(null)
+    try {
+      const trustedFormCertUrl =
+        (document.getElementById("xxTrustedFormCertUrl") as HTMLInputElement)?.value || null
+      const params = new URLSearchParams(window.location.search)
+
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: a.firstName,
+          lastName: a.lastName,
+          email: a.email,
+          phone: a.phone,
+          age: a.age,
+          state: zipToStateName(a.zip), // ZIP itself kept in quizAnswers below
+          householdSize: a.household,
+          tcpaConsent: a.consent === "yes",
+          trustedFormCertUrl,
+          funnelType: SEGMENT_TO_FUNNEL[a.segment] || "ppo",
+          quizAnswers: {
+            zip: a.zip,
+            household: a.household,
+            hasCoverage: a.hasCoverage,
+            tobacco: a.tobacco,
+            source: "homepage_quiz",
+          },
+          utmSource: params.get("utm_source"),
+          utmMedium: params.get("utm_medium"),
+          utmCampaign: params.get("utm_campaign"),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Something went wrong. Please try again.")
+      setDone(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const progress = ((step + 1) / 4) * 100
@@ -118,17 +179,24 @@ export function QuizModal({
               {step === 3 && <Step3 a={a} set={set} />}
 
               {step >= 1 && (
-                <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
-                  <button onClick={back} style={{ padding: "13px 20px", borderRadius: 11, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>Back</button>
-                  <button
-                    onClick={step === 3 ? submit : next}
-                    disabled={!valid}
-                    style={{ flex: 1, padding: "13px 20px", borderRadius: 11, border: "none", fontWeight: 700, fontSize: 15, color: "#fff", cursor: valid ? "pointer" : "not-allowed", background: valid ? accent : "#c3ccd8", boxShadow: valid ? "0 14px 30px -14px rgba(210,35,42,.75)" : "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
-                  >
-                    {step === 3 ? "See My Matches" : "Continue"}
-                    {valid && <ArrowRight width={17} height={17} />}
-                  </button>
-                </div>
+                <>
+                  {error && (
+                    <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 11, background: "#fdeef0", border: "1px solid #f6c9ce", color: "#b31d24", fontSize: 13.5, display: "flex", alignItems: "center", gap: 8 }}>
+                      <AlertCircle width={16} height={16} style={{ flexShrink: 0 }} /> {error}
+                    </div>
+                  )}
+                  <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
+                    <button onClick={back} disabled={submitting} style={{ padding: "13px 20px", borderRadius: 11, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, cursor: submitting ? "not-allowed" : "pointer" }}>Back</button>
+                    <button
+                      onClick={step === 3 ? submit : next}
+                      disabled={!valid || submitting}
+                      style={{ flex: 1, padding: "13px 20px", borderRadius: 11, border: "none", fontWeight: 700, fontSize: 15, color: "#fff", cursor: valid && !submitting ? "pointer" : "not-allowed", background: valid && !submitting ? accent : "#c3ccd8", boxShadow: valid && !submitting ? "0 14px 30px -14px rgba(210,35,42,.75)" : "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+                    >
+                      {submitting ? "Submitting…" : step === 3 ? "See My Matches" : "Continue"}
+                      {valid && !submitting && <ArrowRight width={17} height={17} />}
+                    </button>
+                  </div>
+                </>
               )}
             </>
           )}
