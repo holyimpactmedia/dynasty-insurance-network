@@ -204,17 +204,27 @@
   }
 }
 @media (max-width: 760px) {
-  /* Center hero + intro content on small screens. */
+  /* Center content on small screens: text, and the block-level icon/number/
+     avatar chips (fixed-width spans) plus flex rows inside cards. */
   .union-center-mobile {
     text-align: center;
   }
-  .union-center-mobile p,
   .union-center-mobile h1,
-  .union-center-mobile h2 {
+  .union-center-mobile h2,
+  .union-center-mobile h3,
+  .union-center-mobile p,
+  .union-center-mobile blockquote {
     margin-left: auto;
     margin-right: auto;
   }
-  .union-row-center-mobile {
+  .union-center-mobile > span {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .union-center-mobile figcaption {
     justify-content: center;
+  }
+  .union-row-center-mobile {
+    justify-content: center !important;
   }
 }

@@ -195,7 +195,7 @@ export default function HomePage() {
               { n: "2", t: "We match you", d: "We connect you with a licensed agent and the private PPO plans that fit your situation." },
               { n: "3", t: "Compare & enroll", d: "Review your options side by side, ask questions, and enroll — always free to you." },
             ].map((s) => (
-              <Card key={s.n}>
+              <Card key={s.n} className="union-center-mobile">
                 <span className="font-display" style={{ width: 42, height: 42, borderRadius: 10, background: "var(--color-navy)", color: "var(--color-steel)", display: "grid", placeItems: "center", fontWeight: 700, fontSize: 18 }}>{s.n}</span>
                 <h3 className="font-display" style={cardTitle}>{s.t}</h3>
                 <p style={cardBody}>{s.d}</p>
@@ -222,7 +222,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 20 }}>
             {TESTIMONIALS.map((t) => (
-              <figure key={t.name} style={{ margin: 0, background: "#fff", border: "1px solid var(--color-line)", borderRadius: 20, padding: 28 }}>
+              <figure key={t.name} className="union-center-mobile" style={{ margin: 0, background: "#fff", border: "1px solid var(--color-line)", borderRadius: 20, padding: 28 }}>
                 <Stars size={16} />
                 <blockquote style={{ margin: "14px 0 18px", fontSize: 16, lineHeight: 1.6, color: "#2c3a4c", fontWeight: 500 }}>&ldquo;{t.quote}&rdquo;</blockquote>
                 <figcaption style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -252,7 +252,7 @@ export default function HomePage() {
               { icon: Lock, t: "Private & secure", d: "Your information is protected and only shared with the agent who helps you." },
               { icon: Clock, t: "Fast, human follow-up", d: "A real specialist reaches out quickly — usually within minutes on business days." },
             ].map(({ icon: Icon, t, d }) => (
-              <Card key={t}>
+              <Card key={t} className="union-center-mobile">
                 <IconChip tint="var(--color-surface-2)"><Icon width={23} height={23} color="var(--color-navy)" strokeWidth={1.7} /></IconChip>
                 <h3 className="font-display" style={cardTitle}>{t}</h3>
                 <p style={cardBody}>{d}</p>
@@ -319,8 +319,8 @@ function PrimaryCTA({ children, onClick, big }: { children: React.ReactNode; onC
 function H2({ children, onDark, style }: { children: React.ReactNode; onDark?: boolean; style?: CSSProperties }) {
   return <h2 className="font-display" style={{ fontWeight: 700, fontSize: "clamp(28px,4.2vw,42px)", lineHeight: 1.08, letterSpacing: "-1.1px", color: onDark ? "#fff" : "var(--color-navy)", textWrap: "balance", ...style }}>{children}</h2>
 }
-function Card({ children }: { children: React.ReactNode }) {
-  return <div style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: 28, boxShadow: "0 1px 2px rgba(10,37,64,.04)" }}>{children}</div>
+function Card({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={className} style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: 28, boxShadow: "0 1px 2px rgba(10,37,64,.04)" }}>{children}</div>
 }
 function IconChip({ children, tint }: { children: React.ReactNode; tint: string }) {
   return <span style={{ width: 46, height: 46, borderRadius: 12, background: tint, display: "grid", placeItems: "center" }}>{children}</span>
