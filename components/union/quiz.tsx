@@ -9,7 +9,7 @@ import { zipToStateName } from "@/lib/geo/zipToState"
 // Universal quiz entry (homepage + funnel CTAs open this). Step 0 routes by
 // segment; a CTA can pre-select a segment to skip it. Per-funnel detailed
 // questions get layered in when we wire submission to /api/leads (kept, per the
-// lead-quality decision) — this build captures the universal fields + routes.
+// lead-quality decision), this build captures the universal fields + routes.
 
 export type Segment = "" | "individual" | "family" | "self_employed" | "cobra" | "small_business"
 
@@ -18,7 +18,7 @@ const SEGMENTS: { value: Exclude<Segment, "">; title: string; sub: string; icon:
   { value: "family", title: "Me and my family", sub: "Cover the household", icon: Users },
   { value: "self_employed", title: "I'm self-employed", sub: "1099 / business owner", icon: Briefcase },
   { value: "cobra", title: "I'm losing my coverage", sub: "COBRA or job change", icon: RefreshCw },
-  { value: "small_business", title: "My small business", sub: "2–50 employees", icon: Building2 },
+  { value: "small_business", title: "My small business", sub: "2-50 employees", icon: Building2 },
 ]
 
 // "See any doctor" / no explicit segment routes to the PPO bucket.
@@ -318,7 +318,7 @@ function Success({ onClose }: { onClose: () => void }) {
       <h3 className="font-display" style={{ fontWeight: 700, fontSize: 24, color: "var(--color-navy)" }}>You&apos;re all set!</h3>
       <p style={{ color: "var(--color-ink-muted)", fontSize: 15, marginTop: 8, maxWidth: 380, marginInline: "auto" }}>A licensed agent is reviewing your info and will reach out shortly with your private PPO matches.</p>
       <div style={{ textAlign: "left", background: "var(--color-surface)", border: "1px solid var(--color-line)", borderRadius: 14, padding: 18, marginTop: 20 }}>
-        {["A specialist reviews your info", "They call to compare your options", "You choose — always free to you"].map((t) => (
+        {["A specialist reviews your info", "They call to compare your options", "You choose, always free to you"].map((t) => (
           <div key={t} style={{ display: "flex", gap: 10, alignItems: "center", padding: "6px 0" }}>
             <Check width={18} height={18} color="var(--color-success)" strokeWidth={2.6} />
             <span style={{ fontSize: 14, color: "var(--color-body)" }}>{t}</span>

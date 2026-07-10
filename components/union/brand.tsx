@@ -5,7 +5,7 @@ import { Star } from "lucide-react"
 // Presentational + server-safe. Interactive CTAs live in ./quiz.tsx.
 
 // The star-over-stripes logo mark: a navy tile with red stripe field and a
-// white 5-point star — the recurring "civic" motif, scalable by `size`.
+// white 5-point star, the recurring "civic" motif, scalable by `size`.
 export function UnionMark({ size = 42 }: { size?: number }) {
   const radius = Math.max(8, Math.round(size * 0.26))
   return (

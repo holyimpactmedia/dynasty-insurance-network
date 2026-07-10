@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | Union Private Healthcare",
   },
   description:
-    "Union Private Healthcare is a free service that connects working Americans with the right private PPO plans — see any doctor, skip referrals, keep nationwide coverage. Get matched with a licensed agent in about 2 minutes.",
+    "Union Private Healthcare is a free service that connects working Americans with the right private PPO plans, see any doctor, skip referrals, keep nationwide coverage. Get matched with a licensed agent in about 2 minutes.",
   keywords: [
     "private health insurance",
     "PPO plans",

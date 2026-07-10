@@ -80,7 +80,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
         </div>
       </section>
 
-      {/* Benefits — built for this segment */}
+      {/* Benefits, built for this segment */}
       <section style={section}>
         <div style={container}>
           <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto 44px" }}>
@@ -112,7 +112,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
             {[
               { n: "1", t: "Take the quick quiz", d: "A few simple questions about who needs coverage and where you live. No jargon." },
               { n: "2", t: "We match you", d: "We connect you with a licensed agent and the private PPO plans that fit your situation." },
-              { n: "3", t: "Compare & enroll", d: "Review your options side by side, ask questions, and enroll — always free to you." },
+              { n: "3", t: "Compare & enroll", d: "Review your options side by side, ask questions, and enroll, always free to you." },
             ].map((s) => (
               <div key={s.n} className="union-card union-center-mobile" style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: 28, boxShadow: "0 1px 2px rgba(10,37,64,.04)" }}>
                 <span className="font-display" style={{ width: 42, height: 42, borderRadius: 10, background: "var(--color-navy)", color: "var(--color-steel)", display: "grid", placeItems: "center", fontWeight: 700, fontSize: 18 }}>{s.n}</span>
@@ -157,7 +157,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
           <Stars size={18} color="var(--color-steel)" />
           <p style={{ fontSize: 14, color: "#a9bcd4", marginTop: 8 }}>4.9 / 5 · 1,200+ member reviews</p>
           <H2 onDark style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,46px)" }}>{config.finalHeading}</H2>
-          <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors — and finally get coverage that works the way you do.</p>
+          <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors, and finally get coverage that works the way you do.</p>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={open} big>See My PPO Options</PrimaryCTA></div>
           <p style={{ fontSize: 13, color: "#8ba0bb", marginTop: 18 }}>No cost to you · Takes ~2 minutes · Your info stays private</p>
         </div>

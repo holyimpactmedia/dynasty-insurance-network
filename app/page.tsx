@@ -40,7 +40,7 @@ export default function HomePage() {
               Marketplace plans put a wall between you and your doctor.
             </h1>
             <p style={{ fontSize: "clamp(16px,2vw,18.5px)", lineHeight: 1.6, maxWidth: 540 }}>
-              Union is a free service that connects working Americans with the right private PPO plans — see any doctor, skip the referrals, and keep nationwide coverage. Answer a few quick questions and we&apos;ll match you with a licensed agent who can help.
+              Union is a free service that connects working Americans with the right private PPO plans, see any doctor, skip the referrals, and keep nationwide coverage. Answer a few quick questions and we&apos;ll match you with a licensed agent who can help.
             </p>
             <div className="union-row-center-mobile" style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 26 }}>
               <PrimaryCTA onClick={() => open()}>See My PPO Options</PrimaryCTA>
@@ -121,7 +121,7 @@ export default function HomePage() {
             <Eyebrow>The better way</Eyebrow>
             <H2 style={{ marginTop: 12 }}>A private PPO changes the math.</H2>
             <p style={{ fontSize: 16.5, lineHeight: 1.6, marginTop: 16, maxWidth: 480 }}>
-              For healthy adults and families under 65, a private PPO often means more freedom for a price that finally makes sense — and a real person to help you choose.
+              For healthy adults and families under 65, a private PPO often means more freedom for a price that finally makes sense, and a real person to help you choose.
             </p>
             <div style={{ marginTop: 26 }}><PrimaryCTA onClick={() => open()}>See My PPO Options</PrimaryCTA></div>
           </div>
@@ -166,7 +166,7 @@ export default function HomePage() {
         <div style={{ ...container, position: "relative" }}>
           <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto 44px" }}>
             <Eyebrow onDark>Which fits you?</Eyebrow>
-            <H2 onDark style={{ marginTop: 12 }}>Start anywhere — the quiz routes you to the right coverage.</H2>
+            <H2 onDark style={{ marginTop: 12 }}>Start anywhere, the quiz routes you to the right coverage.</H2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,244px),1fr))", gap: 18 }}>
             {PATHS.map((p) => (
@@ -193,7 +193,7 @@ export default function HomePage() {
             {[
               { n: "1", t: "Take the quick quiz", d: "A few simple questions about who needs coverage and where you live. No jargon." },
               { n: "2", t: "We match you", d: "We connect you with a licensed agent and the private PPO plans that fit your situation." },
-              { n: "3", t: "Compare & enroll", d: "Review your options side by side, ask questions, and enroll — always free to you." },
+              { n: "3", t: "Compare & enroll", d: "Review your options side by side, ask questions, and enroll, always free to you." },
             ].map((s) => (
               <Card key={s.n} className="union-center-mobile">
                 <span className="font-display" style={{ width: 42, height: 42, borderRadius: 10, background: "var(--color-navy)", color: "var(--color-steel)", display: "grid", placeItems: "center", fontWeight: 700, fontSize: 18 }}>{s.n}</span>
@@ -212,7 +212,7 @@ export default function HomePage() {
           <div className="union-row-center-mobile" style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between", marginBottom: 44 }}>
             <div className="union-center-mobile" style={{ maxWidth: 560 }}>
               <Eyebrow>Member stories</Eyebrow>
-              <H2 style={{ marginTop: 12 }}>Members love the freedom — and the follow-up.</H2>
+              <H2 style={{ marginTop: 12 }}>Members love the freedom, and the follow-up.</H2>
             </div>
             <div style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: "18px 24px", textAlign: "center" }}>
               <p className="font-display" style={{ fontWeight: 700, fontSize: 30, color: "var(--color-navy)" }}>4.9</p>
@@ -243,14 +243,14 @@ export default function HomePage() {
         <div style={container}>
           <div style={{ textAlign: "center", maxWidth: 740, margin: "0 auto 44px" }}>
             <Eyebrow>Why Union</Eyebrow>
-            <H2 style={{ marginTop: 12 }}>We&apos;re the shortcut to the right plan — not another insurance company.</H2>
+            <H2 style={{ marginTop: 12 }}>We&apos;re the shortcut to the right plan, not another insurance company.</H2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,244px),1fr))", gap: 20 }}>
             {[
               { icon: Wallet, t: "100% free to you", d: "You never pay us. Carriers compensate the agents we connect you with." },
-              { icon: HeartHandshake, t: "A matchmaker, not a call center", d: "We point you to the right licensed agent — not a floor of salespeople." },
+              { icon: HeartHandshake, t: "A matchmaker, not a call center", d: "We point you to the right licensed agent, not a floor of salespeople." },
               { icon: Lock, t: "Private & secure", d: "Your information is protected and only shared with the agent who helps you." },
-              { icon: Clock, t: "Fast, human follow-up", d: "A real specialist reaches out quickly — usually within minutes on business days." },
+              { icon: Clock, t: "Fast, human follow-up", d: "A real specialist reaches out quickly, usually within minutes on business days." },
             ].map(({ icon: Icon, t, d }) => (
               <Card key={t} className="union-center-mobile">
                 <IconChip tint="var(--color-surface-2)"><Icon width={23} height={23} color="var(--color-navy)" strokeWidth={1.7} /></IconChip>
@@ -294,7 +294,7 @@ export default function HomePage() {
           <Stars size={18} color="var(--color-steel)" />
           <p style={{ fontSize: 14, color: "#a9bcd4", marginTop: 8 }}>4.9 / 5 · 1,200+ member reviews</p>
           <H2 onDark style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,46px)" }}>See your private PPO options in about two minutes.</H2>
-          <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors — and finally get coverage that works the way you do.</p>
+          <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors, and finally get coverage that works the way you do.</p>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={() => open()} big>See My PPO Options</PrimaryCTA></div>
           <p style={{ fontSize: 13, color: "#8ba0bb", marginTop: 18 }}>No cost to you · Takes ~2 minutes · Your info stays private</p>
         </div>
@@ -359,7 +359,7 @@ const PATHS: { title: string; d: string; seg: Segment; icon: typeof User; popula
   { title: "Self-employed / 1099", d: "Real coverage for the way you work.", seg: "self_employed", icon: Briefcase },
   { title: "Losing coverage", d: "A better value than COBRA, for many.", seg: "cobra", icon: RefreshCw },
   { title: "See any doctor", d: "The freedom a PPO is built for.", seg: "", icon: Stethoscope },
-  { title: "My business (2–50)", d: "Group benefits that keep great people.", seg: "small_business", icon: Building2 },
+  { title: "My business (2-50)", d: "Group benefits that keep great people.", seg: "small_business", icon: Building2 },
 ]
 
 const TESTIMONIALS = [
@@ -370,10 +370,10 @@ const TESTIMONIALS = [
 
 const FAQS = [
   { q: "Is Union an insurance company?", a: "No. Union Private Healthcare is a free advisory service that connects you with independent licensed insurance agents and carriers who can quote and enroll coverage. We are not an insurer or a government program." },
-  { q: "How much does this cost me?", a: "Nothing. Our service is 100% free to you — the licensed agents we connect you with are compensated by the carriers, not by you." },
-  { q: "What is a private PPO?", a: "A PPO (Preferred Provider Organization) plan lets you see any doctor or specialist — usually without referrals — with nationwide coverage, including out-of-network care." },
+  { q: "How much does this cost me?", a: "Nothing. Our service is 100% free to you. The licensed agents we connect you with are compensated by the carriers, not by you." },
+  { q: "What is a private PPO?", a: "A PPO (Preferred Provider Organization) plan lets you see any doctor or specialist, usually without referrals, with nationwide coverage, including out-of-network care." },
   { q: "Will I have to switch doctors?", a: "Usually not. PPO networks are broad, and a licensed agent will help you find a plan that keeps the doctors you trust in-network wherever possible." },
-  { q: "Who actually contacts me?", a: "A licensed insurance agent — a real person — reaches out to review your options, answer questions, and help you enroll if you choose to." },
+  { q: "Who actually contacts me?", a: "A licensed insurance agent, a real person, reaches out to review your options, answer questions, and help you enroll if you choose to." },
   { q: "Do I have to buy anything?", a: "No. There's no obligation. You can compare your options and walk away at any time." },
-  { q: "Is my information private?", a: "Yes. Your details are protected and only shared with the licensed agent who helps you — never sold to a list." },
+  { q: "Is my information private?", a: "Yes. Your details are protected and only shared with the licensed agent who helps you, never sold to a list." },
 ]

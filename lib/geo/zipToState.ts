@@ -1,7 +1,7 @@
 // Derive a US state from a 5-digit ZIP via its 3-digit SCF prefix.
 // Source: USPS L002/L005 sectional-center-facility prefixes (per the Wikipedia
 // "List of ZIP Code prefixes"). The ZIP itself is always stored raw on the lead
-// as the source of truth — this is a best-effort convenience for routing/display.
+// as the source of truth, this is a best-effort convenience for routing/display.
 //
 // Ranges are checked in order; a few embedded/anomalous prefixes are listed
 // first so they win over their containing range (e.g. DE 197-199 before PA).

@@ -23,18 +23,18 @@ describe("QuizModal submit", () => {
     // segment="cobra" skips the "who is this for" step, starting at step 1.
     render(<QuizModal open segment="cobra" onClose={() => {}} />)
 
-    // Step 1 — ZIP + age
+    // Step 1, ZIP + age
     fireEvent.change(screen.getByPlaceholderText("e.g. 30301"), { target: { value: "30301" } })
     fireEvent.change(screen.getByPlaceholderText(/under 65/i), { target: { value: "40" } })
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))
 
-    // Step 2 — household + coverage + tobacco
+    // Step 2, household + coverage + tobacco
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } })
     fireEvent.click(screen.getAllByRole("button", { name: "Yes" })[0]) // has coverage = Yes
     fireEvent.click(screen.getAllByRole("button", { name: "No" })[1]) // tobacco = No
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))
 
-    // Step 3 — contact + consent (scope to the dialog so the injected cert
+    // Step 3, contact + consent (scope to the dialog so the injected cert
     // <input> in document.body isn't counted as a form field).
     const boxes = within(screen.getByRole("dialog")).getAllByRole("textbox")
     fireEvent.change(boxes[0], { target: { value: "Jane" } })
