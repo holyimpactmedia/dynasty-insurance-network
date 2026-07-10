@@ -7,7 +7,7 @@ import { startOfDay, startOfMonth } from "date-fns"
  * filters — otherwise counts bucket on the server's UTC day, which is wrong
  * for an operator on the US East Coast.
  *
- * The SQL RPCs in supabase/migrations/*_dashboard_rpcs.sql bucket in this
+ * Dashboard aggregate queries in both providers bucket in this
  * same zone. Keep the two in sync.
  */
 export const BUSINESS_TZ = "America/New_York"

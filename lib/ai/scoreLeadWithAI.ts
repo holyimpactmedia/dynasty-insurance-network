@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { createClient } from '@/lib/supabase/admin'
+import { getPlatformStore } from '@/lib/data/store'
 
 interface Lead {
   id: string | null
@@ -68,7 +68,7 @@ Return ONLY valid JSON in this exact format, no markdown:
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
       max_tokens: 500,
       messages: [
         {
@@ -120,9 +120,9 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
     console.warn('scoreAndUpdateLead: lead has no id, skipping')
     return
   }
-  const supabase = createClient()
-  if (!supabase) {
-    console.error('scoreAndUpdateLead: Supabase admin client not configured')
+  const store = await getPlatformStore()
+  if (!store.isConfigured()) {
+    console.error('scoreAndUpdateLead: platform database not configured')
     return
   }
 
@@ -132,20 +132,12 @@ export async function scoreAndUpdateLead(lead: Lead): Promise<void> {
     if (scoreResult) {
       // Write the AI score back onto the lead. `ai_scored_at` stamps when the
       // scoring stage of the pipeline completed (used by the dashboard timeline).
-      const { error: updateError } = await supabase
-        .from('leads')
-        .update({
-          ai_score: scoreResult.score,
-          ai_score_reasons: scoreResult.reasons,
-          predicted_close_rate: scoreResult.predictedCloseRate,
-          ai_scored_at: new Date().toISOString(),
-        })
-        .eq('id', lead.id)
-
-      if (updateError) {
-        console.error('Error updating lead with AI score:', updateError)
-        return
-      }
+      await store.updateAiScore(lead.id, {
+        score: scoreResult.score,
+        reasons: scoreResult.reasons,
+        predictedCloseRate: scoreResult.predictedCloseRate,
+        scoredAt: new Date().toISOString(),
+      })
 
       console.log(`Lead ${lead.referenceNumber} scored: ${scoreResult.score}/100 (${scoreResult.urgencyLevel})`)
     } else {

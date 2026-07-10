@@ -8,10 +8,11 @@ Master index. **This file is an index only — every fact lives in exactly one s
 | [SCHEMA.md](./SCHEMA.md) | The database — tables, columns, indexes, RPCs, RLS, and the Supabase CLI migration workflow. |
 | [SECURITY.md](./SECURITY.md) | Authorization model (`profiles` + `is_admin`), the RLS policy matrix, why `user_metadata` is not trusted, first-admin seeding, the `redirectTo` guard, rate limiting, CSV-injection note. |
 | [RUNBOOK.md](./RUNBOOK.md) | Operations — env vars, deploy order, applying migrations, the `/api/health` check, promoting an admin, USHA failure alerts, common failures. |
+| [NEON_BETTER_AUTH_MIGRATION_PLAN.md](./NEON_BETTER_AUTH_MIGRATION_PLAN.md) | Implemented Neon + Better Auth architecture, rehearsal, cutover, rollback, and cleanup gates. |
 
 ## How the application is built
 
-A Next.js 16 / React 19 / Supabase application. It is a **lead pass-through tracker** — not a CRM. Consumer funnels capture insurance leads → TCPA consent + TrustedForm cert are recorded → the lead is AI-scored → it is forwarded to the USHA Marketplace for agents to buy. The admin dashboard tracks each lead through that pipeline and shows the money (leads sent × sell price).
+A Next.js 16 / React 19 lead pass-through application. During the migration window, `PLATFORM_PROVIDER` selects the existing Supabase stack or the dormant Neon + Better Auth stack as one unit; Supabase remains the default until cutover. Consumer funnels capture insurance leads → TCPA consent + TrustedForm cert are recorded → the lead is AI-scored → it is forwarded to the USHA Marketplace. The admin dashboard tracks each lead through that pipeline and shows the money (leads sent × sell price).
 
 The codebase ships in five PR-sized changes documented in [`.claude/plans/lets-make-a-plan-transient-aurora.md`](../.claude/plans/lets-make-a-plan-transient-aurora.md):
 
@@ -21,4 +22,4 @@ The codebase ships in five PR-sized changes documented in [`.claude/plans/lets-m
 4. **PR3** — Dashboard data layer: TZ-correct, paginated, RPC-backed, CSV-safe.
 5. **PR4** — These docs.
 
-Last updated: 2026-05-19.
+Last updated: 2026-06-23.

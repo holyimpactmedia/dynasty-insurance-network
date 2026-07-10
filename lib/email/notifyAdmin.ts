@@ -3,6 +3,7 @@
 // Requires ADMIN_EMAIL and RESEND_API_KEY to be set in environment.
 
 import { Resend } from 'resend'
+import { formatFromAddress } from './fromAddress'
 import type { UshaPostResult } from '@/lib/usha/postLead'
 
 export interface AdminNotificationParams {
@@ -81,7 +82,11 @@ export async function notifyAdmin(
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@dynasty.app'
+  const fromEmail = formatFromAddress(
+    process.env.RESEND_FROM_EMAIL,
+    'Dynasty CRM',
+    'noreply@dynasty.app',
+  )
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dynasty.app'
 
   const funnelLabel: Record<string, string> = {
@@ -251,7 +256,7 @@ export async function notifyAdmin(
 
   try {
     const { error } = await resend.emails.send({
-      from: `Dynasty CRM <${fromEmail}>`,
+      from: fromEmail,
       to: adminEmail,
       subject,
       html,

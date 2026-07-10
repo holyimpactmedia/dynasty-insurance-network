@@ -1,8 +1,4 @@
-// Canonical Lead type matching the Supabase `leads` table.
-// usha_status / usha_sent_at / usha_lead_id require these columns to exist in Supabase:
-//   ALTER TABLE leads ADD COLUMN usha_status text;
-//   ALTER TABLE leads ADD COLUMN usha_sent_at timestamptz;
-//   ALTER TABLE leads ADD COLUMN usha_lead_id text;
+// Canonical domain type shared by both persistence providers during cutover.
 
 export interface Lead {
   id: string

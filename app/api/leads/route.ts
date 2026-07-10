@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse, after } from 'next/server'
-import { createClient } from '@/lib/supabase/admin'
+import { getPlatformStore } from '@/lib/data/store'
+import { getLeadIntakePaused } from '@/lib/settings'
 import { sendLeadConfirmation } from '@/lib/email/sendLeadConfirmation'
 import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
 import { postLeadToUsha } from '@/lib/usha/postLead'
@@ -20,6 +21,13 @@ const DEDUP_WINDOW_MS = 10 * 60 * 1000
 
 export async function POST(request: NextRequest) {
   try {
+    if (await getLeadIntakePaused()) {
+      return NextResponse.json(
+        { error: 'Lead intake is temporarily unavailable. Please try again shortly.' },
+        { status: 503, headers: { 'Retry-After': '900' } },
+      )
+    }
+
     const body = await request.json()
 
     const {
@@ -74,7 +82,7 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedEmail = String(email).toLowerCase().trim()
-    const supabase = createClient()
+    const store = await getPlatformStore()
     const referenceNumber = generateReferenceNumber()
     const tcpaConsentAt = new Date().toISOString()
     const resolvedFunnelType = funnelType || 'private_health'
@@ -85,62 +93,52 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    if (!supabase) {
-      console.warn('Supabase admin client not configured. Lead sent via email only.', { referenceNumber })
+    if (!store.isConfigured()) {
+      console.warn('Platform database not configured. Lead sent via email only.', { referenceNumber })
     } else {
       // Duplicate check: same email submitted recently => idempotent success.
       const since = new Date(Date.now() - DEDUP_WINDOW_MS).toISOString()
-      const { data: dup } = await supabase
-        .from('leads')
-        .select('reference_number')
-        .eq('email', normalizedEmail)
-        .gte('created_at', since)
-        .limit(1)
-        .maybeSingle()
+      const duplicateReference = await store.findRecentDuplicate(normalizedEmail, since)
 
-      if (dup) {
+      if (duplicateReference) {
         console.log('Duplicate lead submission ignored:', { email: normalizedEmail })
         return NextResponse.json({
           success: true,
-          referenceNumber: (dup as { reference_number: string }).reference_number,
+          referenceNumber: duplicateReference,
           message: 'Lead already received',
         })
       }
 
-      const { data: insertResult, error } = await supabase
-        .from('leads')
-        .insert({
-          reference_number: referenceNumber,
-          first_name: firstName,
-          last_name: lastName,
+      try {
+        const insertResult = await store.createLead({
+          referenceNumber,
+          firstName,
+          lastName,
           email: normalizedEmail,
           phone: phone || null,
           age: age ? parseInt(age, 10) : null,
           state: state || null,
-          income_range: incomeRange || null,
-          household_size: householdSize || null,
-          qualifying_event: qualifyingEvent || null,
+          incomeRange: incomeRange || null,
+          householdSize: householdSize || null,
+          qualifyingEvent: qualifyingEvent || null,
           priorities: priorities || null,
-          tcpa_consent: tcpaConsent,
-          tcpa_consent_at: tcpaConsentAt,
-          trusted_form_cert_url: trustedFormCertUrl || null,
-          funnel_type: resolvedFunnelType,
-          utm_source: utmSource || null,
-          utm_medium: utmMedium || null,
-          utm_campaign: utmCampaign || null,
-          ip_address: ipAddress,
-          quiz_answers: quizAnswers ?? null,
-          status: 'new',
+          tcpaConsent,
+          tcpaConsentAt,
+          trustedFormCertUrl: trustedFormCertUrl || null,
+          funnelType: resolvedFunnelType,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          ipAddress,
+          quizAnswers: quizAnswers ?? null,
         })
-        .select()
-        .single()
-
-      if (error) {
+        if (insertResult) {
+          data = { id: insertResult.id, created_at: insertResult.createdAt }
+        }
+      } catch (error) {
         // Loud, not silent: the lead form must not break, but a failed insert
         // is an operational problem, not a routine fallback.
         console.error('LEAD INSERT FAILED (continuing with notifications):', error, { referenceNumber })
-      } else if (insertResult) {
-        data = insertResult
       }
     }
 
@@ -156,8 +154,8 @@ export async function POST(request: NextRequest) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              certificateUrl: trustedFormCertUrl,
-              leadId: data.id,
+              certUrl: trustedFormCertUrl,
+              reference: referenceNumber,
               email: normalizedEmail,
               phone,
             }),
@@ -228,7 +226,7 @@ export async function POST(request: NextRequest) {
         console.error('Admin notification email error:', err)
       }
 
-      // 4. Score the lead with AI (updates the lead record in Supabase).
+      // 4. Score the lead with AI (updates the lead in the active database).
       try {
         await scoreAndUpdateLead({
           id: data.id,

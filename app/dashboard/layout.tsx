@@ -1,20 +1,23 @@
-import { createClient } from "@/lib/supabase/server"
 import DashboardNav from "@/components/dashboard/DashboardNav"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
 import { requireAdmin } from "@/lib/auth/requireAdmin"
+import { getProjectionsEnabled } from "@/lib/settings"
+import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Graceful empty state when Supabase env vars are missing.
-  const supabase = await createClient()
-  if (!supabase) return <SetupRequired page="dashboard" />
+  const platformProvider = getPlatformProvider()
+  if (!isPlatformConfigured(platformProvider)) {
+    return <SetupRequired page="dashboard" provider={platformProvider} />
+  }
 
   // Authoritative gate: authenticated AND role 'admin' in the profiles table.
   // Redirects non-admins; never returns otherwise.
   const { user, profile } = await requireAdmin()
+  const projectionsEnabled = await getProjectionsEnabled()
 
   const userName =
     [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
@@ -27,6 +30,8 @@ export default async function DashboardLayout({
         userRole={profile.role}
         userName={userName}
         userEmail={user.email ?? ""}
+        projectionsEnabled={projectionsEnabled}
+        platformProvider={platformProvider}
       />
       {children}
     </div>

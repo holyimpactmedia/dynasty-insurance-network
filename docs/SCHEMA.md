@@ -1,6 +1,13 @@
 # Database Schema
 
-Source of truth: [`supabase/migrations/`](../supabase/migrations). The generated TypeScript types live at [`lib/types/database.ts`](../lib/types/database.ts) and are regenerated with `supabase gen types typescript`.
+> Migration note (2026-06-23): Drizzle schema and migrations for Neon now live in `lib/db/schema/` and `drizzle/`. `PLATFORM_PROVIDER=supabase` remains the default during the seven-day rollback window. The application tables are intentionally schema-compatible across both providers. See [NEON_BETTER_AUTH_MIGRATION_PLAN.md](./NEON_BETTER_AUTH_MIGRATION_PLAN.md).
+
+Source of truth during the migration window:
+
+- Supabase rollback schema: [`supabase/migrations/`](../supabase/migrations), with generated types in [`lib/types/database.ts`](../lib/types/database.ts).
+- Neon target schema: [`lib/db/schema/`](../lib/db/schema) and generated Drizzle migrations in [`drizzle/`](../drizzle).
+
+Do not evolve one application schema without applying the same parity-preserving change to the other while both providers remain available.
 
 ## Migration workflow — Supabase CLI
 
@@ -37,8 +44,12 @@ Every column the consumer funnels POST plus the pipeline state. 32 columns total
 
 Acquisition cost and gross margin are **not** stored per row. Acquisition cost is a portfolio number (ad spend ÷ leads); modeling it per row would bake a fictional number into the schema. The slider-based `ProjectionsCalculators` handles cost / ROI scenarios.
 
-### `profiles` — the authorization source of truth
-One row per `auth.users`. `role text not null default 'agent' check (role in ('agent','admin'))`. Writable **only** by the service role / SQL — there is no client-side write policy. Auto-provisioned by an `AFTER INSERT ON auth.users` trigger; existing users were backfilled in the baseline migration.
+### Authorization tables
+
+In Supabase rollback mode, `profiles` remains the authorization source of truth: one row per `auth.users`, with `agent`, `admin`, or `superadmin` role. In Neon target mode, the Better Auth `user`, `session`, `account`, and `verification` tables are authoritative. The finalized Admin plugin fields and custom `user`/`admin`/`superadmin` roles are defined in [`lib/db/schema/auth.ts`](../lib/db/schema/auth.ts) and [`lib/auth/permissions.ts`](../lib/auth/permissions.ts).
+
+### `app_settings` — super-admin feature flags
+`key text primary key`, `value jsonb`, `updated_at timestamptz`. Small key/value store driven by the Settings panel (`/dashboard/settings`). RLS: any authenticated user may **read** (the nav and route guards need the flags); only a super admin may **write** (`is_superadmin()`). First flag: `projections_enabled` (default `true`) — gates the Projections dashboard in both the nav and the route. Read via [`lib/settings.ts`](../lib/settings.ts), which fails open to safe defaults.
 
 ### `email_suppressions` — CAN-SPAM unsubscribe list
 `email text primary key`, `source text`, `suppressed_at timestamptz`. Written only by [`/api/unsubscribe`](../app/api/unsubscribe/route.ts) via service role.
@@ -79,7 +90,7 @@ Enabled on `leads`, `profiles`, `email_suppressions`. Service role bypasses RLS 
 | `profiles` | — | `SELECT` if own row or admin; no `INSERT`/`UPDATE` |
 | `email_suppressions` | — | — (service-role only) |
 
-The `leads` table is in the `supabase_realtime` publication so the dashboard's subscription receives inserts/updates.
+In Supabase mode, `leads` remains in the `supabase_realtime` publication for rollback compatibility. The application dashboard no longer depends on Realtime; both providers use authenticated server APIs and visibility-aware polling.
 
 ## Common failure: `PGRST205`
 

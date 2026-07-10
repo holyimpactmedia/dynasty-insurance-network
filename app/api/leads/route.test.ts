@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 
 // Shared, mutable mock state (hoisted so the vi.mock factory can close over it).
 const state = vi.hoisted(() => ({
-  dupRow: null as null | { reference_number: string },
+  duplicateReference: null as string | null,
+  paused: false,
   insertResult: { id: "lead-1", created_at: "2026-01-01T00:00:00Z" } as
     | { id: string; created_at: string }
     | null,
@@ -15,25 +16,20 @@ vi.mock("next/server", async (importOriginal) => {
   return { ...actual, after: vi.fn() }
 })
 
-// Fake Supabase admin client: supports the dedup select chain and the insert chain.
-vi.mock("@/lib/supabase/admin", () => ({
-  createClient: () => ({
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          gte: () => ({
-            limit: () => ({
-              maybeSingle: async () => ({ data: state.dupRow, error: null }),
-            }),
-          }),
-        }),
-      }),
-      insert: () => ({
-        select: () => ({
-          single: async () => ({ data: state.insertResult, error: state.insertError }),
-        }),
-      }),
-    }),
+vi.mock("@/lib/settings", () => ({
+  getLeadIntakePaused: async () => state.paused,
+}))
+
+vi.mock("@/lib/data/store", () => ({
+  getPlatformStore: async () => ({
+    isConfigured: () => true,
+    findRecentDuplicate: async () => state.duplicateReference,
+    createLead: async () => {
+      if (state.insertError) throw state.insertError
+      return state.insertResult
+        ? { id: state.insertResult.id, createdAt: state.insertResult.created_at }
+        : null
+    },
   }),
 }))
 
@@ -54,7 +50,8 @@ const validLead = { firstName: "A", lastName: "B", email: "a@b.com", tcpaConsent
 describe("POST /api/leads", () => {
   beforeEach(() => {
     __resetRateLimit()
-    state.dupRow = null
+    state.duplicateReference = null
+    state.paused = false
     state.insertResult = { id: "lead-1", created_at: "2026-01-01T00:00:00Z" }
     state.insertError = null
   })
@@ -76,12 +73,19 @@ describe("POST /api/leads", () => {
   })
 
   it("dedupes a repeat email and returns the existing reference", async () => {
-    state.dupRow = { reference_number: "HL-EXISTING" }
+    state.duplicateReference = "HL-EXISTING"
     const res = await POST(makeReq(validLead, "9.9.9.9"))
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.referenceNumber).toBe("HL-EXISTING")
     expect(json.message).toMatch(/already/i)
+  })
+
+  it("returns a retryable 503 while intake is paused", async () => {
+    state.paused = true
+    const res = await POST(makeReq(validLead))
+    expect(res.status).toBe(503)
+    expect(res.headers.get("retry-after")).toBe("900")
   })
 
   it("rate-limits a burst from one IP with 429", async () => {

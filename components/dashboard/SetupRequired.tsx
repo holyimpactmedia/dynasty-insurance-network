@@ -2,8 +2,16 @@ import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Database, ExternalLink } from "lucide-react"
+import type { PlatformProvider } from "@/lib/platform/provider"
 
-export function SetupRequired({ page }: { page: string }) {
+export function SetupRequired({
+  page,
+  provider = "supabase",
+}: {
+  page: string
+  provider?: PlatformProvider
+}) {
+  const neon = provider === "neon"
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] via-[#1a2744] to-[#0A1128] flex items-center justify-center p-6">
       <Card className="w-full max-w-lg bg-white/5 border-white/10 backdrop-blur-sm p-8 text-center space-y-6">
@@ -11,12 +19,14 @@ export function SetupRequired({ page }: { page: string }) {
           <Database className="w-8 h-8 text-[#D4AF37]" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-white">Supabase Not Configured</h1>
+          <h1 className="text-2xl font-bold text-white">{neon ? "Neon" : "Supabase"} Not Configured</h1>
           <p className="text-gray-400">
-            The {page} dashboard needs Supabase environment variables to load. Set
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">NEXT_PUBLIC_SUPABASE_URL</code>
-            and
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
+            The {page} dashboard needs the active platform configuration. Configure{" "}
+            <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">
+              {neon
+                ? "DATABASE_URL + BETTER_AUTH_SECRET"
+                : "NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY + SUPABASE_SERVICE_ROLE_KEY"}
+            </code>{" "}
             in your environment, then redeploy.
           </p>
         </div>

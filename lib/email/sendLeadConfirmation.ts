@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { formatFromAddress } from './fromAddress'
 
 interface LeadConfirmationParams {
   firstName: string
@@ -19,7 +20,11 @@ export async function sendLeadConfirmation({
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@holyimpactmedia.com'
+  const fromEmail = formatFromAddress(
+    process.env.RESEND_FROM_EMAIL,
+    'Holy Impact Media',
+    'noreply@holyimpactmedia.com',
+  )
 
   // CAN-SPAM compliance: unsubscribe mechanism + physical postal address.
   // Override these via env vars when the registered business address is set.
@@ -152,7 +157,7 @@ export async function sendLeadConfirmation({
 
   try {
     const { error } = await resend.emails.send({
-      from: `Holy Impact Media <${fromEmail}>`,
+      from: fromEmail,
       to: email,
       subject: `Your Coverage Options Are Being Prepared, ${firstName}`,
       html: htmlContent,

@@ -12,7 +12,7 @@
 //   USHA_API_URL    - e.g. https://app.ushamarketplace.com/api/v1/leads
 //   USHA_API_KEY    - API key or Bearer token provided by USHA/LeadArena
 
-import { createClient } from '@/lib/supabase/admin'
+import { getPlatformStore } from '@/lib/data/store'
 
 // Fields USHA/LeadArena typically expect for health insurance leads.
 // Update field names/types once you have the official API spec.
@@ -147,7 +147,7 @@ export async function postLeadToUsha(
   return { success: false, status: 'failed', error: lastError }
 }
 
-/** Updates the lead record in Supabase with the USHA submission status. */
+/** Updates the lead record in the active database with the USHA submission status. */
 async function updateUshaStatus(
   leadId: string | null,
   status: 'pending' | 'sent' | 'failed',
@@ -155,13 +155,14 @@ async function updateUshaStatus(
 ): Promise<void> {
   if (!leadId) return
   try {
-    const supabase = createClient()
-    if (!supabase) return
-    const update: Record<string, unknown> = { usha_status: status }
-    // Only a real submission attempt stamps a time; 'pending' has not been sent.
-    if (status !== 'pending') update.usha_sent_at = new Date().toISOString()
-    if (ushaLeadId) update.usha_lead_id = ushaLeadId
-    await supabase.from('leads').update(update).eq('id', leadId)
+    const store = await getPlatformStore()
+    if (!store.isConfigured()) return
+    await store.updateMarketplaceStatus(
+      leadId,
+      status,
+      status !== 'pending' ? new Date().toISOString() : undefined,
+      ushaLeadId,
+    )
   } catch (err) {
     console.warn('[usha] Could not update usha_status on lead record:', err)
   }

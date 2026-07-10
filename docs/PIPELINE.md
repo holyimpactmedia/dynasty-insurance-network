@@ -1,6 +1,6 @@
 # Lead Pass-Through Pipeline
 
-Source of truth: [`app/api/leads/route.ts`](../app/api/leads/route.ts) and the modules it calls.
+Source of truth: [`app/api/leads/route.ts`](../app/api/leads/route.ts), the provider-neutral store in `lib/data/`, and the modules the route calls.
 
 A lead crosses the system in five stages. Stage 1 (intake) blocks the response; stages 2–5 run in `after()` so they complete reliably on Vercel without holding the user's form open.
 
@@ -25,7 +25,8 @@ A lead crosses the system in five stages. Stage 1 (intake) blocks the response; 
 | TCPA consent | must be `true` → 400 otherwise |
 | Rate limit per IP | [`lib/rate-limit.ts`](../lib/rate-limit.ts) — in-memory sliding window, default 8 / 10 min → 429 on burst |
 | Duplicate email dedup | repeat email within 10 min → idempotent 200 with the existing `reference_number`, no re-spend on AI/USHA/email |
-| Insert lead row | service-role client; persists every field the funnels send, including `quiz_answers` |
+| Intake pause | internal `lead_intake_paused=true` → retryable 503 during the approved cutover window |
+| Insert lead row | active provider repository; persists every field the funnels send, including `quiz_answers` |
 | Schedule post-response work | `after(async () => { … })` — runs after the 200 is flushed |
 
 The response returns within tens of milliseconds. The funnel's "thank you" page never waits on AI scoring or USHA.

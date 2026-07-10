@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, RefreshCw, TrendingUp, DollarSign, BarChart2, Users } from "lucide-react"
@@ -8,11 +8,15 @@ import RealVsProjectedChart from "@/components/dashboard/RealVsProjectedChart"
 import { PrintButton } from "@/components/dashboard/PrintButton"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
 import { requireAdmin } from "@/lib/auth/requireAdmin"
+import { getProjectionsEnabled } from "@/lib/settings"
 import { BUSINESS_TZ } from "@/lib/time/ranges"
 import { splitShares } from "@/lib/finance/splitShares"
 import { FUNNEL_LABELS } from "@/lib/types/lead"
 import { toZonedTime } from "date-fns-tz"
 import { format } from "date-fns"
+import { getPlatformStore } from "@/lib/data/store"
+import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import type { FunnelRow } from "@/lib/data/types"
 
 const PARTNERS = [
   { name: "Marvin Antoine", role: "Developer", share: 1 },
@@ -24,59 +28,33 @@ const PARTNERS = [
 // Baseline projection (leads received per day) — a visual floor for the chart.
 const PROJECTED_PER_DAY = 5
 
-interface PipelineStatsRow {
-  total_leads: number
-  leads_today: number
-  leads_month: number
-  sent_count: number
-  sent_revenue: number
-  sent_revenue_month: number
-  tcpa_verified: number
-}
-
-interface FunnelRow {
-  funnel_type: string
-  leads: number
-  sent: number
-  revenue: number
-}
-
 export default async function ProjectionsDashboard() {
-  const supabase = await createClient()
-  if (!supabase) return <SetupRequired page="projections" />
+  const provider = getPlatformProvider()
+  if (!isPlatformConfigured(provider)) return <SetupRequired page="projections" provider={provider} />
   await requireAdmin()
+
+  // Projections can be switched off globally by a super admin in Settings.
+  // Block direct URL access too, not just the nav link.
+  if (!(await getProjectionsEnabled())) redirect("/dashboard/admin")
 
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
-  const [statsRows, funnelRows, recentRows] = await Promise.all([
-    (async (): Promise<PipelineStatsRow[]> => {
-      const { data } = await supabase.rpc("get_pipeline_stats")
-      return (data as PipelineStatsRow[] | null) ?? []
-    })(),
-    (async (): Promise<FunnelRow[]> => {
-      const { data } = await supabase.rpc("get_funnel_breakdown")
-      return (data as FunnelRow[] | null) ?? []
-    })(),
-    (async (): Promise<{ created_at: string }[]> => {
-      const { data } = await supabase
-        .from("leads")
-        .select("created_at")
-        .gte("created_at", thirtyDaysAgo.toISOString())
-        .order("created_at", { ascending: true })
-      return (data as { created_at: string }[] | null) ?? []
-    })(),
+  const store = await getPlatformStore()
+  const [pipeline, funnelRows, recentRows] = await Promise.all([
+    store.getPipelineStats(),
+    store.getFunnelBreakdown(),
+    store.getRecentLeadTimes(thirtyDaysAgo.toISOString()),
   ])
 
-  const s = statsRows[0]
-  const totalLeads = s?.total_leads ?? 0
-  const sentCount = s?.sent_count ?? 0
-  const allTimeRevenue = Number(s?.sent_revenue ?? 0)
-  const monthRevenue = Number(s?.sent_revenue_month ?? 0)
+  const totalLeads = pipeline.totalLeads
+  const sentCount = pipeline.sentCount
+  const allTimeRevenue = pipeline.sentRevenue
+  const monthRevenue = pipeline.sentRevenueMonth
 
   // Real-vs-projected: bucket the last 30 ET days.
   const dailyCounts = new Map<string, number>()
-  for (const r of recentRows) {
-    const zoned = toZonedTime(new Date(r.created_at), BUSINESS_TZ)
+  for (const createdAt of recentRows) {
+    const zoned = toZonedTime(new Date(createdAt), BUSINESS_TZ)
     const key = format(zoned, "yyyy-MM-dd")
     dailyCounts.set(key, (dailyCounts.get(key) ?? 0) + 1)
   }
