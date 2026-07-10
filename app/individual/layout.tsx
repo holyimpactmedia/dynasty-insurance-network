@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: DESC,
   alternates: { canonical: "/individual" },
   openGraph: {
-    title: `${TITLE} | Dynasty Insurance Group`,
+    title: `${TITLE} | Union Private Healthcare`,
     description: SHORT_DESC,
     url: "/individual",
     images: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${TITLE} | Dynasty Insurance Group`,
+    title: `${TITLE} | Union Private Healthcare`,
     description: SHORT_DESC,
     images: ["/og/individual.jpg"],
   },
