@@ -358,7 +358,7 @@ const PATHS: { title: string; d: string; seg: Segment; icon: typeof User; popula
   { title: "My family", d: "One plan that covers everyone at home.", seg: "family", icon: Users },
   { title: "Self-employed / 1099", d: "Real coverage for the way you work.", seg: "self_employed", icon: Briefcase },
   { title: "Losing coverage", d: "A better value than COBRA, for many.", seg: "cobra", icon: RefreshCw },
-  { title: "See any doctor", d: "The freedom a PPO is built for.", seg: "", icon: Stethoscope },
+  { title: "See any doctor", d: "The freedom a PPO is built for.", seg: "ppo", icon: Stethoscope },
   { title: "My business (2-50)", d: "Group benefits that keep great people.", seg: "small_business", icon: Building2 },
 ]
 

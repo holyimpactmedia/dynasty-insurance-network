@@ -113,7 +113,7 @@ export const cobraConfig: FunnelConfig = {
 }
 
 export const ppoConfig: FunnelConfig = {
-  segment: "", // universal quiz; submits as the PPO bucket
+  segment: "ppo", // pre-routes the quiz to the PPO detail question
   hero: {
     eyebrow: "Private PPO · Doctor freedom",
     headline: [{ text: "See " }, { text: "any doctor", em: true }, { text: ". Anywhere. No referrals." }],

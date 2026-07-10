@@ -6,31 +6,56 @@ import { UnionMark } from "./brand"
 import { injectTrustedFormId } from "@/lib/hooks/useTrustedForm"
 import { zipToStateName } from "@/lib/geo/zipToState"
 
-// Universal quiz entry (homepage + funnel CTAs open this). Step 0 routes by
-// segment; a CTA can pre-select a segment to skip it. Per-funnel detailed
-// questions get layered in when we wire submission to /api/leads (kept, per the
-// lead-quality decision), this build captures the universal fields + routes.
+// "" = homepage entry (shows the "who is this for" step). A non-empty value is a
+// pre-routed segment (funnel pages / homepage path cards) that skips that step.
+export type Segment = "" | "individual" | "family" | "self_employed" | "cobra" | "small_business" | "ppo"
 
-export type Segment = "" | "individual" | "family" | "self_employed" | "cobra" | "small_business"
-
-const SEGMENTS: { value: Exclude<Segment, "">; title: string; sub: string; icon: typeof User }[] = [
+const SEGMENTS: { value: Exclude<Segment, "" | "ppo">; title: string; sub: string; icon: typeof User }[] = [
   { value: "individual", title: "Just me", sub: "Individual coverage", icon: User },
   { value: "family", title: "Me and my family", sub: "Cover the household", icon: Users },
   { value: "self_employed", title: "I'm self-employed", sub: "1099 / business owner", icon: Briefcase },
   { value: "cobra", title: "I'm losing my coverage", sub: "COBRA or job change", icon: RefreshCw },
-  { value: "small_business", title: "My small business", sub: "2-50 employees", icon: Building2 },
+  { value: "small_business", title: "My small business", sub: "2 to 50 employees", icon: Building2 },
 ]
 
-// "See any doctor" / no explicit segment routes to the PPO bucket.
 const SEGMENT_TO_FUNNEL: Record<string, string> = {
   individual: "individual",
   family: "family",
   self_employed: "self_employed",
   cobra: "cobra",
   small_business: "small_business",
+  ppo: "ppo",
+}
+
+// Per-segment qualifying questions — kept for lead quality on funnel/paid traffic.
+type DetailQuestion = { key: string; question: string; options: string[] }
+const DETAIL_QUESTIONS: Record<string, DetailQuestion[]> = {
+  individual: [
+    { key: "qualifyingEvent", question: "What brought you here today?", options: ["Lost job coverage", "Moving or a life change", "Currently uninsured", "Open enrollment shopping"] },
+  ],
+  family: [
+    { key: "familyComposition", question: "Who needs coverage?", options: ["2 adults", "2 adults and kids", "Single parent and kids", "Just the kids"] },
+  ],
+  self_employed: [
+    { key: "workSituation", question: "How would you describe your work?", options: ["Full-time freelancer", "1099 contractor", "Gig worker", "Business owner"] },
+    { key: "priority", question: "What matters most in a plan?", options: ["Lowest monthly premium", "HSA and tax savings", "Low deductible", "Maximum flexibility"] },
+  ],
+  cobra: [
+    { key: "cobraSituation", question: "What's your COBRA situation?", options: ["Just got the COBRA notice", "On COBRA now, too expensive", "COBRA ending soon", "Exploring options"] },
+    { key: "cobraCost", question: "What are you paying for COBRA each month?", options: ["Under $400", "$400 to $700", "$700 to $1,200", "Over $1,200"] },
+  ],
+  small_business: [
+    { key: "businessSize", question: "How many employees do you have?", options: ["Just me", "2 to 5", "6 to 15", "16 to 50"] },
+    { key: "timeline", question: "When do you want coverage to start?", options: ["As soon as possible", "Next 30 days", "Next quarter", "Just exploring"] },
+  ],
+  ppo: [
+    { key: "currentSituation", question: "What's your current coverage?", options: ["HMO or narrow network", "No coverage right now", "On COBRA", "Employer plan I want to replace"] },
+  ],
 }
 
 const accent = "var(--color-red)"
+
+type StepItem = { kind: "who" } | { kind: "detail"; detail: DetailQuestion } | { kind: "location" } | { kind: "details" } | { kind: "contact" }
 
 export function QuizModal({
   open,
@@ -47,20 +72,17 @@ export function QuizModal({
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Set the TrustedForm form id once so the global TrustedForm script mints a
-  // cert for this quiz (TCPA consent evidence).
   useEffect(() => {
-    injectTrustedFormId("union-homepage-quiz")
+    injectTrustedFormId("union-quiz")
   }, [])
 
-  // Reset + pre-route when opened.
   useEffect(() => {
     if (open) {
       setDone(false)
       setError(null)
       setSubmitting(false)
       setA(segment ? { segment } : {})
-      setStep(segment ? 1 : 0)
+      setStep(0)
     }
   }, [open, segment])
 
@@ -78,46 +100,68 @@ export function QuizModal({
 
   if (!open) return null
 
+  // Build the active step list. Detail steps depend on the effective segment
+  // (the pre-routed one, or the one chosen on the "who" step).
+  const effSeg = segment || a.segment || ""
+  const details = DETAIL_QUESTIONS[effSeg] ?? []
+  const steps: StepItem[] = [
+    ...(segment ? [] : [{ kind: "who" } as StepItem]),
+    ...details.map((d) => ({ kind: "detail", detail: d }) as StepItem),
+    { kind: "location" },
+    { kind: "details" },
+    { kind: "contact" },
+  ]
+  const total = steps.length
+  const cur = steps[Math.min(step, total - 1)]
+
   const set = (k: string, v: string) => setA((p) => ({ ...p, [k]: v }))
-  const next = () => setStep((s) => Math.min(s + 1, 3))
-  const back = () => setStep((s) => Math.max(s - 1, segment ? 1 : 0))
+  const next = () => setStep((s) => Math.min(s + 1, total - 1))
+  const back = () => setStep((s) => Math.max(s - 1, 0))
+
+  const contactValid =
+    (a.firstName || "").trim().length >= 2 &&
+    (a.lastName || "").trim().length >= 2 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email || "") &&
+    (a.phone || "").replace(/\D/g, "").length === 10 &&
+    a.consent === "yes"
 
   const valid =
-    step === 0 ? !!a.segment
-    : step === 1 ? /^\d{5}$/.test(a.zip || "") && Number(a.age) >= 18 && Number(a.age) <= 64
-    : step === 2 ? !!a.household && !!a.hasCoverage && !!a.tobacco
-    : (a.firstName || "").trim().length >= 2 && (a.lastName || "").trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email || "") && (a.phone || "").replace(/\D/g, "").length === 10 && a.consent === "yes"
+    cur.kind === "who" ? !!a.segment
+    : cur.kind === "detail" ? !!a[cur.detail.key]
+    : cur.kind === "location" ? /^\d{5}$/.test(a.zip || "") && Number(a.age) >= 18 && Number(a.age) <= 64
+    : cur.kind === "details" ? !!a.household && !!a.hasCoverage && !!a.tobacco
+    : contactValid
+
+  const needsContinue = cur.kind === "location" || cur.kind === "details" || cur.kind === "contact"
+  const isLast = step === total - 1
 
   const submit = async () => {
-    if (submitting) return // guard against double-submit
+    if (submitting) return
     setSubmitting(true)
     setError(null)
     try {
       const trustedFormCertUrl =
         (document.getElementById("xxTrustedFormCertUrl") as HTMLInputElement)?.value || null
       const params = new URLSearchParams(window.location.search)
+      // Everything that isn't a top-level lead field becomes quizAnswers — this
+      // carries the segment + per-segment detail answers + universal fields.
+      const { firstName, lastName, email, phone, consent, age, ...quizRest } = a
 
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstName: a.firstName,
-          lastName: a.lastName,
-          email: a.email,
-          phone: a.phone,
-          age: a.age,
-          state: zipToStateName(a.zip), // ZIP itself kept in quizAnswers below
+          firstName,
+          lastName,
+          email,
+          phone,
+          age,
+          state: zipToStateName(a.zip), // ZIP kept raw in quizAnswers below
           householdSize: a.household,
           tcpaConsent: a.consent === "yes",
           trustedFormCertUrl,
           funnelType: SEGMENT_TO_FUNNEL[a.segment] || "ppo",
-          quizAnswers: {
-            zip: a.zip,
-            household: a.household,
-            hasCoverage: a.hasCoverage,
-            tobacco: a.tobacco,
-            source: "homepage_quiz",
-          },
+          quizAnswers: { ...quizRest, source: "quiz" },
           utmSource: params.get("utm_source"),
           utmMedium: params.get("utm_medium"),
           utmCampaign: params.get("utm_campaign"),
@@ -134,7 +178,7 @@ export function QuizModal({
     }
   }
 
-  const progress = ((step + 1) / 4) * 100
+  const progress = (Math.min(step + 1, total) / total) * 100
 
   return (
     <div
@@ -161,7 +205,7 @@ export function QuizModal({
         {!done && (
           <div style={{ padding: "16px 24px 0" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5, fontWeight: 700 }}>
-              <span style={{ color: "var(--color-navy)" }}>Step {step + 1} of 4</span>
+              <span style={{ color: "var(--color-navy)" }}>Step {Math.min(step + 1, total)} of {total}</span>
               <span style={{ color: "var(--color-ink-muted)" }}>Takes ~2 minutes</span>
             </div>
             <div style={{ height: 6, borderRadius: 100, background: "#eef1f6", marginTop: 8, overflow: "hidden" }}>
@@ -173,12 +217,13 @@ export function QuizModal({
         <div style={{ padding: 24 }}>
           {done ? <Success onClose={onClose} /> : (
             <>
-              {step === 0 && <Step0 a={a} set={(v) => { set("segment", v); setStep(1) }} />}
-              {step === 1 && <Step1 a={a} set={set} />}
-              {step === 2 && <Step2 a={a} set={set} />}
-              {step === 3 && <Step3 a={a} set={set} />}
+              {cur.kind === "who" && <Step0 a={a} set={(v) => { set("segment", v); next() }} />}
+              {cur.kind === "detail" && <DetailStep q={cur.detail} value={a[cur.detail.key]} onSelect={(v) => { set(cur.detail.key, v); next() }} />}
+              {cur.kind === "location" && <Step1 a={a} set={set} />}
+              {cur.kind === "details" && <Step2 a={a} set={set} />}
+              {cur.kind === "contact" && <Step3 a={a} set={set} />}
 
-              {step >= 1 && (
+              {(step > 0 || needsContinue) && (
                 <>
                   {error && (
                     <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 11, background: "#fdeef0", border: "1px solid #f6c9ce", color: "#b31d24", fontSize: 13.5, display: "flex", alignItems: "center", gap: 8 }}>
@@ -186,15 +231,17 @@ export function QuizModal({
                     </div>
                   )}
                   <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
-                    <button onClick={back} disabled={submitting} style={{ padding: "13px 20px", borderRadius: 11, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, cursor: submitting ? "not-allowed" : "pointer" }}>Back</button>
-                    <button
-                      onClick={step === 3 ? submit : next}
-                      disabled={!valid || submitting}
-                      style={{ flex: 1, padding: "13px 20px", borderRadius: 11, border: "none", fontWeight: 700, fontSize: 15, color: "#fff", cursor: valid && !submitting ? "pointer" : "not-allowed", background: valid && !submitting ? accent : "#c3ccd8", boxShadow: valid && !submitting ? "0 14px 30px -14px rgba(210,35,42,.75)" : "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
-                    >
-                      {submitting ? "Submitting…" : step === 3 ? "See My Matches" : "Continue"}
-                      {valid && !submitting && <ArrowRight width={17} height={17} />}
-                    </button>
+                    {step > 0 && <button onClick={back} disabled={submitting} style={{ padding: "13px 20px", borderRadius: 11, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, cursor: submitting ? "not-allowed" : "pointer" }}>Back</button>}
+                    {needsContinue && (
+                      <button
+                        onClick={isLast ? submit : next}
+                        disabled={!valid || submitting}
+                        style={{ flex: 1, padding: "13px 20px", borderRadius: 11, border: "none", fontWeight: 700, fontSize: 15, color: "#fff", cursor: valid && !submitting ? "pointer" : "not-allowed", background: valid && !submitting ? accent : "#c3ccd8", boxShadow: valid && !submitting ? "0 14px 30px -14px rgba(210,35,42,.75)" : "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+                      >
+                        {submitting ? "Submitting…" : isLast ? "See My Matches" : "Continue"}
+                        {valid && !submitting && <ArrowRight width={17} height={17} />}
+                      </button>
+                    )}
                   </div>
                 </>
               )}
@@ -212,6 +259,25 @@ function QTitle({ children, hint }: { children: React.ReactNode; hint?: string }
       <h3 className="font-display" style={{ fontWeight: 700, fontSize: 22, color: "var(--color-navy)", letterSpacing: "-0.5px" }}>{children}</h3>
       {hint && <p style={{ color: "var(--color-ink-muted)", fontSize: 14, marginTop: 6 }}>{hint}</p>}
     </div>
+  )
+}
+
+const optionBtn = (on: boolean): React.CSSProperties => ({
+  display: "block", width: "100%", textAlign: "left", padding: 14, borderRadius: 14,
+  border: `1.5px solid ${on ? accent : "#e2e8f1"}`, background: on ? "#f6f9ff" : "#fff",
+  fontWeight: 600, fontSize: 15, color: "var(--color-navy)", cursor: "pointer",
+})
+
+function DetailStep({ q, value, onSelect }: { q: DetailQuestion; value?: string; onSelect: (v: string) => void }) {
+  return (
+    <>
+      <QTitle>{q.question}</QTitle>
+      <div style={{ display: "grid", gap: 10 }}>
+        {q.options.map((o) => (
+          <button key={o} onClick={() => onSelect(o)} style={optionBtn(value === o)}>{o}</button>
+        ))}
+      </div>
+    </>
   )
 }
 
