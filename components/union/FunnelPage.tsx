@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, type CSSProperties, type ComponentType } from "react"
+import { useEffect, useRef, useState, type CSSProperties, type ComponentType } from "react"
 import {
   ArrowRight, Check, ChevronDown, Wallet, HeartHandshake, Lock, Globe,
 } from "lucide-react"
@@ -41,6 +41,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
   const [quizOpen, setQuizOpen] = useState(false)
   const [faq, setFaq] = useState(0)
   const [showBar, setShowBar] = useState(false)
+  const barRef = useRef<HTMLDivElement>(null)
   const open = () => setQuizOpen(true)
 
   // Sticky CTA bar appears once the hero is scrolled past (500px).
@@ -50,6 +51,27 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
+
+  // Publish the bar's real measured height to the document root so the footer
+  // can reserve exactly that much space (+ breathing room) at any viewport /
+  // label length. Re-observes on resize and orientation change; resets to 0
+  // when the bar is absent.
+  useEffect(() => {
+    const el = barRef.current
+    const root = document.documentElement
+    if (!el) {
+      root.style.setProperty("--sticky-bar-h", "0px")
+      return
+    }
+    const publish = () => root.style.setProperty("--sticky-bar-h", `${el.offsetHeight}px`)
+    publish()
+    const ro = new ResizeObserver(publish)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      root.style.setProperty("--sticky-bar-h", "0px")
+    }
+  }, [showBar, quizOpen])
 
   return (
     <div id="top" className="font-body" style={{ background: "#fff", color: "var(--color-body)", overflowX: "hidden" }}>
@@ -67,6 +89,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
           { label: "How it works", href: "#how" },
           { label: "FAQ", href: "#faq" },
         ]}
+        ctaLabel={config.ctaLabel}
       />
 
       {/* Hero */}
@@ -193,6 +216,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
       {/* Sticky CTA bar — hidden while the quiz modal (z 100) is open. */}
       {showBar && !quizOpen && (
         <div
+          ref={barRef}
           className="union-sticky-bar"
           style={{
             position: "fixed",

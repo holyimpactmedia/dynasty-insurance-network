@@ -76,7 +76,10 @@ export type Database = {
           status: string
           tcpa_consent: boolean
           tcpa_consent_at: string | null
+          trusted_form_cert_id: string | null
           trusted_form_cert_url: string | null
+          trusted_form_claimed: boolean
+          trusted_form_claimed_at: string | null
           updated_at: string
           usha_lead_id: string | null
           usha_sent_at: string | null
@@ -110,7 +113,10 @@ export type Database = {
           status?: string
           tcpa_consent?: boolean
           tcpa_consent_at?: string | null
+          trusted_form_cert_id?: string | null
           trusted_form_cert_url?: string | null
+          trusted_form_claimed?: boolean
+          trusted_form_claimed_at?: string | null
           updated_at?: string
           usha_lead_id?: string | null
           usha_sent_at?: string | null
@@ -144,7 +150,10 @@ export type Database = {
           status?: string
           tcpa_consent?: boolean
           tcpa_consent_at?: string | null
+          trusted_form_cert_id?: string | null
           trusted_form_cert_url?: string | null
+          trusted_form_claimed?: boolean
+          trusted_form_claimed_at?: string | null
           updated_at?: string
           usha_lead_id?: string | null
           usha_sent_at?: string | null

@@ -282,3 +282,10 @@
     justify-content: center;
   }
 }
+
+/* Funnel footer reserves exactly the sticky bar's measured height (+20px), set
+   by FunnelPage via --sticky-bar-h. The 84px fallback applies only before the
+   measurement effect runs or when the bar is absent. */
+.union-funnel-footer {
+  padding-bottom: calc(var(--sticky-bar-h, 84px) + 20px);
+}

@@ -14,11 +14,14 @@ const NAV = [
 export function UnionHeader({
   onOpenQuiz,
   navLinks,
+  ctaLabel,
 }: {
   onOpenQuiz: () => void
   navLinks?: { label: string; href: string }[]
+  ctaLabel?: string
 }) {
   const links = navLinks ?? NAV
+  const cta = ctaLabel ?? "See My PPO Options"
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -67,7 +70,7 @@ export function UnionHeader({
         </nav>
 
         <button className="union-cta-desktop" onClick={onOpenQuiz} style={ctaStyle}>
-          See My PPO Options
+          {cta}
           <ArrowRight width={16} height={16} />
         </button>
 
@@ -92,7 +95,7 @@ export function UnionHeader({
             ))}
           </nav>
           <button onClick={() => { setMenuOpen(false); onOpenQuiz() }} style={{ ...ctaStyle, width: "100%", justifyContent: "center", marginTop: 14, padding: "14px 22px", fontSize: 16 }}>
-            See My PPO Options
+            {cta}
             <ArrowRight width={17} height={17} />
           </button>
         </div>

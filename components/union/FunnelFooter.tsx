@@ -16,13 +16,13 @@ const LEGAL = [
 export function FunnelFooter() {
   return (
     <footer
+      className="union-funnel-footer"
       style={{
         background: "var(--color-navy-deep)",
         color: "#8ba0bb",
         paddingTop: "clamp(48px,6vw,72px)",
         paddingLeft: "clamp(18px,5vw,48px)",
         paddingRight: "clamp(18px,5vw,48px)",
-        paddingBottom: 84,
       }}
     >
       <div className="union-center-mobile" style={{ maxWidth: 1240, margin: "0 auto" }}>
