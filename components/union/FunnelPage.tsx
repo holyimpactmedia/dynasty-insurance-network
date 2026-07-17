@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, type CSSProperties, type ComponentType } from "react"
+import { useEffect, useState, type CSSProperties, type ComponentType } from "react"
 import {
   ArrowRight, Check, ChevronDown, Wallet, HeartHandshake, Lock, Globe,
 } from "lucide-react"
 import { Eyebrow, Stars, dotGrid, redStripeField } from "./brand"
 import { UnionHeader } from "./UnionHeader"
-import { UnionFooter } from "./UnionFooter"
+import { FunnelFooter } from "./FunnelFooter"
 import { QuizModal, type Segment } from "./quiz"
 
 // ── Shared funnel landing page (Union · Modern civic) ────────────────────────
@@ -18,6 +18,7 @@ export type RichText = { text: string; em?: boolean }[]
 
 export interface FunnelConfig {
   segment: Segment
+  ctaLabel: string
   hero: { eyebrow: string; headline: RichText; subhead: string }
   benefits: { eyebrow: string; heading: string; items: { icon: IconType; title: string; desc: string }[] }
   faqHeading: string
@@ -39,7 +40,16 @@ function H2({ children, onDark, style }: { children: React.ReactNode; onDark?: b
 export function FunnelPage({ config }: { config: FunnelConfig }) {
   const [quizOpen, setQuizOpen] = useState(false)
   const [faq, setFaq] = useState(0)
+  const [showBar, setShowBar] = useState(false)
   const open = () => setQuizOpen(true)
+
+  // Sticky CTA bar appears once the hero is scrolled past (500px).
+  useEffect(() => {
+    const onScroll = () => setShowBar(window.scrollY > 500)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   return (
     <div id="top" className="font-body" style={{ background: "#fff", color: "var(--color-body)", overflowX: "hidden" }}>
@@ -51,7 +61,13 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
         onSubmit={(e) => e.preventDefault()}
         style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", pointerEvents: "none" }}
       />
-      <UnionHeader onOpenQuiz={open} />
+      <UnionHeader
+        onOpenQuiz={open}
+        navLinks={[
+          { label: "How it works", href: "#how" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
 
       {/* Hero */}
       <section style={{ background: "linear-gradient(180deg,#fbfcfe,#fff)" }}>
@@ -62,7 +78,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
           </h1>
           <p style={{ fontSize: "clamp(16px,2vw,18.5px)", lineHeight: 1.6, maxWidth: 620, margin: "0 auto" }}>{config.hero.subhead}</p>
           <div className="union-row-center-mobile" style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 26 }}>
-            <PrimaryCTA onClick={open}>See My PPO Options</PrimaryCTA>
+            <PrimaryCTA onClick={open}>{config.ctaLabel}</PrimaryCTA>
             <a href="#how" style={{ display: "inline-flex", alignItems: "center", padding: "16px 28px", borderRadius: 12, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>How it works</a>
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 22, fontSize: 14, color: "var(--color-ink-muted)" }}>
@@ -166,13 +182,41 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
           <p style={{ fontSize: 14, color: "#a9bcd4", marginTop: 8 }}>4.9 / 5 · 1,200+ member reviews</p>
           <H2 onDark style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,46px)" }}>{config.finalHeading}</H2>
           <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors, and finally get coverage that works the way you do.</p>
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={open} big>See My PPO Options</PrimaryCTA></div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={open} big>{config.ctaLabel}</PrimaryCTA></div>
           <p style={{ fontSize: 13, color: "#8ba0bb", marginTop: 18 }}>No cost to you · Takes ~2 minutes · Your info stays private</p>
         </div>
       </section>
 
-      <UnionFooter />
+      <FunnelFooter />
       <QuizModal open={quizOpen} segment={config.segment} onClose={() => setQuizOpen(false)} />
+
+      {/* Sticky CTA bar — hidden while the quiz modal (z 100) is open. */}
+      {showBar && !quizOpen && (
+        <div
+          className="union-sticky-bar"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 89,
+            background: "var(--color-navy)",
+            borderTop: "1px solid rgba(255,255,255,.12)",
+            boxShadow: "0 -8px 30px rgba(10,37,64,.4)",
+            padding: "14px clamp(18px,5vw,48px)",
+          }}
+        >
+          <div className="union-sticky-bar-inner">
+            <div>
+              <p className="font-display" style={{ fontWeight: 700, fontSize: 15.5, color: "#fff" }}>{config.ctaLabel}</p>
+              <p style={{ fontSize: 12.5, color: "#a9bcd4", marginTop: 2 }}>Free · Takes 2 minutes · No obligation</p>
+            </div>
+            <button onClick={open} style={{ ...primaryStyle, padding: "13px 24px", fontSize: 15 }}>
+              Get Matched <ArrowRight width={16} height={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

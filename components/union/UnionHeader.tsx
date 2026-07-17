@@ -11,7 +11,14 @@ const NAV = [
   { label: "FAQ", href: "#faq" },
 ]
 
-export function UnionHeader({ onOpenQuiz }: { onOpenQuiz: () => void }) {
+export function UnionHeader({
+  onOpenQuiz,
+  navLinks,
+}: {
+  onOpenQuiz: () => void
+  navLinks?: { label: string; href: string }[]
+}) {
+  const links = navLinks ?? NAV
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -54,7 +61,7 @@ export function UnionHeader({ onOpenQuiz }: { onOpenQuiz: () => void }) {
         <a href="#top" aria-label="Union Private Healthcare" onClick={() => setMenuOpen(false)}><UnionLogo size={40} /></a>
 
         <nav className="union-nav" style={{ display: "flex", gap: 26 }}>
-          {NAV.map((n) => (
+          {links.map((n) => (
             <a key={n.href} href={n.href} style={{ fontWeight: 600, fontSize: 14.5, color: "#42536b", textDecoration: "none" }}>{n.label}</a>
           ))}
         </nav>
@@ -80,7 +87,7 @@ export function UnionHeader({ onOpenQuiz }: { onOpenQuiz: () => void }) {
       {menuOpen && (
         <div style={{ borderTop: "1px solid var(--color-line)", background: "#fff", padding: "10px clamp(18px,5vw,48px) 18px" }}>
           <nav style={{ display: "grid" }}>
-            {NAV.map((n) => (
+            {links.map((n) => (
               <a key={n.href} href={n.href} onClick={() => setMenuOpen(false)} style={{ padding: "14px 4px", fontWeight: 600, fontSize: 16, color: "var(--color-navy)", textDecoration: "none", borderBottom: "1px solid var(--color-line)" }}>{n.label}</a>
             ))}
           </nav>

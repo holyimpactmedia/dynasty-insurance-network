@@ -247,3 +247,38 @@
   background: rgba(255, 255, 255, 0.09) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
+
+/* Sticky bottom CTA bar on funnel pages (appears past 500px scroll). */
+@keyframes slideUpBar {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.union-sticky-bar {
+  animation: slideUpBar 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.union-sticky-bar-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+@media (max-width: 760px) {
+  .union-sticky-bar-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    text-align: center;
+  }
+  .union-sticky-bar-inner button {
+    width: 100%;
+    justify-content: center;
+  }
+}

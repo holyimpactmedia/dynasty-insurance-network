@@ -14,6 +14,7 @@ const COMMON_FAQS = [
 
 export const individualConfig: FunnelConfig = {
   segment: "individual",
+  ctaLabel: "See My PPO Options",
   hero: {
     eyebrow: "Private PPO · Individual coverage",
     headline: [{ text: "Coverage built around " }, { text: "you", em: true }, { text: ", not a network's rules." }],
@@ -39,6 +40,7 @@ export const individualConfig: FunnelConfig = {
 
 export const familyConfig: FunnelConfig = {
   segment: "family",
+  ctaLabel: "See Family PPO Options",
   hero: {
     eyebrow: "Private PPO · Family coverage",
     headline: [{ text: "One plan that covers " }, { text: "everyone you love", em: true }, { text: "." }],
@@ -64,6 +66,7 @@ export const familyConfig: FunnelConfig = {
 
 export const selfEmployedConfig: FunnelConfig = {
   segment: "self_employed",
+  ctaLabel: "See My Coverage Options",
   hero: {
     eyebrow: "Private PPO · Self-employed",
     headline: [{ text: "Real coverage for " }, { text: "the way you work", em: true }, { text: "." }],
@@ -89,6 +92,7 @@ export const selfEmployedConfig: FunnelConfig = {
 
 export const cobraConfig: FunnelConfig = {
   segment: "cobra",
+  ctaLabel: "Compare COBRA Alternatives",
   hero: {
     eyebrow: "Private PPO · COBRA alternative",
     headline: [{ text: "Leaving a job? You may pay " }, { text: "less than COBRA", em: true }, { text: "." }],
@@ -114,6 +118,7 @@ export const cobraConfig: FunnelConfig = {
 
 export const ppoConfig: FunnelConfig = {
   segment: "ppo", // pre-routes the quiz to the PPO detail question
+  ctaLabel: "Find My PPO Plan",
   hero: {
     eyebrow: "Private PPO · Doctor freedom",
     headline: [{ text: "See " }, { text: "any doctor", em: true }, { text: ". Anywhere. No referrals." }],
@@ -139,6 +144,7 @@ export const ppoConfig: FunnelConfig = {
 
 export const smallBusinessConfig: FunnelConfig = {
   segment: "small_business",
+  ctaLabel: "Get Group Plan Options",
   hero: {
     eyebrow: "Private PPO · Group benefits",
     headline: [{ text: "Benefits that help you " }, { text: "keep great people", em: true }, { text: "." }],
