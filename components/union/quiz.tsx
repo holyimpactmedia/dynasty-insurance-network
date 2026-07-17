@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { X, User, Users, Briefcase, RefreshCw, Building2, ArrowRight, Check, AlertCircle } from "lucide-react"
 import { UnionMark } from "./brand"
-import { injectTrustedFormId } from "@/lib/hooks/useTrustedForm"
 import { zipToStateName } from "@/lib/geo/zipToState"
 
 // "" = homepage entry (shows the "who is this for" step). A non-empty value is a
@@ -73,10 +72,6 @@ export function QuizModal({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    injectTrustedFormId("union-quiz")
-  }, [])
-
-  useEffect(() => {
     if (open) {
       setDone(false)
       setError(null)
@@ -140,8 +135,13 @@ export function QuizModal({
     setSubmitting(true)
     setError(null)
     try {
-      const trustedFormCertUrl =
-        (document.getElementById("xxTrustedFormCertUrl") as HTMLInputElement)?.value || null
+      // Name-based query: the SDK creates the field with name="xxTrustedFormCertUrl"
+      // but id="xxTrustedFormCertUrl_0" (a form-index suffix), so getElementById
+      // by that id returns null. Query by name instead.
+      const tfInput = document.querySelector(
+        'input[name="xxTrustedFormCertUrl"]',
+      ) as HTMLInputElement | null
+      const trustedFormCertUrl = tfInput?.value || null
       const params = new URLSearchParams(window.location.search)
       // Everything that isn't a top-level lead field becomes quizAnswers — this
       // carries the segment + per-segment detail answers + universal fields.

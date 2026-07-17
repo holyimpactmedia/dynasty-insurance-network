@@ -4,7 +4,7 @@ import { QuizModal } from "./quiz"
 
 describe("QuizModal submit", () => {
   beforeEach(() => {
-    document.getElementById("xxTrustedFormCertUrl")?.remove()
+    document.getElementById("tf-capture")?.remove()
   })
   afterEach(() => {
     cleanup()
@@ -12,10 +12,18 @@ describe("QuizModal submit", () => {
   })
 
   it("posts a lead with per-segment detail answers + universal fields", async () => {
+    // Match the real SDK install: a hidden input with name="xxTrustedFormCertUrl"
+    // and id="xxTrustedFormCertUrl_0" (the _0 form-index suffix) inside a form.
+    // Production reads it by name, which is what this exercises.
+    const form = document.createElement("form")
+    form.id = "tf-capture"
     const cert = document.createElement("input")
-    cert.id = "xxTrustedFormCertUrl"
+    cert.type = "hidden"
+    cert.name = "xxTrustedFormCertUrl"
+    cert.id = "xxTrustedFormCertUrl_0"
     cert.value = "https://cert.trustedform.com/xyz"
-    document.body.appendChild(cert)
+    form.appendChild(cert)
+    document.body.appendChild(form)
 
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ referenceNumber: "HL-1" }) })
     vi.stubGlobal("fetch", fetchMock)

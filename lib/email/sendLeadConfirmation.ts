@@ -22,13 +22,13 @@ export async function sendLeadConfirmation({
   const resend = new Resend(process.env.RESEND_API_KEY)
   const fromEmail = formatFromAddress(
     process.env.RESEND_FROM_EMAIL,
-    'Holy Impact Media',
+    'Union Private Healthcare',
     'noreply@holyimpactmedia.com',
   )
 
   // CAN-SPAM compliance: unsubscribe mechanism + physical postal address.
   // Override these via env vars when the registered business address is set.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dynastyinsurancegroup.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://unionprivatehealthcare.com'
   const siteHost = siteUrl.replace(/^https?:\/\//, '')
   const unsubscribeUrl = `${siteUrl}/api/unsubscribe?email=${encodeURIComponent(email)}`
   const unsubscribeMailto = process.env.UNSUBSCRIBE_EMAIL || 'unsubscribe@holyimpactmedia.com'
@@ -49,9 +49,9 @@ export async function sendLeadConfirmation({
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #0A1128 0%, #1a2744 100%); padding: 32px; text-align: center;">
-              <h1 style="margin: 0; color: #D4AF37; font-size: 28px; font-weight: bold;">Dynasty</h1>
-              <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 16px;">Your Request Was Received</p>
+            <td style="background-color: #ffffff; padding: 32px; text-align: center; border-bottom: 3px solid #0A2540;">
+              <h1 style="margin: 0; color: #0A2540; font-size: 26px; font-weight: bold; letter-spacing: -0.5px;">Union Private Healthcare</h1>
+              <p style="margin: 8px 0 0 0; color: #666666; font-size: 15px;">Your Request Was Received</p>
             </td>
           </tr>
           
@@ -62,21 +62,21 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                You recently requested health insurance information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
+                You recently requested health insurance information through Union Private Healthcare. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 2 hours on business days at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
                 <tr>
-                  <td style="background-color: #f8f9fa; border-left: 4px solid #D4AF37; padding: 16px 20px; border-radius: 0 4px 4px 0;">
+                  <td style="background-color: #f8f9fa; border-left: 4px solid #0A2540; padding: 16px 20px; border-radius: 0 4px 4px 0;">
                     <p style="margin: 0; color: #666666; font-size: 14px;">Your Reference Number</p>
-                    <p style="margin: 4px 0 0 0; color: #0A1128; font-size: 24px; font-weight: bold;">${referenceNumber}</p>
+                    <p style="margin: 4px 0 0 0; color: #0A2540; font-size: 24px; font-weight: bold;">${referenceNumber}</p>
                   </td>
                 </tr>
               </table>
 
               <!-- Timeline -->
-              <h2 style="margin: 32px 0 16px 0; color: #0A1128; font-size: 18px; font-weight: 600;">What Happens Next</h2>
+              <h2 style="margin: 32px 0 16px 0; color: #0A2540; font-size: 18px; font-weight: 600;">What Happens Next</h2>
               
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
@@ -84,7 +84,7 @@ export async function sendLeadConfirmation({
                     <table cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width: 40px; vertical-align: top;">
-                          <div style="width: 32px; height: 32px; background-color: #D4AF37; border-radius: 50%; text-align: center; line-height: 32px; color: #0A1128; font-weight: bold; font-size: 14px;">1</div>
+                          <div style="width: 32px; height: 32px; background-color: #0A2540; border-radius: 50%; text-align: center; line-height: 32px; color: #ffffff; font-weight: bold; font-size: 14px;">1</div>
                         </td>
                         <td style="padding-left: 12px;">
                           <p style="margin: 0; color: #333333; font-weight: 600;">Right Now</p>
@@ -99,7 +99,7 @@ export async function sendLeadConfirmation({
                     <table cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width: 40px; vertical-align: top;">
-                          <div style="width: 32px; height: 32px; background-color: #D4AF37; border-radius: 50%; text-align: center; line-height: 32px; color: #0A1128; font-weight: bold; font-size: 14px;">2</div>
+                          <div style="width: 32px; height: 32px; background-color: #0A2540; border-radius: 50%; text-align: center; line-height: 32px; color: #ffffff; font-weight: bold; font-size: 14px;">2</div>
                         </td>
                         <td style="padding-left: 12px;">
                           <p style="margin: 0; color: #333333; font-weight: 600;">Within 2 Hours</p>
@@ -114,7 +114,7 @@ export async function sendLeadConfirmation({
                     <table cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width: 40px; vertical-align: top;">
-                          <div style="width: 32px; height: 32px; background-color: #D4AF37; border-radius: 50%; text-align: center; line-height: 32px; color: #0A1128; font-weight: bold; font-size: 14px;">3</div>
+                          <div style="width: 32px; height: 32px; background-color: #0A2540; border-radius: 50%; text-align: center; line-height: 32px; color: #ffffff; font-weight: bold; font-size: 14px;">3</div>
                         </td>
                         <td style="padding-left: 12px;">
                           <p style="margin: 0; color: #333333; font-weight: 600;">Within 24 Hours</p>
@@ -132,7 +132,7 @@ export async function sendLeadConfirmation({
           <tr>
             <td style="background-color: #f8f9fa; padding: 24px 32px; border-top: 1px solid #eeeeee;">
               <p style="margin: 0 0 10px 0; color: #666666; font-size: 12px; line-height: 1.5; text-align: center;">
-                <strong>Holy Impact Media, LLC</strong> - Marketing &amp; Lead Generation Services<br />
+                Union Private Healthcare is a brand of Holy Impact Media, LLC, a marketing and lead-generation service. Not an insurance agency, insurer, or government program.<br />
                 ${physicalAddress}
               </p>
               <p style="margin: 0 0 8px 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">

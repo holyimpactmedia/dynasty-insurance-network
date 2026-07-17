@@ -43,6 +43,14 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
 
   return (
     <div id="top" className="font-body" style={{ background: "#fff", color: "var(--color-body)", overflowX: "hidden" }}>
+      {/* Persistent, empty form for the TrustedForm SDK to inject its hidden
+          cert field into (the quiz modal is conditionally rendered). */}
+      <form
+        id="tf-capture"
+        aria-hidden="true"
+        onSubmit={(e) => e.preventDefault()}
+        style={{ position: "absolute", width: 0, height: 0, overflow: "hidden", pointerEvents: "none" }}
+      />
       <UnionHeader onOpenQuiz={open} />
 
       {/* Hero */}

@@ -79,21 +79,3 @@ export const useTrustedForm = () => {
     getCertId,
   }
 }
-
-// Helper to inject TrustedForm form ID
-export const injectTrustedFormId = (formId: string) => {
-  if (typeof window !== 'undefined') {
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.text = `tf_form_id = '${formId}';`
-    document.head.appendChild(script)
-  }
-}
-
-// Helper to get cert ID after form submission
-export const getTrustedFormCertId = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return (window as any).tf_cert_id || null
-  }
-  return null
-}

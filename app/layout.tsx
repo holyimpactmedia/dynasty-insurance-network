@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Space_Grotesk, Public_Sans } from "next/font/google"
+import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
@@ -144,12 +145,25 @@ export default function RootLayout({
         />
         {children}
         <Analytics />
-        {/* TrustedForm Script */}
-        <script
-          src="https://cert.trustedform.com/trustedform.js"
-          type="text/javascript"
-          async
-        ></script>
+        {/* TrustedForm SDK — injects the xxTrustedFormCertUrl field into forms
+            on the page and mints a TCPA certificate (served from api.trustedform.com). */}
+        <Script id="trustedform" strategy="afterInteractive">
+          {`(function() {
+      var tf = document.createElement('script');
+      tf.type = 'text/javascript';
+      tf.async = true;
+      tf.src = 'https://api.trustedform.com/trustedform.js'
+        + '?field=xxTrustedFormCertUrl'
+        + '&ping_field=xxTrustedFormPingUrl'
+        + '&l=' + new Date().getTime() + Math.random();
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(tf, s);
+    })();`}
+        </Script>
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://api.trustedform.com/ns.gif" alt="" />
+        </noscript>
       </body>
     </html>
   )
