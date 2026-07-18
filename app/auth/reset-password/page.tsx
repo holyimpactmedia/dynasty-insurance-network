@@ -3,8 +3,9 @@
 import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { authClient } from "@/lib/auth/client"
+import { AuthShell } from "@/components/auth/AuthShell"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -29,27 +30,29 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-6 space-y-5">
-        <h1 className="text-2xl font-bold">Choose a new password</h1>
+    <AuthShell title="Choose a new password">
+      <CardContent>
         <form onSubmit={submit} className="space-y-4">
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <div className="p-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg">{error}</div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="password">New password</Label>
             <Input id="password" type="password" minLength={8} maxLength={128} required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" disabled={loading || !token} className="w-full">
+          {/* Confirmation flow, not a conversion CTA: default variant is Union navy. */}
+          <Button type="submit" disabled={loading || !token} className="w-full h-11">
             {loading ? "Updating…" : "Update password"}
           </Button>
         </form>
-      </Card>
-    </div>
+      </CardContent>
+    </AuthShell>
   )
 }
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A1128]" />}>
+    <Suspense fallback={<AuthShell title="Choose a new password" />}>
       <ResetPasswordForm />
     </Suspense>
   )
