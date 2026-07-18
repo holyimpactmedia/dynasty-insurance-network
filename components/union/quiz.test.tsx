@@ -41,7 +41,9 @@ describe("QuizModal submit", () => {
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))
 
     // Details
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } })
+    const details = screen.getAllByRole("combobox")
+    fireEvent.change(details[0], { target: { value: "2" } }) // household
+    fireEvent.change(details[1], { target: { value: "$50,000 to $75,000" } }) // income
     fireEvent.click(screen.getAllByRole("button", { name: "Yes" })[0]) // has coverage
     fireEvent.click(screen.getAllByRole("button", { name: "No" })[1]) // tobacco
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))
@@ -64,12 +66,16 @@ describe("QuizModal submit", () => {
     expect(body.state).toBe("Georgia") // from ZIP 30301
     expect(body.tcpaConsent).toBe(true)
     expect(body.trustedFormCertUrl).toBe("https://cert.trustedform.com/xyz")
+    // incomeRange must be promoted to the TOP LEVEL (not only nested in quizAnswers),
+    // or the leads route writes income_range=null and the AI scorer runs blind.
+    expect(body.incomeRange).toBe("$50,000 to $75,000")
     expect(body.quizAnswers).toMatchObject({
       segment: "cobra",
       cobraSituation: "Just got the COBRA notice",
       cobraCost: "$400 to $700",
       zip: "30301",
       household: "2",
+      incomeRange: "$50,000 to $75,000",
       hasCoverage: "Yes",
       tobacco: "No",
       source: "quiz",
@@ -87,7 +93,9 @@ describe("QuizModal submit", () => {
     fireEvent.change(screen.getByPlaceholderText("e.g. 30301"), { target: { value: "10001" } })
     fireEvent.change(screen.getByPlaceholderText(/under 65/i), { target: { value: "35" } })
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Just 1" } })
+    const details = screen.getAllByRole("combobox")
+    fireEvent.change(details[0], { target: { value: "Just 1" } }) // household
+    fireEvent.change(details[1], { target: { value: "Under $30,000" } }) // income
     fireEvent.click(screen.getAllByRole("button", { name: "No" })[0]) // coverage
     fireEvent.click(screen.getAllByRole("button", { name: "No" })[1]) // tobacco
     fireEvent.click(screen.getByRole("button", { name: "Continue" }))

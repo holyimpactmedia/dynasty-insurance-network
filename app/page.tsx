@@ -55,8 +55,7 @@ export default function HomePage() {
               <a href="#how" style={{ ...secondaryStyle, textDecoration: "none" }}>How it works</a>
             </div>
             <div className="union-row-center-mobile" style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 22, fontSize: 14, color: "var(--color-ink-muted)" }}>
-              <Stars size={16} />
-              <span>4.9 / 5 · 1,200+ member reviews · No obligation</span>
+              <span>Free · One licensed agent, not a call center · No obligation</span>
             </div>
           </div>
 
@@ -220,12 +219,7 @@ export default function HomePage() {
           <div className="union-row-center-mobile" style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between", marginBottom: 44 }}>
             <div className="union-center-mobile" style={{ maxWidth: 560 }}>
               <Eyebrow>Member stories</Eyebrow>
-              <H2 style={{ marginTop: 12 }}>Members love the freedom, and the follow-up.</H2>
-            </div>
-            <div style={{ background: "#fff", border: "1px solid var(--color-line)", borderRadius: 18, padding: "18px 24px", textAlign: "center" }}>
-              <p className="font-display" style={{ fontWeight: 700, fontSize: 30, color: "var(--color-navy)" }}>4.9</p>
-              <Stars size={15} />
-              <p style={{ fontSize: 12.5, color: "var(--color-ink-muted)", marginTop: 4 }}>from 1,200+ verified members</p>
+              <H2 style={{ marginTop: 12 }}>What people say after working with a Union agent.</H2>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 20 }}>
@@ -243,6 +237,9 @@ export default function HomePage() {
               </figure>
             ))}
           </div>
+          <p style={{ fontSize: 12, color: "var(--color-ink-muted)", maxWidth: 640, margin: "20px auto 0", textAlign: "center", lineHeight: 1.6 }}>
+            Stories are illustrative of typical client situations. Actual savings and outcomes depend on age, location, plan selection, and carrier underwriting. A licensed agent will provide your actual quote.
+          </p>
         </div>
       </section>
 
@@ -299,8 +296,7 @@ export default function HomePage() {
         <div aria-hidden style={{ position: "absolute", inset: 0, ...dotGrid }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, ...redStripeField, opacity: 0.1 }} />
         <div style={{ ...container, position: "relative", maxWidth: 760, textAlign: "center" }}>
-          <Stars size={18} color="var(--color-steel)" />
-          <p style={{ fontSize: 14, color: "#a9bcd4", marginTop: 8 }}>4.9 / 5 · 1,200+ member reviews</p>
+          <p style={{ fontSize: 14, color: "#a9bcd4" }}>Free to you. Private. No obligation.</p>
           <H2 onDark style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,46px)" }}>See your private PPO options in about two minutes.</H2>
           <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors, and finally get coverage that works the way you do.</p>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={() => open()} big>See My PPO Options</PrimaryCTA></div>
@@ -380,6 +376,7 @@ const FAQS = [
   { q: "Is Union an insurance company?", a: "No. Union Private Healthcare is a free advisory service that connects you with independent licensed insurance agents and carriers who can quote and enroll coverage. We are not an insurer or a government program." },
   { q: "How much does this cost me?", a: "Nothing. Our service is 100% free to you. The licensed agents we connect you with are compensated by the carriers, not by you." },
   { q: "What is a private PPO?", a: "A PPO (Preferred Provider Organization) plan lets you see any doctor or specialist, usually without referrals, with nationwide coverage, including out-of-network care." },
+  { q: "Will I get bombarded with calls after I submit?", a: "No. Your information goes to one licensed agent, not to a list of companies. You will hear from one person who reviews your options and can help you enroll if you choose to." },
   { q: "Will I have to switch doctors?", a: "Usually not. PPO networks are broad, and a licensed agent will help you find a plan that keeps the doctors you trust in-network wherever possible." },
   { q: "Who actually contacts me?", a: "A licensed insurance agent, a real person, reaches out to review your options, answer questions, and help you enroll if you choose to." },
   { q: "Do I have to buy anything?", a: "No. There's no obligation. You can compare your options and walk away at any time." },

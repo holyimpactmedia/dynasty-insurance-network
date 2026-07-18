@@ -124,7 +124,7 @@ export function QuizModal({
     cur.kind === "who" ? !!a.segment
     : cur.kind === "detail" ? !!a[cur.detail.key]
     : cur.kind === "location" ? /^\d{5}$/.test(a.zip || "") && Number(a.age) >= 18 && Number(a.age) <= 64
-    : cur.kind === "details" ? !!a.household && !!a.hasCoverage && !!a.tobacco
+    : cur.kind === "details" ? !!a.household && !!a.incomeRange && !!a.hasCoverage && !!a.tobacco
     : contactValid
 
   const needsContinue = cur.kind === "location" || cur.kind === "details" || cur.kind === "contact"
@@ -158,6 +158,7 @@ export function QuizModal({
           age,
           state: zipToStateName(a.zip), // ZIP kept raw in quizAnswers below
           householdSize: a.household,
+          incomeRange: a.incomeRange,
           tcpaConsent: a.consent === "yes",
           trustedFormCertUrl,
           funnelType: SEGMENT_TO_FUNNEL[a.segment] || "ppo",
@@ -321,10 +322,11 @@ function Step1({ a, set }: { a: Record<string, string>; set: (k: string, v: stri
   )
 }
 
-function Toggle({ q, k, opts, a, set }: { q: string; k: string; opts: string[]; a: Record<string, string>; set: (k: string, v: string) => void }) {
+function Toggle({ q, hint, k, opts, a, set }: { q: string; hint?: string; k: string; opts: string[]; a: Record<string, string>; set: (k: string, v: string) => void }) {
   return (
     <div>
       <label style={label}>{q}</label>
+      {hint && <p style={{ fontSize: 12, color: "var(--color-ink-muted)", marginTop: -2, marginBottom: 8 }}>{hint}</p>}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {opts.map((o) => {
           const on = a[k] === o
@@ -346,8 +348,16 @@ function Step2({ a, set }: { a: Record<string, string>; set: (k: string, v: stri
             {["Just 1", "2", "3", "4", "5 or more"].map((o) => <option key={o} value={o}>{o}</option>)}
           </select>
         </div>
+        <div>
+          <label style={label}>Estimated annual household income</label>
+          <select value={a.incomeRange || ""} onChange={(e) => set("incomeRange", e.target.value)} style={{ ...field, cursor: "pointer" }}>
+            <option value="" disabled>Select…</option>
+            {["Under $30,000", "$30,000 to $50,000", "$50,000 to $75,000", "$75,000 to $100,000", "Over $100,000"].map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+          <p style={{ fontSize: 12, color: "var(--color-ink-muted)", marginTop: 6 }}>This helps your agent find plans that fit your budget.</p>
+        </div>
         <Toggle q="Do you have health coverage right now?" k="hasCoverage" opts={["Yes", "No"]} a={a} set={set} />
-        <Toggle q="Do you use tobacco?" k="tobacco" opts={["No", "Yes"]} a={a} set={set} />
+        <Toggle q="Do you use tobacco products?" hint="This helps us show you accurate plan pricing." k="tobacco" opts={["No", "Yes"]} a={a} set={set} />
       </div>
     </>
   )

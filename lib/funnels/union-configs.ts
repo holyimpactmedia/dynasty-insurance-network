@@ -1,11 +1,12 @@
 import {
   Stethoscope, Globe, Network, HeartHandshake, Users, Baby, Smile,
-  FileText, PiggyBank, Wallet, RefreshCw,
+  FileText, PiggyBank, Wallet, Clock,
 } from "lucide-react"
 import type { FunnelConfig } from "@/components/union/FunnelPage"
 
 // Universal FAQs shared across funnel pages (each funnel prepends its own).
 const COMMON_FAQS = [
+  { q: "Will I get bombarded with calls after I submit?", a: "No. Your information goes to one licensed agent, not to a list of companies. You will hear from one person who reviews your options and can help you enroll if you choose to." },
   { q: "How much does this cost me?", a: "Nothing. Our service is 100% free to you. The licensed agents we connect you with are compensated by the carriers, not by you." },
   { q: "Who actually contacts me?", a: "A licensed insurance agent, a real person, reaches out to review your options, answer questions, and help you enroll if you choose to." },
   { q: "Do I have to buy anything?", a: "No. There's no obligation. You can compare your options and walk away at any time." },
@@ -76,7 +77,7 @@ export const selfEmployedConfig: FunnelConfig = {
     eyebrow: "For the self-employed",
     heading: "Coverage as independent as you are.",
     items: [
-      { icon: FileText, title: "May be tax-deductible", desc: "Self-employed individuals can often deduct premiums, confirm with your tax advisor." },
+      { icon: FileText, title: "Often tax-deductible", desc: "Self-employed individuals may deduct health insurance premiums under IRS Section 162(l). Your agent and tax advisor can confirm what applies to you." },
       { icon: PiggyBank, title: "HSA-eligible options", desc: "Pair a qualifying plan with an HSA for tax-advantaged savings." },
       { icon: Stethoscope, title: "See any doctor", desc: "No employer, no restrictions, choose the doctors and specialists you want." },
       { icon: Globe, title: "Coverage that travels", desc: "Work anywhere; your nationwide PPO coverage comes with you." },
@@ -84,7 +85,7 @@ export const selfEmployedConfig: FunnelConfig = {
   },
   faqHeading: "Self-employed coverage questions",
   faqs: [
-    { q: "Are my premiums tax-deductible?", a: "Often, yes. Self-employed individuals may be able to deduct health-insurance premiums. A licensed agent (and your tax advisor) can confirm what applies to you." },
+    { q: "Are my premiums tax-deductible?", a: "Self-employed individuals may be able to deduct health insurance premiums under IRS Section 162(l). This is separate from itemizing. A licensed agent will explain your coverage options and your tax advisor can confirm the deduction that applies to your situation." },
     ...COMMON_FAQS,
   ],
   finalHeading: "See self-employed PPO options in about two minutes.",
@@ -96,7 +97,7 @@ export const cobraConfig: FunnelConfig = {
   hero: {
     eyebrow: "Private PPO · COBRA alternative",
     headline: [{ text: "Leaving a job? You may pay " }, { text: "less than COBRA", em: true }, { text: "." }],
-    subhead: "Healthy adults under 65 can often replace COBRA with a private PPO, keep your doctors and stop overpaying. A few quick questions and a licensed agent compares your options, free.",
+    subhead: "When you leave a job, your employer stops paying your premium immediately. You pay 100% plus a 2% admin fee. Many healthy adults under 65 find a private PPO that costs less and keeps the same doctors. Losing coverage opens a 60-day enrollment window, so timing matters. A licensed agent compares your options, free.",
   },
   benefits: {
     eyebrow: "COBRA alternative",
@@ -104,13 +105,15 @@ export const cobraConfig: FunnelConfig = {
     items: [
       { icon: Wallet, title: "Often costs less", desc: "Many healthy adults find a private PPO for less than they'd pay for COBRA." },
       { icon: Stethoscope, title: "Keep your doctors", desc: "Broad PPO networks help you hold on to the physicians you already see." },
-      { icon: RefreshCw, title: "No coverage lapse", desc: "Move off COBRA to a plan that continues as long as you need it." },
+      { icon: Clock, title: "A 60-day window", desc: "Losing job coverage is a qualifying event. You have 60 days to enroll before your options narrow. Timing matters." },
       { icon: HeartHandshake, title: "A person to compare", desc: "A licensed agent lines up your options against COBRA, side by side." },
     ],
   },
   faqHeading: "COBRA alternative questions",
   faqs: [
     { q: "How does this compare to COBRA?", a: "For many healthy adults under 65, a private PPO costs less than COBRA while keeping similar networks. A licensed agent will compare your specific options side by side." },
+    { q: "Can I drop COBRA and switch mid-year?", a: "Yes. Losing employer coverage is a qualifying life event that opens a 60-day special enrollment window. A licensed agent can help you time the switch correctly." },
+    { q: "Will I have a gap in coverage if I switch?", a: "Not if you time it right. Private PPO coverage can start the first of the following month. Your agent will help you coordinate the switch so there is no lapse." },
     ...COMMON_FAQS,
   ],
   finalHeading: "Compare COBRA alternatives in about two minutes.",
@@ -155,7 +158,7 @@ export const smallBusinessConfig: FunnelConfig = {
     heading: "Group benefits that punch above their weight.",
     items: [
       { icon: Users, title: "Attract & keep talent", desc: "Real benefits help you compete for and retain the people you count on." },
-      { icon: FileText, title: "Possible tax advantages", desc: "Group premiums are often deductible; some employers may qualify for credits." },
+      { icon: FileText, title: "Tax credit available", desc: "Qualifying small businesses may claim up to 50% of premiums paid as a federal tax credit. Group premiums are also typically deductible as a business expense." },
       { icon: Globe, title: "Nationwide PPO", desc: "Give your team broad, flexible coverage that works wherever they are." },
       { icon: HeartHandshake, title: "An agent to set it up", desc: "A licensed specialist handles the setup so you can stay focused on the business." },
     ],
@@ -163,6 +166,8 @@ export const smallBusinessConfig: FunnelConfig = {
   faqHeading: "Small business coverage questions",
   faqs: [
     { q: "How many employees do I need?", a: "Small-group PPO plans typically fit businesses with 2-50 employees. A licensed agent will walk you through eligibility and setup." },
+    { q: "Is there a tax benefit for offering group coverage?", a: "There can be. Businesses with fewer than 25 full-time equivalent employees paying average wages under the IRS threshold may qualify for a Small Business Health Care Tax Credit of up to 50% of premiums paid. Group premiums are also generally deductible as a business expense. A licensed agent can walk you through eligibility." },
+    { q: "Do I have to offer coverage to every employee?", a: "Rules vary by state and carrier, but coverage is generally offered to employees working a minimum number of hours per week. A licensed specialist will help you structure a plan that meets your requirements and your budget." },
     ...COMMON_FAQS,
   ],
   finalHeading: "Get group plan options in about two minutes.",

@@ -84,10 +84,10 @@ export async function notifyAdmin(
   const resend = new Resend(process.env.RESEND_API_KEY)
   const fromEmail = formatFromAddress(
     process.env.RESEND_FROM_EMAIL,
-    'Dynasty CRM',
-    'noreply@dynasty.app',
+    'Union Private Healthcare',
+    'noreply@holyimpactmedia.com',
   )
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dynasty.app'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://unionprivatehealthcare.com'
 
   const funnelLabel: Record<string, string> = {
     private_health: 'Individual',
@@ -139,7 +139,7 @@ export async function notifyAdmin(
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td>
-                <div style="color:#D4AF37;font-size:22px;font-weight:800;letter-spacing:-0.5px;">Dynasty</div>
+                <div style="color:#ffffff;font-size:20px;font-weight:800;letter-spacing:-0.4px;">Union Private Healthcare</div>
                 <div style="color:#94a3b8;font-size:13px;margin-top:2px;">New Lead Alert</div>
               </td>
               <td align="right">
@@ -233,7 +233,7 @@ export async function notifyAdmin(
       <!-- CTA -->
       <tr>
         <td style="padding:0 32px 28px 32px;">
-          <a href="${siteUrl}/dashboard/admin" style="display:inline-block;background:#0A1128;color:#D4AF37;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:0.02em;">
+          <a href="${siteUrl}/dashboard/admin" style="display:inline-block;background:#0A2540;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:0.02em;">
             View in Admin Dashboard
           </a>
         </td>
@@ -243,7 +243,7 @@ export async function notifyAdmin(
       <tr>
         <td style="background:#f8fafc;border-top:1px solid #e5e7eb;padding:16px 32px;">
           <p style="margin:0;color:#9ca3af;font-size:12px;">
-            Dynasty Insurance Network - Internal Admin Alert - ${new Date().toLocaleString('en-US', { timeZoneName: 'short' })}
+            Union Private Healthcare - Internal Admin Alert - ${new Date().toLocaleString('en-US', { timeZoneName: 'short' })}
           </p>
         </td>
       </tr>

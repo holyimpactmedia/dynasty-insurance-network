@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ComponentType } f
 import {
   ArrowRight, Check, ChevronDown, Wallet, HeartHandshake, Lock, Globe,
 } from "lucide-react"
-import { Eyebrow, Stars, dotGrid, redStripeField } from "./brand"
+import { Eyebrow, dotGrid, redStripeField } from "./brand"
 import { UnionHeader } from "./UnionHeader"
 import { FunnelFooter } from "./FunnelFooter"
 import { QuizModal, type Segment } from "./quiz"
@@ -105,8 +105,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
             <a href="#how" style={{ display: "inline-flex", alignItems: "center", padding: "16px 28px", borderRadius: 12, border: "1.5px solid #d3dbe6", background: "#fff", color: "var(--color-navy)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>How it works</a>
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 22, fontSize: 14, color: "var(--color-ink-muted)" }}>
-            <Stars size={16} />
-            <span>4.9 / 5 · 1,200+ member reviews · No obligation</span>
+            <span>Free · One licensed agent, not a call center · No obligation</span>
           </div>
         </div>
       </section>
@@ -201,8 +200,7 @@ export function FunnelPage({ config }: { config: FunnelConfig }) {
         <div aria-hidden style={{ position: "absolute", inset: 0, ...dotGrid }} />
         <div aria-hidden style={{ position: "absolute", inset: 0, ...redStripeField, opacity: 0.1 }} />
         <div style={{ ...container, position: "relative", maxWidth: 760, textAlign: "center" }}>
-          <Stars size={18} color="var(--color-steel)" />
-          <p style={{ fontSize: 14, color: "#a9bcd4", marginTop: 8 }}>4.9 / 5 · 1,200+ member reviews</p>
+          <p style={{ fontSize: 14, color: "#a9bcd4" }}>Free to you. Private. No obligation.</p>
           <H2 onDark style={{ marginTop: 16, fontSize: "clamp(30px,4.6vw,46px)" }}>{config.finalHeading}</H2>
           <p style={{ fontSize: 17, color: "#c4d3e6", marginTop: 16, lineHeight: 1.6 }}>Free, private, and no obligation. Keep your doctors, and finally get coverage that works the way you do.</p>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}><PrimaryCTA onClick={open} big>{config.ctaLabel}</PrimaryCTA></div>
