@@ -30,9 +30,9 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">2. Nature of Service</h2>
             <p className="text-muted-foreground leading-relaxed">
               Holy Impact Media operates this Site to connect consumers with licensed independent insurance agents,
-              including Dynasty Insurance Group. Holy Impact Media is not an insurance agency, broker, or carrier and
-              does not provide insurance advice or sell insurance products. Dynasty Insurance Group is operated by
-              independent licensed insurance agents. Neither Holy Impact Media nor Dynasty Insurance Group is affiliated with,
+              including Dynasty Forever LLC. Holy Impact Media is not an insurance agency, broker, or carrier and
+              does not provide insurance advice or sell insurance products. Dynasty Forever LLC is operated by
+              independent licensed insurance agents. Neither Holy Impact Media nor Dynasty Forever LLC is affiliated with,
               endorsed by, or representing any government entity, Healthcare.gov, the Health Insurance Marketplace, or
               the Centers for Medicare &amp; Medicaid Services (CMS).
             </p>
@@ -64,7 +64,7 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">5. Agent Compensation</h2>
             <p className="text-muted-foreground leading-relaxed">
               Holy Impact Media may receive compensation when leads we generate enroll in coverage with a licensed
-              insurance partner, including Dynasty Insurance Group. Licensed agents may receive commissions or other
+              insurance partner, including Dynasty Forever LLC. Licensed agents may receive commissions or other
               compensation from insurance carriers for policies sold. This compensation does not affect the premium
               rates you pay, which are set by the carriers.
             </p>
@@ -148,7 +148,7 @@ export default function TermsOfUsePage() {
               By submitting your contact information through the Site and checking the consent box on a quiz form, you
               provide express written consent under the Telephone Consumer Protection Act (TCPA), the Florida
               Telephone Solicitation Act (FTSA), and any other applicable state telemarketing laws to be contacted by
-              Holy Impact Media and its licensed insurance partners (including Dynasty Insurance Group) by phone
+              Holy Impact Media and its licensed insurance partners (including Dynasty Forever LLC) by phone
               calls, text messages (including via autodialer or prerecorded message), and email regarding health
               insurance options. Consent is not required as a condition of any purchase. You may revoke consent at any
               time by replying STOP to a text, replying STOP or unsubscribing from email, or emailing
@@ -214,7 +214,7 @@ export default function TermsOfUsePage() {
             </p>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">30-Day Right to Reject.</strong> You may reject this arbitration
-              section by emailing <a href="mailto:legal@holyimpactmedia.com" className="text-[#D4AF37] underline">legal@holyimpactmedia.com</a>{" "}
+              section by emailing <a href="mailto:legal@holyimpactmedia.com" className="text-navy underline">legal@holyimpactmedia.com</a>{" "}
               with the subject &ldquo;Arbitration Opt-Out&rdquo; within 30 days of first using the Site. Your rejection
               will not affect any other portion of these Terms.
             </p>
@@ -233,10 +233,10 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">18. Relationship to Insurance Partners</h2>
             <p className="text-muted-foreground leading-relaxed">
               Holy Impact Media, LLC is a marketing and lead-generation company, not a licensed insurance agency.
-              Dynasty Insurance Group is operated by independent licensed insurance agents who purchase qualified leads
+              Dynasty Forever LLC is operated by independent licensed insurance agents who purchase qualified leads
               from Holy Impact Media and contact consumers regarding insurance coverage options. Holy Impact Media does
               not provide insurance advice or sell insurance products. Holy Impact Media has no ownership interest in
-              Dynasty Insurance Group, and Dynasty Insurance Group has no ownership interest in Holy Impact Media.
+              Dynasty Forever LLC, and Dynasty Forever LLC has no ownership interest in Holy Impact Media.
             </p>
           </section>
 
@@ -248,7 +248,7 @@ export default function TermsOfUsePage() {
             <div className="mt-3 text-muted-foreground">
               <p className="font-medium">Holy Impact Media, LLC</p>
               <p>Attn: Legal</p>
-              <p>Email: <a href="mailto:legal@holyimpactmedia.com" className="text-[#D4AF37] underline">legal@holyimpactmedia.com</a></p>
+              <p>Email: <a href="mailto:legal@holyimpactmedia.com" className="text-navy underline">legal@holyimpactmedia.com</a></p>
             </div>
           </section>
         </div>

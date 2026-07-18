@@ -62,7 +62,7 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                You recently requested health insurance information through Union Private Healthcare. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 2 hours on business days at the phone number or email you provided.
+                You recently requested health insurance information through Union Private Healthcare. We've matched you with a licensed specialist at Dynasty Forever LLC, who will contact you within 2 hours on business days at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->

@@ -88,7 +88,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold mb-3">4. Information Sharing and Disclosure</h2>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Lead Recipients:</strong> Holy Impact Media shares your information
-              with Dynasty Insurance Group, operated by licensed independent insurance agents, and the US Health Advisors agent
+              with Dynasty Forever LLC, operated by licensed independent insurance agents, and the US Health Advisors agent
               network so that licensed agents can present you with coverage options. Compensation we receive for
               providing qualified leads is described in our Terms of Use.
             </p>
@@ -156,7 +156,7 @@ export default function PrivacyPolicyPage() {
               <strong className="text-foreground">Your right to opt out of certain sharing:</strong> Under GLBA and
               corresponding state insurance regulations, you have the right to opt out of certain disclosures of your
               nonpublic personal information to nonaffiliated third parties. To opt out, email{" "}
-              <a href="mailto:privacy@holyimpactmedia.com?subject=GLBA%20Opt-Out" className="text-[#D4AF37] underline">
+              <a href="mailto:privacy@holyimpactmedia.com?subject=GLBA%20Opt-Out" className="text-navy underline">
                 privacy@holyimpactmedia.com
               </a>{" "}
               with the subject line &ldquo;GLBA Opt-Out.&rdquo; Note that opting out may prevent us from connecting you with
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-muted-foreground leading-relaxed">
               We use Google Analytics to understand how visitors use the Site. You can opt out by installing
               Google&apos;s opt-out browser add-on at{" "}
-              <a href="https://tools.google.com/dlpage/gaoptout" className="text-[#D4AF37] underline" target="_blank" rel="noopener noreferrer">
+              <a href="https://tools.google.com/dlpage/gaoptout" className="text-navy underline" target="_blank" rel="noopener noreferrer">
                 tools.google.com/dlpage/gaoptout
               </a>
               .
@@ -240,7 +240,7 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-3">
               To exercise any of these rights, contact us at{" "}
-              <a href="mailto:privacy@holyimpactmedia.com" className="text-[#D4AF37] underline">privacy@holyimpactmedia.com</a>.
+              <a href="mailto:privacy@holyimpactmedia.com" className="text-navy underline">privacy@holyimpactmedia.com</a>.
               We will verify your identity before responding.
             </p>
           </section>
@@ -251,7 +251,7 @@ export default function PrivacyPolicyPage() {
               Depending on the state where you reside, you may have additional rights under the privacy laws listed
               below. Where state law conflicts with this policy, the state-law rights apply for residents of that
               state. To exercise any of these rights, email{" "}
-              <a href="mailto:privacy@holyimpactmedia.com?subject=State%20Privacy%20Request" className="text-[#D4AF37] underline">
+              <a href="mailto:privacy@holyimpactmedia.com?subject=State%20Privacy%20Request" className="text-navy underline">
                 privacy@holyimpactmedia.com
               </a>{" "}
               with the subject line &ldquo;State Privacy Request&rdquo; and include your full legal name, residency
@@ -334,7 +334,7 @@ export default function PrivacyPolicyPage() {
               General Data Protection Regulation (GDPR / UK GDPR), including the right to access, rectify, erase,
               restrict processing, object to processing, and data portability. The Site is primarily directed at
               United States residents, and we do not specifically target EEA residents. If GDPR applies to you,
-              contact us at <a href="mailto:privacy@holyimpactmedia.com" className="text-[#D4AF37] underline">privacy@holyimpactmedia.com</a>.
+              contact us at <a href="mailto:privacy@holyimpactmedia.com" className="text-navy underline">privacy@holyimpactmedia.com</a>.
             </p>
           </section>
 
@@ -372,7 +372,7 @@ export default function PrivacyPolicyPage() {
             <div className="mt-3 text-muted-foreground">
               <p className="font-medium">Holy Impact Media, LLC</p>
               <p>Attn: Privacy Officer</p>
-              <p>Email: <a href="mailto:privacy@holyimpactmedia.com" className="text-[#D4AF37] underline">privacy@holyimpactmedia.com</a></p>
+              <p>Email: <a href="mailto:privacy@holyimpactmedia.com" className="text-navy underline">privacy@holyimpactmedia.com</a></p>
             </div>
           </section>
         </div>
