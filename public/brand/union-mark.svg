@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42" width="42" height="42" role="img" aria-label="Union Private Healthcare">
+  <title>Union Private Healthcare mark</title>
+  <!-- Union · Modern civic. Pure paths, no text and no font dependency, so this
+       scales cleanly to a favicon, an app icon, or a billboard.
+       Geometry mirrors <UnionMark> in components/union/brand.tsx exactly:
+       corner radius = size * 0.26, stripe period = size / 4, star = size * 0.5. -->
+  <defs>
+    <clipPath id="unionTile">
+      <rect width="42" height="42" rx="11" ry="11"/>
+    </clipPath>
+  </defs>
+
+  <!-- navy tile -->
+  <rect width="42" height="42" rx="11" ry="11" fill="#0a2540"/>
+
+  <!-- red stripe field, clipped to the rounded tile -->
+  <g clip-path="url(#unionTile)" fill="#d2232a" opacity="0.9">
+    <rect x="0" y="0" width="42" height="5.5"/>
+    <rect x="0" y="11" width="42" height="5.5"/>
+    <rect x="0" y="22" width="42" height="5.5"/>
+    <rect x="0" y="33" width="42" height="5.5"/>
+  </g>
+
+  <!-- white five-point star, centred -->
+  <g transform="translate(10.5 10.5) scale(0.875)">
+    <path d="M12 2.6l2.6 6.1 6.6.5-5 4.3 1.6 6.5L12 16.9 6.2 20l1.6-6.5-5-4.3 6.6-.5z" fill="#ffffff"/>
+  </g>
+</svg>
