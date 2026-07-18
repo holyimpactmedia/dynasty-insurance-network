@@ -4,26 +4,32 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color scheme to match insurance quiz design: navy blue primary, gold accents, white backgrounds */
+  /* Union · Modern civic. Brand values are written as hex so they stay byte-identical
+     to the --color-* tokens in the @theme inline block below (one source of truth).
+     Note: --accent is shadcn's hover/focus SURFACE (outline+ghost button hover, every
+     dropdown/select row), not the brand accent, so it is surface-2 and must never be
+     Union red. Brand red is applied deliberately via `bg-red` on CTAs. */
   --background: oklch(1 0 0);
   --foreground: oklch(0.15 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.25 0.05 250);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.25 0.05 250);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.75 0.15 85);
-  --accent-foreground: oklch(0.15 0 0);
+  --primary: #0a2540;
+  --primary-foreground: #ffffff;
+  --secondary: #eef2f8;
+  --secondary-foreground: #0a2540;
+  --muted: #f7f9fc;
+  /* Was oklch(0.55 0 0) ≈ #8c8c8c = 3.5:1 on white (fails AA). Union body text
+     is 7.0:1 and is the color of nearly every paragraph in Terms + Privacy. */
+  --muted-foreground: #4a5a70;
+  --accent: #eef2f8;
+  --accent-foreground: #0a2540;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: oklch(0.75 0.15 85);
+  --border: #e7ecf3;
+  --input: #e7ecf3;
+  --ring: #0a2540;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -32,14 +38,19 @@
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.25 0.05 250);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.96 0 0);
-  --sidebar-accent-foreground: oklch(0.25 0.05 250);
-  --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: oklch(0.75 0.15 85);
+  --sidebar-primary: #0a2540;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef2f8;
+  --sidebar-accent-foreground: #0a2540;
+  --sidebar-border: #e7ecf3;
+  --sidebar-ring: #0a2540;
 }
 
+/* Dead block. components/theme-provider.tsx is never imported, no .dark class is
+   ever set on <html>, and @custom-variant dark (line 4) is class-based only, so
+   prefers-color-scheme cannot activate it. Left on the old values deliberately
+   rather than rethemed, which would imply a dark mode that does not exist.
+   Retheme to Union values if dark mode ever ships. */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -143,47 +154,6 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-  /* Gold CTA button - readable on hover AND press */
-  .btn-gold {
-    @apply bg-[#D4AF37] text-[#0A1128] font-bold transition-colors;
-  }
-  .btn-gold:hover {
-    @apply bg-[#c9a430];
-  }
-  .btn-gold:active {
-    @apply bg-[#b89228];
-  }
-  .btn-gold:focus-visible {
-    @apply outline-2 outline-offset-2 outline-[#D4AF37];
-  }
-
-  /* Navy CTA button */
-  .btn-navy {
-    @apply bg-[#0A1128] text-white font-bold transition-colors;
-  }
-  .btn-navy:hover {
-    @apply bg-[#111e42];
-  }
-  .btn-navy:active {
-    @apply bg-[#1a2d5a];
-  }
-
-  /* Quiz choice card - readable on hover and tap */
-  .quiz-card {
-    @apply border-2 border-border rounded-xl cursor-pointer transition-all duration-150;
-  }
-  .quiz-card:hover {
-    @apply border-[#D4AF37] shadow-md -translate-y-0.5;
-  }
-  .quiz-card:active {
-    @apply border-[#D4AF37] bg-[#D4AF37]/10 scale-[0.99] translate-y-0 shadow-none;
-  }
-  .quiz-card.selected {
-    @apply border-[#D4AF37] bg-[#D4AF37]/8;
   }
 }
 
