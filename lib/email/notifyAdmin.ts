@@ -135,7 +135,7 @@ export async function notifyAdmin(
 
       <!-- Header -->
       <tr>
-        <td style="background:linear-gradient(135deg,#0A1128 0%,#1a2744 100%);padding:24px 32px;">
+        <td style="background:linear-gradient(135deg,#0a2540 0%,#04101f 100%);padding:24px 32px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td>

@@ -16,7 +16,7 @@ const baseURL = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL 
 const secret = process.env.BETTER_AUTH_SECRET || "dormant-supabase-provider-secret-not-for-production"
 
 export const auth = betterAuth({
-  appName: "Dynasty Insurance Network",
+  appName: "Union Private Healthcare",
   baseURL,
   secret,
   trustedOrigins: [baseURL],

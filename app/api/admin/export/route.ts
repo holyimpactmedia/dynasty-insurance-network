@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       "Funnel", "Income Range", "Household Size", "Qualifying Event", "AI Score",
       "Marketplace Status", "TCPA Consent", "UTM Source", "UTM Campaign", "Submitted At",
     ], rows)
-    const filename = `dynasty-leads-${new Date().toISOString().slice(0, 10)}.csv`
+    const filename = `union-leads-${new Date().toISOString().slice(0, 10)}.csv`
     return new NextResponse(csv, {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",

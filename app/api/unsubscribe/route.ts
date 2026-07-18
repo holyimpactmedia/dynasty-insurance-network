@@ -45,11 +45,11 @@ export async function GET(request: NextRequest) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Unsubscribed | Holy Impact Media</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#0A1128; color:#fff; margin:0; padding:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
-    .card { max-width: 480px; padding: 40px 32px; background:#0F1A3D; border:1px solid #2a3760; border-radius:14px; text-align:center; }
-    h1 { color:#D4AF37; margin: 0 0 12px 0; font-size: 22px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#04101f; color:#fff; margin:0; padding:0; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .card { max-width: 480px; padding: 40px 32px; background:#0a2540; border:1px solid rgba(255,255,255,.14); border-radius:14px; text-align:center; }
+    h1 { color:#ffffff; margin: 0 0 12px 0; font-size: 22px; }
     p { color:#cbd5e1; line-height: 1.55; margin: 8px 0; font-size: 14px; }
-    a { color:#D4AF37; }
+    a { color:#8fb9ea; }
   </style>
 </head>
 <body>
