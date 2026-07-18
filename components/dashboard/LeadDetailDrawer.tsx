@@ -132,15 +132,17 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
         className="w-full sm:max-w-[540px] overflow-y-auto p-0 [&_[data-slot=sheet-content-close]]:top-5 [&_[data-slot=sheet-content-close]]:right-5 [&_[data-slot=sheet-content-close]]:bg-white/10 [&_[data-slot=sheet-content-close]]:text-white [&_[data-slot=sheet-content-close]]:opacity-90 [&_[data-slot=sheet-content-close]]:hover:bg-white/20 [&_[data-slot=sheet-content-close]]:hover:opacity-100"
       >
         {/* ── header ── */}
-        <SheetHeader className="bg-gradient-to-br from-[#0A1128] to-[#1a2744] px-6 py-5">
+        <SheetHeader className="bg-navy px-6 py-5">
           {/* pr-12 keeps the status badges clear of the absolute close button
               in the top-right corner. */}
           <div className="flex items-start justify-between pr-12">
             <div>
-              <SheetTitle className="text-white text-xl font-bold">
+              <SheetTitle className="font-display text-white text-xl font-bold">
                 {lead.first_name} {lead.last_name}
               </SheetTitle>
-              <p className="text-[#D4AF37] text-sm font-mono mt-0.5">
+              {/* Steel, not brand red: red is load-bearing as a status color
+                  elsewhere in this drawer (TCPA missing, USHA failed). */}
+              <p className="text-steel text-sm font-mono mt-0.5">
                 {lead.reference_number}
               </p>
             </div>
@@ -266,7 +268,7 @@ export function LeadDetailDrawer({ lead, open, onClose }: LeadDetailDrawerProps)
                     <ul className="space-y-1">
                       {lead.ai_score_reasons.map((r, i) => (
                         <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                          <span className="text-[#D4AF37] font-bold mt-0.5">·</span>
+                          <span className="text-navy font-bold mt-0.5">·</span>
                           {r}
                         </li>
                       ))}

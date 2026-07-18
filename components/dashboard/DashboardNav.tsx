@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { useRouter, usePathname } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { authClient } from "@/lib/auth/client"
@@ -17,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { UnionLogo } from "@/components/union/brand"
 import {
   LayoutDashboard,
   LogOut,
@@ -108,14 +108,8 @@ export default function DashboardNav({
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/">
-              <Image
-                src="/images/logo.avif"
-                alt="Dynasty"
-                width={160}
-                height={40}
-                className="h-10 w-auto"
-              />
+            <Link href="/" aria-label="Union Private Healthcare home">
+              <UnionLogo size={36} />
             </Link>
             <nav className="hidden md:flex items-center gap-2">
               {filteredNavItems.map((item) => {
@@ -123,10 +117,9 @@ export default function DashboardNav({
                 const isActive = pathname === item.href
                 return (
                   <Link key={item.href} href={item.href}>
-                    <Button
-                      variant={isActive ? "default" : "ghost"}
-                      className={isActive ? "bg-[#1e3a8a] hover:bg-[#1e3a8a]/90" : ""}
-                    >
+                    {/* variant="default" now resolves to Union navy via --primary,
+                        so the old hardcoded active color is no longer needed. */}
+                    <Button variant={isActive ? "default" : "ghost"}>
                       <Icon className="w-4 h-4 mr-2" />
                       {item.label}
                     </Button>
@@ -144,7 +137,7 @@ export default function DashboardNav({
                     <div className="font-semibold text-gray-900">{userName}</div>
                     <div className="text-xs text-gray-500">{userEmail}</div>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E8C976] flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold">
                     {getInitials(userName)}
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-500" />
