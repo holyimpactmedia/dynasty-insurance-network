@@ -112,7 +112,7 @@ export default async function ProjectionsDashboard() {
       {/* Real Performance */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-5">
-          <TrendingUp className="w-5 h-5 text-[#1e3a8a]" />
+          <TrendingUp className="w-5 h-5 text-navy" />
           <h2 className="text-xl font-bold text-gray-900">Real Performance</h2>
           <span className="text-xs bg-green-100 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-medium">
             Live Data
@@ -153,14 +153,16 @@ export default async function ProjectionsDashboard() {
             <div className="text-xs text-gray-400 mt-1">SUM(sell_price) of sent leads</div>
           </Card>
 
-          <Card className="p-5 border-[#D4AF37] border-2">
+          {/* Navy, not brand red: this is a revenue (good-news) card, and red is
+              already the loss/failure signal elsewhere on this page. */}
+          <Card className="p-5 border-navy border-2">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-yellow-600" />
               </div>
               <div className="text-sm text-gray-500 font-medium">Revenue (This Month)</div>
             </div>
-            <div className="text-3xl font-bold text-[#1e3a8a]">${monthRevenue.toLocaleString()}</div>
+            <div className="text-3xl font-bold text-navy">${monthRevenue.toLocaleString()}</div>
             <div className="text-xs text-gray-400 mt-1">Month-to-date</div>
           </Card>
         </div>
@@ -169,7 +171,7 @@ export default async function ProjectionsDashboard() {
           <div className="mb-4">
             <h3 className="font-semibold text-gray-900">Real vs Projected Leads — Last 30 Days</h3>
             <p className="text-sm text-gray-500 mt-0.5">
-              Dashed gold = projected baseline ({PROJECTED_PER_DAY}/day) · Solid navy = actual received
+              Dashed steel = projected baseline ({PROJECTED_PER_DAY}/day) · Solid navy = actual received
             </p>
           </div>
           <div className="h-64">
@@ -200,7 +202,7 @@ export default async function ProjectionsDashboard() {
                     <td className="py-3 px-4 text-right font-semibold text-gray-900">
                       ${monthSplit[i].toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold text-[#1e3a8a]">
+                    <td className="py-3 px-4 text-right font-bold text-navy">
                       ${allTimeSplit[i].toLocaleString()}
                     </td>
                   </tr>
@@ -211,7 +213,7 @@ export default async function ProjectionsDashboard() {
                   <td className="py-3 px-4 text-right text-gray-900">
                     ${Math.round(monthRevenue).toLocaleString()}
                   </td>
-                  <td className="py-3 px-4 text-right text-[#1e3a8a]">
+                  <td className="py-3 px-4 text-right text-navy">
                     ${Math.round(allTimeRevenue).toLocaleString()}
                   </td>
                 </tr>
@@ -266,7 +268,7 @@ export default async function ProjectionsDashboard() {
                             {sendRate}%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right font-semibold text-[#1e3a8a]">
+                        <td className="py-3 px-4 text-right font-semibold text-navy">
                           ${Number(row.revenue ?? 0).toLocaleString()}
                         </td>
                       </tr>
@@ -284,7 +286,7 @@ export default async function ProjectionsDashboard() {
                         : "0.0"}
                       %
                     </td>
-                    <td className="py-3 px-4 text-right text-[#1e3a8a]">
+                    <td className="py-3 px-4 text-right text-navy">
                       ${funnelTotalRevenue.toLocaleString()}
                     </td>
                   </tr>

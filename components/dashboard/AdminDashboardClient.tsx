@@ -319,8 +319,8 @@ export default function AdminDashboardClient({
       {/* Page header */}
       <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lead Tracker</h1>
-          <p className="text-sm text-gray-500">Dynasty Insurance Network: Admin</p>
+          <h1 className="font-display text-2xl font-bold text-gray-900">Lead Tracker</h1>
+          <p className="text-sm text-gray-500">Union Private Healthcare · Admin</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="flex-1 sm:flex-none" onClick={handleRefresh} disabled={loading}>
@@ -359,7 +359,7 @@ export default function AdminDashboardClient({
               <XAxis dataKey="day" stroke="#9ca3af" fontSize={12} />
               <YAxis stroke="#9ca3af" fontSize={12} allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="leads" fill="#1e3a8a" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="leads" fill="#0a2540" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -383,7 +383,7 @@ export default function AdminDashboardClient({
                       </span>
                     </div>
                     <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#1e3a8a] rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      <div className="h-full bg-navy rounded-full transition-all" style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 )

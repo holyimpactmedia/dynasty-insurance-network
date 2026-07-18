@@ -374,7 +374,7 @@ export default function ProjectionsCalculators() {
 
       {/* Competitive Comparison */}
       <Card className="p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Dynasty vs Alternatives</h2>
+        <h2 className="font-display text-2xl font-bold text-gray-900 mb-6">Union vs Alternatives</h2>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -389,7 +389,7 @@ export default function ProjectionsCalculators() {
             </thead>
             <tbody>
               <tr className="border-b bg-green-50">
-                <td className="py-4 px-4 font-bold text-gray-900">Internal Lead Gen (Dynasty)</td>
+                <td className="py-4 px-4 font-bold text-gray-900">Internal Lead Gen (Union)</td>
                 <td className="py-4 px-4 font-semibold text-gray-900">$650K</td>
                 <td className="py-4 px-4 font-semibold text-green-600">$1,400K</td>
                 <td className="py-4 px-4 font-semibold text-green-600">54%</td>

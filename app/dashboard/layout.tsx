@@ -25,7 +25,7 @@ export default async function DashboardLayout({
     "Admin"
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       <DashboardNav
         userRole={profile.role}
         userName={userName}
