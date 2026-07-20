@@ -1,72 +1,65 @@
+/* eslint-disable @next/next/no-img-element -- next.config sets images.unoptimized,
+   so next/image emits a plain <img> with the raw src anyway: no optimization to
+   gain, but its default lazy-loading fails to paint the mark inside the quiz
+   modal. Plain eager <img> is both simpler and correct for small brand chrome. */
 import type { CSSProperties, ReactNode } from "react"
 import { Star } from "lucide-react"
 
 // ── Union · Modern civic brand primitives ───────────────────────────────────
 // Presentational + server-safe. Interactive CTAs live in ./quiz.tsx.
 
-// The star-over-stripes logo mark: a navy tile with red stripe field and a
-// white 5-point star, the recurring "civic" motif, scalable by `size`.
+// Brand artwork is the client-supplied lockup in /public/brand, trimmed to the
+// artwork bounds. Fixed colors: the logo is never recolored, so on navy surfaces
+// UnionLogo places it on a white plate rather than swapping to a light variant.
+// `size` is the rendered HEIGHT in px; width follows each asset's own aspect.
+const LOGO_W = 408
+const LOGO_H = 124
+const MARK_W = 105
+const MARK_H = 124
+
+// Shield only, no wordmark (used where the lockup would be too wide).
 export function UnionMark({ size = 42 }: { size?: number }) {
-  const radius = Math.max(8, Math.round(size * 0.26))
   return (
-    <span
+    <img
+      src="/brand/union-mark.png"
+      alt=""
       aria-hidden="true"
-      style={{
-        width: size,
-        height: size,
-        borderRadius: radius,
-        background: "var(--color-navy)",
-        position: "relative",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        flexShrink: 0,
-      }}
-    >
-      <span
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "repeating-linear-gradient(180deg, var(--color-red) 0 5.5px, transparent 5.5px 11px)",
-          opacity: 0.9,
-        }}
-      />
-      <svg viewBox="0 0 24 24" width={size * 0.5} height={size * 0.5} style={{ position: "relative" }}>
-        <path
-          d="M12 2.6l2.6 6.1 6.6.5-5 4.3 1.6 6.5L12 16.9 6.2 20l1.6-6.5-5-4.3 6.6-.5z"
-          fill="#fff"
-        />
-      </svg>
-    </span>
+      width={MARK_W}
+      height={MARK_H}
+      loading="eager"
+      decoding="async"
+      style={{ display: "block", flexShrink: 0, height: size, width: "auto" }}
+    />
   )
 }
 
+// `onDark` does not recolor the artwork. The lockup keeps its exact navy/red/white
+// values everywhere; on navy surfaces it sits on a white plate so it reads the
+// same way it does on a light page.
 export function UnionLogo({ size = 42, onDark = false }: { size?: number; onDark?: boolean }) {
+  const logo = (
+    <img
+      src="/brand/union-logo.png"
+      alt="Union Private Healthcare"
+      width={LOGO_W}
+      height={LOGO_H}
+      loading="eager"
+      decoding="async"
+      style={{ display: "block", height: size, width: "auto" }}
+    />
+  )
+
+  if (!onDark) return logo
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 11 }}>
-      <UnionMark size={size} />
-      <span style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-        <span
-          className="font-display"
-          style={{ fontWeight: 700, fontSize: size * 0.48, letterSpacing: "-0.5px", color: onDark ? "#fff" : "var(--color-navy)" }}
-        >
-          Union
-        </span>
-        <span
-          style={{
-            fontWeight: 700,
-            fontSize: Math.max(8, size * 0.21),
-            letterSpacing: "2.3px",
-            textTransform: "uppercase",
-            color: onDark ? "#8ba0bb" : "var(--color-ink-muted)",
-            marginTop: 2,
-          }}
-        >
-          Private Healthcare
-        </span>
-      </span>
+    <span
+      style={{
+        display: "inline-flex",
+        background: "#ffffff",
+        borderRadius: Math.round(size * 0.22),
+        padding: `${Math.round(size * 0.3)}px ${Math.round(size * 0.42)}px`,
+      }}
+    >
+      {logo}
     </span>
   )
 }
