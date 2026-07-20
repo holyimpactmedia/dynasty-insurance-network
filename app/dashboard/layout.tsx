@@ -2,20 +2,19 @@ import DashboardNav from "@/components/dashboard/DashboardNav"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
 import { requireAdmin } from "@/lib/auth/requireAdmin"
 import { getProjectionsEnabled } from "@/lib/settings"
-import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const platformProvider = getPlatformProvider()
-  if (!isPlatformConfigured(platformProvider)) {
-    return <SetupRequired page="dashboard" provider={platformProvider} />
+  if (!isPlatformConfigured()) {
+    return <SetupRequired page="dashboard" />
   }
 
-  // Authoritative gate: authenticated AND role 'admin' in the profiles table.
-  // Redirects non-admins; never returns otherwise.
+  // Authoritative gate: authenticated AND an admin/superadmin role on the
+  // Better Auth session. Redirects non-admins; never returns otherwise.
   const { user, profile } = await requireAdmin()
   const projectionsEnabled = await getProjectionsEnabled()
 
@@ -31,7 +30,6 @@ export default async function DashboardLayout({
         userName={userName}
         userEmail={user.email ?? ""}
         projectionsEnabled={projectionsEnabled}
-        platformProvider={platformProvider}
       />
       {children}
     </div>

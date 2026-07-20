@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 // Mutable mock state, hoisted so the vi.mock factories can close over it.
 const state = vi.hoisted(() => ({
   guard: { ok: true, superadmin: true } as { ok: boolean; superadmin: boolean; reason?: string },
-  provider: "neon" as string,
   existing: [] as Array<{ id: string }>,
   list: [] as unknown[],
   createResult: { user: { id: "new-1" } } as unknown,
@@ -27,10 +26,6 @@ vi.mock("@/lib/auth/requireAdmin", () => ({
     const { NextResponse } = await import("next/server")
     return { ok: false, response: NextResponse.json({ error: state.guard.reason ?? "forbidden" }, { status }) }
   },
-}))
-
-vi.mock("@/lib/platform/provider", () => ({
-  getPlatformProvider: () => state.provider,
 }))
 
 vi.mock("@/lib/db/client", () => ({
@@ -63,7 +58,6 @@ const valid = { email: "Sam@Example.com", name: "Sam Lamy", role: "admin", passw
 
 beforeEach(() => {
   state.guard = { ok: true, superadmin: true }
-  state.provider = "neon"
   state.existing = []
   state.list = []
   state.createResult = { user: { id: "new-1" } }

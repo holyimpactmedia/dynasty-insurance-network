@@ -1,21 +1,45 @@
 import { afterEach, describe, expect, it } from "vitest"
-import { getPlatformProvider } from "./provider"
+import { isPlatformConfigured } from "./provider"
 
-const original = process.env.PLATFORM_PROVIDER
+const saved = {
+  db: process.env.DATABASE_URL,
+  secret: process.env.BETTER_AUTH_SECRET,
+  authUrl: process.env.BETTER_AUTH_URL,
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+}
 
 afterEach(() => {
-  if (original === undefined) delete process.env.PLATFORM_PROVIDER
-  else process.env.PLATFORM_PROVIDER = original
+  for (const [key, value] of Object.entries({
+    DATABASE_URL: saved.db,
+    BETTER_AUTH_SECRET: saved.secret,
+    BETTER_AUTH_URL: saved.authUrl,
+    NEXT_PUBLIC_SITE_URL: saved.siteUrl,
+  })) {
+    if (value === undefined) delete process.env[key]
+    else process.env[key] = value
+  }
 })
 
-describe("getPlatformProvider", () => {
-  it("defaults safely to Supabase", () => {
-    delete process.env.PLATFORM_PROVIDER
-    expect(getPlatformProvider()).toBe("supabase")
+describe("isPlatformConfigured (Neon)", () => {
+  it("is true when the Neon + Better Auth vars are present", () => {
+    process.env.DATABASE_URL = "postgresql://x"
+    process.env.BETTER_AUTH_SECRET = "s".repeat(32)
+    process.env.BETTER_AUTH_URL = "https://example.com"
+    expect(isPlatformConfigured()).toBe(true)
   })
 
-  it("selects Neon only when explicit", () => {
-    process.env.PLATFORM_PROVIDER = "neon"
-    expect(getPlatformProvider()).toBe("neon")
+  it("is false when DATABASE_URL is missing", () => {
+    delete process.env.DATABASE_URL
+    process.env.BETTER_AUTH_SECRET = "s".repeat(32)
+    process.env.BETTER_AUTH_URL = "https://example.com"
+    expect(isPlatformConfigured()).toBe(false)
+  })
+
+  it("accepts NEXT_PUBLIC_SITE_URL in place of BETTER_AUTH_URL", () => {
+    process.env.DATABASE_URL = "postgresql://x"
+    process.env.BETTER_AUTH_SECRET = "s".repeat(32)
+    delete process.env.BETTER_AUTH_URL
+    process.env.NEXT_PUBLIC_SITE_URL = "https://example.com"
+    expect(isPlatformConfigured()).toBe(true)
   })
 })

@@ -4,9 +4,7 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Shield, Eye, EyeOff } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 import { authClient } from "@/lib/auth/client"
-import type { PlatformProvider } from "@/lib/platform/provider"
 import { safeRedirect } from "@/lib/auth/safeRedirect"
 import { AuthShell } from "@/components/auth/AuthShell"
 import { Button } from "@/components/ui/button"
@@ -14,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CardContent } from "@/components/ui/card"
 
-export default function LoginForm({ provider }: { provider: PlatformProvider }) {
+export default function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -29,34 +27,16 @@ export default function LoginForm({ provider }: { provider: PlatformProvider }) 
     setIsLoading(true)
     setError(null)
 
-    if (provider === "supabase" && (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
-      setError("Sign-in is not configured yet. Add Supabase environment variables in Vercel and redeploy.")
-      setIsLoading(false)
-      return
-    }
-
     try {
-      if (provider === "neon") {
-        const { error: signInError } = await authClient.signIn.email({
-          email: email.trim().toLowerCase(),
-          password,
-          callbackURL: redirectTo,
-        })
-        if (signInError) {
-          setError(signInError.message || "Unable to sign in.")
-          setIsLoading(false)
-          return
-        }
-      } else {
-        const { error: signInError } = await createClient().auth.signInWithPassword({
-          email: email.trim().toLowerCase(),
-          password,
-        })
-        if (signInError) {
-          setError(signInError.message)
-          setIsLoading(false)
-          return
-        }
+      const { error: signInError } = await authClient.signIn.email({
+        email: email.trim().toLowerCase(),
+        password,
+        callbackURL: redirectTo,
+      })
+      if (signInError) {
+        setError(signInError.message || "Unable to sign in.")
+        setIsLoading(false)
+        return
       }
 
       router.push(redirectTo)
@@ -90,9 +70,7 @@ export default function LoginForm({ provider }: { provider: PlatformProvider }) 
           <Button type="submit" disabled={isLoading} className="w-full h-11 bg-red text-white font-bold hover:bg-red/90">
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
-          {provider === "neon" && (
-            <Link href="/auth/forgot-password" className="block text-center text-sm text-navy hover:underline">Forgot password?</Link>
-          )}
+          <Link href="/auth/forgot-password" className="block text-center text-sm text-navy hover:underline">Forgot password?</Link>
         </form>
         <div className="mt-6 pt-6 border-t border-line">
           <div className="flex items-center justify-center gap-2 text-sm text-body">

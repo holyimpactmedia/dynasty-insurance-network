@@ -2,7 +2,6 @@ import { Suspense } from "react"
 import LoginForm from "./LoginForm"
 import { AuthShell } from "@/components/auth/AuthShell"
 import { CardContent } from "@/components/ui/card"
-import { getPlatformProvider } from "@/lib/platform/provider"
 
 export default function LoginPage() {
   return (
@@ -21,7 +20,7 @@ export default function LoginPage() {
         </AuthShell>
       }
     >
-      <LoginForm provider={getPlatformProvider()} />
+      <LoginForm />
     </Suspense>
   )
 }

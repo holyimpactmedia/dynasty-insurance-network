@@ -1,7 +1,7 @@
 # Neon + Better Auth Migration
 
-**Status:** Implemented in code; infrastructure rehearsal and production cutover remain operator actions.  
-**Prepared:** 2026-06-23  
+**Status:** Neon + Better Auth is the sole stack. The Supabase provider, the `PLATFORM_PROVIDER` switch, its adapters, callback route, reconcile/rollback scripts, and `@supabase/*` packages were removed from the code on 2026-07-20. The dual-provider rollback path below is therefore historical. Setting the Neon env vars on each Vercel environment and the production cutover remain operator actions.
+**Prepared:** 2026-06-23 · **Supabase removed:** 2026-07-20
 **Scope:** Strict Supabase parity. No unrelated authentication, lead-processing, or product redesign.
 
 ## Architecture

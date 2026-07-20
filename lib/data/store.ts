@@ -1,9 +1,6 @@
-import { getPlatformProvider } from "@/lib/platform/provider"
 import type { PlatformStore } from "./types"
 
+// Neon is the only platform store. The Supabase store was removed (2026-07).
 export async function getPlatformStore(): Promise<PlatformStore> {
-  if (getPlatformProvider() === "neon") {
-    return (await import("./neon-store")).neonStore
-  }
-  return (await import("./supabase-store")).supabaseStore
+  return (await import("./neon-store")).neonStore
 }

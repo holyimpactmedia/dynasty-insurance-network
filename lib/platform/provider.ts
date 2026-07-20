@@ -1,21 +1,9 @@
-export type PlatformProvider = "supabase" | "neon"
-
-/** One temporary switch controls both persistence and authentication. */
-export function getPlatformProvider(): PlatformProvider {
-  return process.env.PLATFORM_PROVIDER === "neon" ? "neon" : "supabase"
-}
-
-export function isPlatformConfigured(provider = getPlatformProvider()): boolean {
-  if (provider === "neon") {
-    return Boolean(
-      process.env.DATABASE_URL &&
+// Neon Postgres + Better Auth is the only platform. The former Supabase
+// provider and the PLATFORM_PROVIDER runtime switch were removed (2026-07).
+export function isPlatformConfigured(): boolean {
+  return Boolean(
+    process.env.DATABASE_URL &&
       process.env.BETTER_AUTH_SECRET &&
       (process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL),
-    )
-  }
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
   )
 }

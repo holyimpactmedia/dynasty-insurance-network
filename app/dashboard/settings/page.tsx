@@ -5,13 +5,12 @@ import { requireSuperAdmin } from "@/lib/auth/requireAdmin"
 import { getProjectionsEnabled, SETTING_KEYS } from "@/lib/settings"
 import SettingsPanel from "@/components/dashboard/SettingsPanel"
 import { getPlatformStore } from "@/lib/data/store"
-import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 
 // Settings is super-admin only: this is the single panel where platform-wide
 // feature flags are toggled. The gate runs before any data is read.
 export default async function SettingsPage() {
-  const provider = getPlatformProvider()
-  if (!isPlatformConfigured(provider)) return <SetupRequired page="settings" provider={provider} />
+  if (!isPlatformConfigured()) return <SetupRequired page="settings" />
 
   const { user, profile } = await requireSuperAdmin()
   const projectionsEnabled = await getProjectionsEnabled()

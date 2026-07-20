@@ -3,7 +3,7 @@
 // API docs are not publicly available - request credentials from:
 //   support@leadarena.com  |  https://knowledge.ushamarketplace.com/supportcenter
 //
-// Required Supabase columns to track submission status:
+// Required lead columns to track submission status:
 //   ALTER TABLE leads ADD COLUMN usha_status text;
 //   ALTER TABLE leads ADD COLUMN usha_sent_at timestamptz;
 //   ALTER TABLE leads ADD COLUMN usha_lead_id text;

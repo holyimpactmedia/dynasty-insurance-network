@@ -14,13 +14,11 @@ const authState = vi.hoisted(() => ({ session: null as MockSession | null }))
 
 vi.mock("next/headers", () => ({ headers: async () => new Headers() }))
 vi.mock("@/lib/platform/provider", () => ({
-  getPlatformProvider: () => "neon",
   isPlatformConfigured: () => true,
 }))
 vi.mock("@/lib/auth/server", () => ({
   auth: { api: { getSession: async () => authState.session } },
 }))
-vi.mock("@/lib/supabase/server", () => ({ createClient: vi.fn() }))
 
 function session(role: string): MockSession {
   return {

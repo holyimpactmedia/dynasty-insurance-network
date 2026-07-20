@@ -3,7 +3,7 @@ import { startOfDay, startOfMonth } from "date-fns"
 
 /**
  * The business timezone. All "today" / "this month" boundaries in the
- * dashboard are computed in this zone, then converted to UTC for Supabase
+ * dashboard are computed in this zone, then converted to UTC for the database
  * filters — otherwise counts bucket on the server's UTC day, which is wrong
  * for an operator on the US East Coast.
  *

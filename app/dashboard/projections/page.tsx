@@ -15,7 +15,7 @@ import { FUNNEL_LABELS } from "@/lib/types/lead"
 import { toZonedTime } from "date-fns-tz"
 import { format } from "date-fns"
 import { getPlatformStore } from "@/lib/data/store"
-import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 import type { FunnelRow } from "@/lib/data/types"
 
 const PARTNERS = [
@@ -29,8 +29,7 @@ const PARTNERS = [
 const PROJECTED_PER_DAY = 5
 
 export default async function ProjectionsDashboard() {
-  const provider = getPlatformProvider()
-  if (!isPlatformConfigured(provider)) return <SetupRequired page="projections" provider={provider} />
+  if (!isPlatformConfigured()) return <SetupRequired page="projections" />
   await requireAdmin()
 
   // Projections can be switched off globally by a super admin in Settings.

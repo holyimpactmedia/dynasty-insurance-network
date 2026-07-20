@@ -3,9 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { authClient } from "@/lib/auth/client"
-import type { PlatformProvider } from "@/lib/platform/provider"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -34,7 +32,6 @@ interface DashboardNavProps {
   userName: string
   userEmail: string
   projectionsEnabled: boolean
-  platformProvider: PlatformProvider
 }
 
 export default function DashboardNav({
@@ -42,7 +39,6 @@ export default function DashboardNav({
   userName,
   userEmail,
   projectionsEnabled,
-  platformProvider,
 }: DashboardNavProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
@@ -50,12 +46,7 @@ export default function DashboardNav({
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
-    if (platformProvider === "neon") {
-      await authClient.signOut()
-    } else {
-      const supabase = createClient()
-      await supabase.auth.signOut()
-    }
+    await authClient.signOut()
     router.push("/auth/login")
     router.refresh()
   }

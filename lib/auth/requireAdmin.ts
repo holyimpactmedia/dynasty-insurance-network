@@ -2,8 +2,7 @@ import { cache } from "react"
 import { redirect } from "next/navigation"
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
-import { createClient } from "@/lib/supabase/server"
-import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 
 export interface AdminProfile {
   id: string
@@ -28,67 +27,36 @@ type LoadResult =
 
 /**
  * Resolves the current admin context once per request. Wrapped in React
- * `cache()` so the layout and the page share a single auth + profile
- * round-trip instead of each doing their own.
- *
- * The role is read ONLY from the `profiles` table — never from
- * `user_metadata`, which the user can rewrite themselves.
+ * `cache()` so the layout and the page share a single auth round-trip instead
+ * of each doing their own. The role comes from the Better Auth session
+ * (`user.role`), which is server-signed and not client-writable.
  */
 const loadAdminContext = cache(async (): Promise<LoadResult> => {
-  if (getPlatformProvider() === "neon") {
-    if (!isPlatformConfigured("neon")) return { ok: false, reason: "unconfigured" }
-    const { auth } = await import("@/lib/auth/server")
-    const session = await auth.api.getSession({ headers: await headers() })
-    if (!session) return { ok: false, reason: "unauthenticated" }
+  if (!isPlatformConfigured()) return { ok: false, reason: "unconfigured" }
+  const { auth } = await import("@/lib/auth/server")
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session) return { ok: false, reason: "unauthenticated" }
 
-    const role = session.user.role || "user"
-    if (!ADMIN_ROLES.includes(role as (typeof ADMIN_ROLES)[number])) {
-      return { ok: false, reason: "forbidden" }
-    }
-
-    const name = session.user.name?.trim() || ""
-    const [firstName, ...rest] = name.split(/\s+/).filter(Boolean)
-    const profile: AdminProfile = {
-      id: session.user.id,
-      role,
-      first_name: firstName || null,
-      last_name: rest.join(" ") || null,
-      email: session.user.email,
-    }
-    return {
-      ok: true,
-      ctx: {
-        user: { id: session.user.id, email: session.user.email },
-        profile,
-        isSuperAdmin: role === "superadmin",
-      },
-    }
-  }
-
-  const supabase = await createClient()
-  if (!supabase) return { ok: false, reason: "unconfigured" }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return { ok: false, reason: "unauthenticated" }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, role, first_name, last_name, email")
-    .eq("id", user.id)
-    .maybeSingle()
-
-  if (!profile || !ADMIN_ROLES.includes(profile.role as (typeof ADMIN_ROLES)[number])) {
+  const role = session.user.role || "user"
+  if (!ADMIN_ROLES.includes(role as (typeof ADMIN_ROLES)[number])) {
     return { ok: false, reason: "forbidden" }
   }
 
+  const name = session.user.name?.trim() || ""
+  const [firstName, ...rest] = name.split(/\s+/).filter(Boolean)
+  const profile: AdminProfile = {
+    id: session.user.id,
+    role,
+    first_name: firstName || null,
+    last_name: rest.join(" ") || null,
+    email: session.user.email,
+  }
   return {
     ok: true,
     ctx: {
-      user: { id: user.id, email: user.email ?? null },
-      profile: profile as AdminProfile,
-      isSuperAdmin: profile.role === "superadmin",
+      user: { id: session.user.id, email: session.user.email },
+      profile,
+      isSuperAdmin: role === "superadmin",
     },
   }
 })

@@ -13,7 +13,7 @@ import { sendAuthEmail } from "@/lib/email/sendAuthEmail"
 const dormantConnection = "postgresql://dormant:dormant@127.0.0.1:5432/dormant"
 const database = getNeonDb() ?? drizzle(new Pool({ connectionString: dormantConnection }), { schema: authSchema })
 const baseURL = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-const secret = process.env.BETTER_AUTH_SECRET || "dormant-supabase-provider-secret-not-for-production"
+const secret = process.env.BETTER_AUTH_SECRET || "dormant-secret-not-for-production"
 
 export const auth = betterAuth({
   appName: "Union Private Healthcare",

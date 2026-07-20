@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { eq } from "drizzle-orm"
 import { requireSuperAdminApi } from "@/lib/auth/requireAdmin"
-import { getPlatformProvider } from "@/lib/platform/provider"
 import { requireNeonDb } from "@/lib/db/client"
 import { user as userTable } from "@/lib/db/schema/auth"
 import { sendPortalInvite } from "@/lib/email/sendPortalInvite"
 
-// User provisioning is a better-auth (Neon) capability. The Supabase provider
-// has no equivalent admin surface here, so the route refuses on that path.
+// User provisioning is backed by the Better Auth admin plugin on Neon.
 const CREATABLE_ROLES = ["admin", "superadmin"] as const
 type CreatableRole = (typeof CREATABLE_ROLES)[number]
 
 export async function GET() {
   const access = await requireSuperAdminApi()
   if (!access.ok) return access.response
-  if (getPlatformProvider() !== "neon") {
-    return NextResponse.json({ error: "User management requires the Neon platform." }, { status: 400 })
-  }
   try {
     const db = requireNeonDb()
     const users = await db
@@ -40,9 +35,6 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const access = await requireSuperAdminApi()
   if (!access.ok) return access.response
-  if (getPlatformProvider() !== "neon") {
-    return NextResponse.json({ error: "User management requires the Neon platform." }, { status: 400 })
-  }
 
   let body: unknown
   try {

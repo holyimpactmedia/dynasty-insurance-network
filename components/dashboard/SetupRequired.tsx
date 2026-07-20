@@ -3,16 +3,8 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Database, ExternalLink } from "lucide-react"
 import { UnionLogo, dotGrid } from "@/components/union/brand"
-import type { PlatformProvider } from "@/lib/platform/provider"
 
-export function SetupRequired({
-  page,
-  provider = "supabase",
-}: {
-  page: string
-  provider?: PlatformProvider
-}) {
-  const neon = provider === "neon"
+export function SetupRequired({ page }: { page: string }) {
   return (
     <div
       className="relative min-h-screen overflow-hidden flex items-center justify-center p-6"
@@ -35,13 +27,11 @@ export function SetupRequired({
             <Database className="w-8 h-8 text-navy" />
           </div>
           <div className="space-y-2">
-            <h1 className="font-display text-2xl font-bold text-navy">{neon ? "Neon" : "Supabase"} Not Configured</h1>
+            <h1 className="font-display text-2xl font-bold text-navy">Database Not Configured</h1>
             <p className="text-body">
-              The {page} dashboard needs the active platform configuration. Configure{" "}
+              The {page} dashboard needs the database configured. Set{" "}
               <code className="px-1.5 py-0.5 rounded bg-surface-2 text-navy text-xs">
-                {neon
-                  ? "DATABASE_URL + BETTER_AUTH_SECRET"
-                  : "NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY + SUPABASE_SERVICE_ROLE_KEY"}
+                DATABASE_URL + BETTER_AUTH_SECRET + BETTER_AUTH_URL
               </code>{" "}
               in your environment, then redeploy.
             </p>

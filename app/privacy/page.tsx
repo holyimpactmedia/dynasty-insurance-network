@@ -109,7 +109,7 @@ export default function PrivacyPolicyPage() {
             <h3 className="text-xl font-semibold mb-2 mt-4">4.3 Service Providers</h3>
             <p className="text-muted-foreground leading-relaxed">
               We share information with third-party service providers performing services on our behalf, including
-              hosting and database infrastructure (Vercel, Neon, or Supabase during migration), email delivery (Resend), TCPA proof-of-consent (TrustedForm by ActiveProspect),
+              hosting and database infrastructure (Vercel, Neon), email delivery (Resend), TCPA proof-of-consent (TrustedForm by ActiveProspect),
               analytics (Google Analytics), and lead distribution (LeadArena / USHA Marketplace). These providers are
               contractually obligated to protect your information and use it only for the purposes we specify.
             </p>

@@ -5,7 +5,7 @@ import { BUSINESS_TZ } from "@/lib/time/ranges"
 import { toZonedTime } from "date-fns-tz"
 import { format } from "date-fns"
 import { getPlatformStore } from "@/lib/data/store"
-import { getPlatformProvider, isPlatformConfigured } from "@/lib/platform/provider"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 import type { FunnelRow } from "@/lib/data/types"
 
 // Responsive page size: the client narrows to mobile on small screens
@@ -15,8 +15,7 @@ export const PAGE_SIZE_MOBILE = 25
 export const PAGE_SIZE_DESKTOP = 50
 
 export default async function AdminDashboard() {
-  const provider = getPlatformProvider()
-  if (!isPlatformConfigured(provider)) return <SetupRequired page="admin" provider={provider} />
+  if (!isPlatformConfigured()) return <SetupRequired page="admin" />
 
   // Authenticated + admin, role read from the profiles table.
   await requireAdmin()
