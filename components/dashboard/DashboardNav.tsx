@@ -23,6 +23,7 @@ import {
   ChevronDown,
   BarChart3,
   Settings,
+  Users,
 } from "lucide-react"
 
 // Unused agent/routing imports kept in original file: removed here since
@@ -75,6 +76,13 @@ export default function DashboardNav({
       icon: BarChart3,
       roles: ["admin", "superadmin"],
       enabled: projectionsEnabled,
+    },
+    {
+      href: "/dashboard/users",
+      label: "Users",
+      icon: Users,
+      roles: ["superadmin"],
+      enabled: true,
     },
     {
       href: "/dashboard/settings",

@@ -138,3 +138,23 @@ export async function requireAdminApi(): Promise<
     response: NextResponse.json({ error: result.reason }, { status }),
   }
 }
+
+/**
+ * Gate for super-admin-only API route handlers (e.g. user provisioning).
+ * Authenticated non-super admins get 403, not 401 — they are known, just not
+ * allowed. Returns typed JSON responses instead of redirecting.
+ */
+export async function requireSuperAdminApi(): Promise<
+  { ok: true; ctx: AdminContext } | { ok: false; response: NextResponse }
+> {
+  const result = await loadAdminContext()
+  if (result.ok && result.ctx.isSuperAdmin) return { ok: true, ctx: result.ctx }
+  const status = !result.ok && result.reason === "unauthenticated" ? 401 : 403
+  return {
+    ok: false,
+    response: NextResponse.json(
+      { error: result.ok ? "forbidden" : result.reason },
+      { status },
+    ),
+  }
+}
