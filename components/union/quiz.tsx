@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { X, User, Users, Briefcase, RefreshCw, Building2, ArrowRight, Check, AlertCircle } from "lucide-react"
 import { UnionMark } from "./brand"
 import { zipToStateName } from "@/lib/geo/zipToState"
+import { metaTrack, metaTrackCustom, getFbIdentifiers, newEventId } from "@/lib/meta/pixel-client"
 
 // "" = homepage entry (shows the "who is this for" step). A non-empty value is a
 // pre-routed segment (funnel pages / homepage path cards) that skips that step.
@@ -78,6 +79,8 @@ export function QuizModal({
       setSubmitting(false)
       setA(segment ? { segment } : {})
       setStep(0)
+      // Top-of-funnel signal for Meta (no-ops until the pixel id is set).
+      metaTrackCustom("QuizStart", { segment: segment || "home" })
     }
   }, [open, segment])
 
@@ -147,6 +150,12 @@ export function QuizModal({
       // carries the segment + per-segment detail answers + universal fields.
       const { firstName, lastName, email, phone, consent, age, ...quizRest } = a
 
+      // Meta: one event_id shared by the client Pixel event (fired now) and the
+      // server CAPI event (fired from /api/leads) so Meta deduplicates the pair.
+      const metaEventId = newEventId()
+      const fb = getFbIdentifiers()
+      metaTrack("Lead", { content_name: SEGMENT_TO_FUNNEL[a.segment] || "ppo" }, metaEventId)
+
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,6 +175,13 @@ export function QuizModal({
           utmSource: params.get("utm_source"),
           utmMedium: params.get("utm_medium"),
           utmCampaign: params.get("utm_campaign"),
+          meta: {
+            eventId: metaEventId,
+            fbp: fb.fbp,
+            fbc: fb.fbc,
+            fbclid: fb.fbclid,
+            eventSourceUrl: typeof window !== "undefined" ? window.location.href : undefined,
+          },
         }),
       })
 

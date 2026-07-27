@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Space_Grotesk, Public_Sans } from "next/font/google"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
+import { MetaPixel } from "@/components/meta/MetaPixel"
 import "./globals.css"
 
 // Union · Modern civic type system: Space Grotesk (display) + Public Sans (body).
@@ -145,6 +146,8 @@ export default function RootLayout({
         />
         {children}
         <Analytics />
+        {/* Meta Pixel base code + PageView (no-ops until the pixel id is set). */}
+        <MetaPixel />
         {/* TrustedForm SDK — injects the xxTrustedFormCertUrl field into forms
             on the page and mints a TCPA certificate (served from api.trustedform.com). */}
         <Script id="trustedform" strategy="afterInteractive">

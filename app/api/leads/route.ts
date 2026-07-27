@@ -6,6 +6,7 @@ import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
 import { postLeadToUsha } from '@/lib/usha/postLead'
 import { notifyAdmin } from '@/lib/email/notifyAdmin'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { sendMetaLeadEvent } from '@/lib/meta/capi'
 
 // Generate a unique reference number for leads
 function generateReferenceNumber(): string {
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest) {
       utmCampaign,
       funnelType,
       quizAnswers,
+      meta,
     } = body
 
     // Required fields
@@ -69,6 +71,7 @@ export async function POST(request: NextRequest) {
     // Client IP (best-effort, used for rate limiting + lead attribution)
     const forwardedFor = request.headers.get('x-forwarded-for')
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown'
+    const userAgent = request.headers.get('user-agent')
 
     // Rate limit: /api/leads is public and spends money per call (Anthropic,
     // Resend, USHA). Best-effort in-memory limiter; the dedup check below is
@@ -245,6 +248,27 @@ export async function POST(request: NextRequest) {
         })
       } catch (err) {
         console.error('AI scoring error:', err)
+      }
+
+      // 5. Meta Conversions API "Lead" event. Deduplicated against the client
+      //    Pixel via the shared event_id. No-ops until CAPI is configured, and
+      //    a failure here never affects lead capture.
+      try {
+        await sendMetaLeadEvent({
+          eventId: meta?.eventId || `srv-${referenceNumber}`,
+          eventSourceUrl: meta?.eventSourceUrl || request.headers.get('referer'),
+          firstName,
+          lastName,
+          email: normalizedEmail,
+          phone,
+          zip: quizAnswers?.zip ?? null,
+          fbp: meta?.fbp ?? null,
+          fbc: meta?.fbc ?? null,
+          clientIp: ipAddress,
+          userAgent,
+        })
+      } catch (err) {
+        console.error('Meta CAPI error:', err)
       }
     })
 
