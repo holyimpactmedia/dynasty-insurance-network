@@ -57,7 +57,7 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                You recently requested health insurance information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
+                You recently requested health coverage information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->
@@ -131,7 +131,7 @@ export async function sendLeadConfirmation({
                 ${physicalAddress}
               </p>
               <p style="margin: 0 0 8px 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">
-                You received this email because you submitted a request for health insurance information at our website. We are not affiliated with any government entity, Healthcare.gov, or CMS.
+                You received this email because you submitted a request for health coverage information at our website. We are not affiliated with any government entity, Healthcare.gov, or CMS.
               </p>
               <p style="margin: 0; color: #999999; font-size: 11px; line-height: 1.5; text-align: center;">
                 <a href="${unsubscribeUrl}" style="color: #666666; text-decoration: underline;">Unsubscribe</a>

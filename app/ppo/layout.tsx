@@ -1,11 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
 
-const TITLE = "Private PPO Plans Without Asking Permission"
+const TITLE = "Private Health Coverage Without Asking Permission"
 const DESC =
-  "Stop asking your HMO for permission to see a doctor. Private PPO plans for healthy adults under 65. See any specialist, skip the referrals, and pay less than COBRA."
+  "Stop asking your HMO for permission to see a doctor. Private health coverage for healthy adults under 65. Coverage that can access a PPO network so you may see the specialists you want without referrals."
 const SHORT_DESC =
-  "Private PPO plans. See any specialist. No referrals. Pay less than COBRA."
+  "Private health coverage that can access a PPO network. See specialists, often without referrals."
 
 export const metadata: Metadata = {
   title: TITLE,

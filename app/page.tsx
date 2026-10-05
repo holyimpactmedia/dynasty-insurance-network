@@ -8,14 +8,11 @@ import {
   Heart,
   ArrowRight,
   CheckCircle2,
-  Star,
   DollarSign,
   Clock,
   Award,
   Briefcase,
-  Building2,
   Stethoscope,
-  Globe,
 } from "lucide-react"
 
 const funnels = [
@@ -25,14 +22,14 @@ const funnels = [
     tag: "Most Popular",
     tagColor: "bg-[#D4AF37]/20 text-[#D4AF37]",
     title: "Individual Health Coverage",
-    subtitle: "Private PPO Plans",
+    subtitle: "Private Health Coverage",
     description:
-      "Compare private PPO plans with nationwide coverage and doctor freedom. Quick 2-minute quiz to find your best options.",
+      "Compare private health coverage that can access a PPO network. Quick 2-minute quiz to explore your options.",
     highlights: [
-      "Nationwide PPO networks accepted",
-      "No referrals required",
-      "Keep your preferred doctors",
-      "Coverage that works wherever you travel",
+      "Access to a PPO network",
+      "Direct specialist access may be available",
+      "You may be able to keep your preferred doctors",
+      "Coverage that can travel with you",
     ],
     cta: "Find Individual Plans",
     ctaStyle: "bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90",
@@ -44,14 +41,13 @@ const funnels = [
     tag: "Best for Families",
     tagColor: "bg-blue-100 text-blue-700",
     title: "Family Health Coverage",
-    subtitle: "Private Family Plans",
+    subtitle: "Private Family Coverage",
     description:
-      "Find private family plans that cover every member with nationwide access. Pediatric care, mental health, and full specialist coverage included.",
+      "Find private health coverage options for your family. Pediatric and specialist care options may be available.",
     highlights: [
-      "Full family PPO coverage",
+      "Family coverage that can access a PPO network",
       "Pediatric and dental options",
-      "Mental health & therapy included",
-      "One plan for the whole family",
+      "Coverage options for the whole family",
     ],
     cta: "Find Family Plans",
     ctaStyle: "bg-blue-600 text-white hover:bg-blue-700",
@@ -62,17 +58,17 @@ const funnels = [
     icon: <Heart className="w-10 h-10 text-red-500" />,
     tag: "Lost Job Coverage",
     tagColor: "bg-red-100 text-red-700",
-    title: "COBRA Alternatives",
-    subtitle: "Often less than COBRA",
+    title: "Coverage After Job Loss",
+    subtitle: "Private Health Coverage",
     description:
-      "Recently lost employer coverage? Many healthy adults pay less on a private PPO than on COBRA. Check your options in 90 seconds.",
+      "Recently lost employer coverage? Explore private health coverage options for healthy adults in about 90 seconds.",
     highlights: [
-      "COBRA can run from hundreds to thousands per month",
-      "Private alternatives with better value for healthy adults",
-      "Nationwide network coverage",
+      "Private health coverage for healthy adults",
+      "Options a licensed agent can walk you through",
+      "Access to a PPO network",
       "Loss-of-coverage qualifying event for enrollment",
     ],
-    cta: "Compare COBRA Alternatives",
+    cta: "Find Coverage Options",
     ctaStyle: "bg-red-600 text-white hover:bg-red-700",
     border: "border-red-200",
   },
@@ -82,14 +78,14 @@ const funnels = [
     tag: "Entrepreneurs & Contractors",
     tagColor: "bg-amber-100 text-amber-700",
     title: "Self-Employed Coverage",
-    subtitle: "May qualify for tax deduction",
+    subtitle: "Private Health Coverage",
     description:
-      "Entrepreneurs and contractors deserve real coverage with flexibility. Eligible self-employed earners may deduct 100% of premiums up to net self-employment income - your CPA can confirm.",
+      "Entrepreneurs and contractors deserve real coverage with flexibility. Explore private health coverage options built around how you work.",
     highlights: [
-      "Self-employed health insurance deduction may apply",
-      "HSA-eligible options when paired with a qualifying HDHP",
-      "Nationwide PPO networks",
-      "See any doctor without referrals",
+      "Coverage options for independent earners",
+      "Flexible options for contractors and freelancers",
+      "Access to a PPO network",
+      "Direct specialist access may be available",
     ],
     cta: "Find Self-Employed Plans",
     ctaStyle: "bg-amber-500 text-white hover:bg-amber-600",
@@ -98,40 +94,21 @@ const funnels = [
   {
     href: "/ppo",
     icon: <Stethoscope className="w-10 h-10 text-indigo-500" />,
-    tag: "Doctor Freedom",
+    tag: "PPO Network Access",
     tagColor: "bg-indigo-100 text-indigo-700",
-    title: "PPO Coverage",
-    subtitle: "See Any Doctor, Anywhere",
+    title: "Coverage With PPO Access",
+    subtitle: "Access a Broad PPO Network",
     description:
-      "Tired of narrow networks and referral requirements? Private PPO plans let you see any doctor or specialist, no permission needed, nationwide coverage included.",
+      "Tired of narrow networks and referral requirements? Private health coverage that accesses a PPO network may let you see specialists directly across a broad network.",
     highlights: [
-      "No referrals, see any specialist directly",
-      "Nationwide in-network and out-of-network coverage",
-      "Lower deductibles than most narrow-network plans",
-      "Real coverage with no hidden holes",
+      "Direct specialist access may be available",
+      "Access to a broad PPO network",
+      "Coverage options for healthy adults",
+      "Real coverage explained by a licensed agent",
     ],
-    cta: "Find PPO Plans",
+    cta: "Find PPO Coverage",
     ctaStyle: "bg-indigo-600 text-white hover:bg-indigo-700",
     border: "border-indigo-200",
-  },
-  {
-    href: "/business",
-    icon: <Building2 className="w-10 h-10 text-emerald-500" />,
-    tag: "Small Business",
-    tagColor: "bg-emerald-100 text-emerald-700",
-    title: "Group Health Benefits",
-    subtitle: "2-50 Employees",
-    description:
-      "Offer your team premium group coverage. Group plans provide better rates and help you attract and retain top talent with comprehensive benefits.",
-    highlights: [
-      "Better rates than individual plans",
-      "Deductible as a business expense",
-      "Attract and retain top talent",
-      "Comprehensive employee benefits",
-    ],
-    cta: "Get Group Plan Options",
-    ctaStyle: "bg-emerald-600 text-white hover:bg-emerald-700",
-    border: "border-emerald-200",
   },
 ]
 
@@ -162,31 +139,14 @@ export default function PlansPage() {
               Private Health Coverage Built for <span className="text-[#D4AF37]">Working Americans</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
-              Private PPO health insurance plans for healthy adults and families <span className="text-[#D4AF37] font-semibold">under 65</span>.
-              Keep your doctor, see any specialist, and use nationwide PPO networks accepted at hospitals and physicians across the country.
+              Private health coverage for healthy adults and families <span className="text-[#D4AF37] font-semibold">under 65</span>.
+              Keep your doctor, access a PPO network, and explore your options with a licensed agent.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Concierge Service</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Licensed Agents Only</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Results in 2 Minutes</span>
             </div>
-          </div>
-        </section>
-
-        {/* Stats bar */}
-        <section className="bg-[#D4AF37] py-5 px-6">
-          <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { icon: <Users className="w-4 h-4 flex-shrink-0" />, text: "1,000+ clients served" },
-              { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO coverage" },
-              { icon: <Star className="w-4 h-4 flex-shrink-0" />, text: "4.9/5 client rating" },
-              { icon: <Clock className="w-4 h-4 flex-shrink-0" />, text: "5-min agent response" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
-                {item.icon}
-                <span>{item.text}</span>
-              </div>
-            ))}
           </div>
         </section>
 
@@ -263,18 +223,18 @@ export default function PlansPage() {
               {[
                 {
                   icon: <Shield className="w-8 h-8 text-[#D4AF37]" />,
-                  title: "Licensed & Compliant",
-                  desc: "All agents are licensed in your state and TCPA-compliant. Your data is protected and never sold to third parties.",
+                  title: "Licensed Agents",
+                  desc: "All agents are licensed in your state.",
                 },
                 {
                   icon: <DollarSign className="w-8 h-8 text-[#D4AF37]" />,
                   title: "100% Free Service",
-                  desc: "Our service is completely free to you. We're compensated by the insurance carriers when you enroll, never by you.",
+                  desc: "Our service is completely free to you. We are paid per lead by licensed insurance partners, never by you.",
                 },
                 {
                   icon: <Clock className="w-8 h-8 text-[#D4AF37]" />,
                   title: "Fast Response",
-                  desc: "A licensed specialist contacts you within 5 minutes on business days. No waiting, no call centers. Real people who know your options.",
+                  desc: "A licensed agent typically reaches out on business days. Real people who can walk you through your options.",
                 },
               ].map((item, i) => (
                 <div key={i} className="text-center space-y-3">

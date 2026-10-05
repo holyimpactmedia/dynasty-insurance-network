@@ -18,20 +18,15 @@ import {
   ArrowRight,
   Briefcase,
   TrendingUp,
-  PiggyBank,
-  FileText,
-  Star,
   Users,
   AlertCircle,
   Award,
   XCircle,
   Lock,
   Stethoscope,
-  Eye,
   Smile,
   Zap,
   Globe,
-  Heart,
   Activity,
   X,
 } from "lucide-react"
@@ -39,14 +34,11 @@ import {
 import { SERVICED_STATES } from "@/lib/serviced-states"
 import { INDIVIDUAL_INCOME_BRACKETS } from "@/lib/income-thresholds"
 const SE_COVERAGE_ITEMS = [
-  { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Any primary care or specialist, no employer required" },
-  { icon: <Globe className="w-5 h-5" />, label: "Nationwide Coverage", desc: "Work and live anywhere, coverage follows you" },
-  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER and urgent care covered wherever you are" },
-  { icon: <PiggyBank className="w-5 h-5" />, label: "HSA Eligible", desc: "High-deductible plans with tax-free savings accounts" },
-  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on coverage available with most plans" },
-  { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling, important for solo founders" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and screenings fully covered" },
-  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits 24/7, great for remote workers" },
+  { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Primary care and specialist visits, no employer required" },
+  { icon: <Globe className="w-5 h-5" />, label: "Coverage That Travels", desc: "Coverage can follow you across state lines" },
+  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER and urgent care may be covered when you need it" },
+  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on coverage available with some plans" },
+  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits, not available with every plan or in every state" },
 ]
 
 const SE_PROBLEMS = [
@@ -59,12 +51,10 @@ const SE_PROBLEMS = [
 ]
 
 const SE_ADVANTAGES = [
-  "Private PPO plans with nationwide coverage for mobile entrepreneurs",
-  "May qualify for the federal self-employed health insurance deduction (IRC §162(l)) up to net self-employment income - talk to your CPA",
-  "HSA-eligible options when paired with a qualifying high-deductible plan",
-  "See any doctor or specialist without referrals or waiting",
+  "Private health coverage that can access a PPO network for mobile entrepreneurs",
+  "See a wide range of doctors and specialists through a PPO network",
   "Flexible enrollment options for business owners and contractors",
-  "Plans tailored to working entrepreneurs who want real PPO coverage",
+  "Coverage tailored to working entrepreneurs who want access to a PPO network",
 ]
 
 const US_STATES = SERVICED_STATES
@@ -238,7 +228,6 @@ export default function SelfEmployedPage() {
 
   const progress = currentStep >= 1 && currentStep <= TOTAL_STEPS ? (currentStep / TOTAL_STEPS) * 100 : 0
   const filteredStates = US_STATES.filter((s) => s.toLowerCase().includes(stateSearch.toLowerCase()))
-  const wantsHSA = answers.topPriority === "HSA-eligible (tax savings)"
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -277,13 +266,7 @@ export default function SelfEmployedPage() {
         onClose={() => setShowExitIntent(false)}
         onContinue={() => setShowExitIntent(false)}
         progress={progress}
-        savingsAmount="$5,280"
-        headline="A real PPO + a 100% deductible - gone if you walk away."
-        beforeLabel="Was paying"
-        beforeValue="$1,120/mo"
-        afterLabel="Now pays"
-        afterValue="$680/mo"
-        comparisonName="Carlos M. - Real estate, Houston, TX"
+        headline="A licensed agent can walk you through your coverage options before you go."
       />
 
       {/* Step content */}
@@ -318,54 +301,6 @@ export default function SelfEmployedPage() {
                   </p>
                 </div>
 
-                {wantsHSA && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-                    <Card className="p-6 border-2 border-[#D4AF37] bg-[#D4AF37]/5">
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-[#D4AF37]/20 rounded-full flex items-center justify-center flex-shrink-0">
-                          <PiggyBank className="w-6 h-6 text-[#D4AF37]" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-foreground text-lg mb-1">Your HSA Tax Advantage</h3>
-                          <p className="text-muted-foreground text-sm leading-relaxed">
-                            You selected HSA-eligible as your top priority. Smart choice. With a qualifying high-deductible plan,
-                            you can contribute up to <strong>$4,150/year</strong> (individual) or <strong>$8,300/year</strong> (family)
-                            to an HSA. Every dollar contributed reduces your taxable income, and withdrawals for medical expenses are tax-free.
-                            Your specialist will show you the best HSA-compatible plans available in {answers.state || "your state"}.
-                          </p>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                )}
-
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                  <Card className="p-8 border-2 border-[#D4AF37] bg-gradient-to-br from-[#0A1128] to-[#1a2744] text-white">
-                    <div className="text-center mb-6">
-                      <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
-                        <FileText className="w-4 h-4" />
-                        Self-Employed Tax Benefits
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      {[
-                        { label: "Premium Deduction", value: "100%", sub: "off your taxes" },
-                        { label: "HSA Contribution Limit", value: "$4,150", sub: "individual / year" },
-                        { label: "SE Health Deduction", value: "Above-the-line", sub: "reduces AGI" },
-                      ].map((item, i) => (
-                        <div key={i} className="bg-white/10 rounded-xl p-4">
-                          <p className="text-xs text-gray-400 mb-1">{item.label}</p>
-                          <p className="text-xl font-bold text-[#D4AF37]">{item.value}</p>
-                          <p className="text-xs text-gray-400 mt-1">{item.sub}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-center text-xs text-gray-400 mt-4">
-                      Consult a tax professional. This is for informational purposes only.
-                    </p>
-                  </Card>
-                </motion.div>
-
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
                   <Card className="p-8 border border-border">
                     <h2 className="text-2xl font-bold text-foreground mb-6 text-center">What Happens Next?</h2>
@@ -399,7 +334,7 @@ export default function SelfEmployedPage() {
                           bg: "bg-gray-100",
                           title: "Next Steps",
                           badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                          desc: "Your specialist will show you private PPO plans, tax-deductible options, and HSA-compatible plans side by side.",
+                          desc: "Your specialist will walk you through private health coverage options and conduct a needs analysis with you.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="flex gap-4">
@@ -426,8 +361,8 @@ export default function SelfEmployedPage() {
                 </motion.div>
 
                 <p className="text-xs text-center text-muted-foreground px-4">
-                  By submitting this form, you agree to be contacted by licensed insurance agents. Tax deductibility
-                  depends on your specific situation. Consult a tax advisor.
+                  By submitting this form, you agree to be contacted by licensed insurance agents about coverage options.
+                  Consent is not a condition of purchase.
                 </p>
               </div>
 
@@ -442,19 +377,19 @@ export default function SelfEmployedPage() {
                   <div className="relative max-w-3xl mx-auto text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                       <Briefcase className="w-4 h-4" />
-                      Self-Employed &amp; Freelance Health Insurance
+                      Self-Employed &amp; Freelance Health Coverage
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      1099 Income. No Employer Plan. Bad Options. <span className="text-[#D4AF37]">We Fix That.</span>
+                      1099 Income. No Employer Plan. Bad Options. <span className="text-[#D4AF37]">See Your Options.</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Private PPO plans built for <span className="text-[#D4AF37] font-semibold">healthy</span> self-employed Americans <span className="text-[#D4AF37] font-semibold">under 65</span>. Premiums you can <span className="text-[#D4AF37] font-semibold">actually deduct</span>.
+                      Private health coverage built for <span className="text-[#D4AF37] font-semibold">healthy</span> self-employed Americans <span className="text-[#D4AF37] font-semibold">under 65</span>, with access to a <span className="text-[#D4AF37] font-semibold">PPO network</span>.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
                         "You shop solo. Premiums keep climbing while networks keep shrinking.",
                         "You cross state lines for clients. Your plan stops at the border.",
-                        "Your health insurance premiums may be 100% tax deductible. Are you claiming that?",
+                        "You want coverage that keeps up with your business. Generic plans do not.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -478,10 +413,10 @@ export default function SelfEmployedPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO Networks" },
-                      { icon: <FileText className="w-4 h-4 flex-shrink-0" />, text: "Self-employed health-insurance deduction" },
-                      { icon: <PiggyBank className="w-4 h-4 flex-shrink-0" />, text: "HSA-Eligible Plans Available" },
-                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No Referrals Required" },
+                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Access to a PPO Network" },
+                      { icon: <Briefcase className="w-4 h-4 flex-shrink-0" />, text: "Coverage for 1099 Workers" },
+                      { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "Licensed Agent Guidance" },
+                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Broad Doctor Access" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                         {item.icon}
@@ -500,8 +435,8 @@ export default function SelfEmployedPage() {
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                         Generic narrow-network plans are built for people who sit in one office and see one doctor.
-                        You do not. Private PPO coverage gives you the doctor freedom, nationwide access,
-                        and tax benefits your business deserves.
+                        You do not. Private health coverage with access to a PPO network can give you broader doctor
+                        choice and coverage that travels with your business.
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -557,7 +492,7 @@ export default function SelfEmployedPage() {
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">Real Coverage Built for Independent Workers</h2>
                       <p className="text-muted-foreground text-lg">
-                        No employer needed. Every benefit, fully yours.
+                        No employer needed. Coverage built around your work.
                       </p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -593,12 +528,12 @@ export default function SelfEmployedPage() {
                         {
                           step: "2",
                           title: "See Your Options",
-                          desc: "A specialist shows you private PPO plans with nationwide coverage, real pricing, and tax benefit details.",
+                          desc: "A licensed agent walks you through private health coverage options and conducts a needs analysis.",
                         },
                         {
                           step: "3",
                           title: "Enroll and Get Back to Work",
-                          desc: "Pick your plan. Enroll fast. Then write it off.",
+                          desc: "Pick your plan. Enroll fast. Then get back to business.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="text-center space-y-4 max-w-xs mx-auto md:max-w-none">
@@ -625,8 +560,8 @@ export default function SelfEmployedPage() {
                         You Built Something. Protect It.
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Dynasty Insurance Group helps self-employed professionals find private PPO plans
-                        that move with them. Nationwide coverage. No referrals. Real tax benefits.
+                        Dynasty Insurance Group helps self-employed professionals find private health coverage
+                        that moves with them, with access to a PPO network.
                         We do the comparison work. You get the coverage.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
@@ -635,10 +570,10 @@ export default function SelfEmployedPage() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
+                        { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is licensed in your state." },
+                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Carefully", desc: "Your details go to our licensed insurance partners so they can contact you about coverage options." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">
@@ -651,74 +586,6 @@ export default function SelfEmployedPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </section>
-
-                {/* 1099 Savings Stories */}
-                <section className="py-16 px-6 bg-muted/30">
-                  <div className="max-w-5xl mx-auto space-y-10">
-                    <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Self-Employed. Saving Real Money.</h2>
-                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Contractors, founders, and freelancers are switching to private PPO plans,
-                        deducting their premiums, and paying hundreds less every month.
-                      </p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-6">
-                      {[
-                        {
-                          name: "Carlos M.",
-                          role: "Real estate agent",
-                          location: "Houston, TX",
-                          before: "$1,120/mo",
-                          after: "$680/mo",
-                          quote: "I was paying over $1,100 solo on the open market. Got a private PPO at $680, deduct it on my Schedule C, and my doctor is still in-network. Best call I made this year.",
-                        },
-                        {
-                          name: "Aisha N.",
-                          role: "Freelance designer",
-                          location: "Atlanta, GA",
-                          before: "$1,050/mo",
-                          after: "$720/mo",
-                          quote: "Premiums kept jumping every renewal. The agent found me an HSA-eligible PPO at $720, I get tax-free savings on top of it, and my plan actually works when I travel for clients.",
-                        },
-                        {
-                          name: "Trevor K.",
-                          role: "Independent contractor",
-                          location: "Charlotte, NC",
-                          before: "$1,260/mo",
-                          after: "$815/mo",
-                          quote: "Family of three, 1099 income, no employer help. We were drowning at $1,260 a month. Switched to a private family PPO at $815 and the deduction makes it feel even cheaper.",
-                        },
-                      ].map((story, i) => (
-                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
-                          <div className="flex items-center gap-1 text-[#D4AF37]">
-                            {[...Array(5)].map((_, s) => (
-                              <Star key={s} className="w-4 h-4 fill-current" />
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-center">
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
-                              <p className="text-lg font-bold text-red-700">{story.before}</p>
-                            </div>
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
-                              <p className="text-lg font-bold text-green-700">{story.after}</p>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
-                          <div className="pt-2 border-t border-border">
-                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
-                            <p className="text-xs text-muted-foreground">{story.role}</p>
-                            <p className="text-xs text-muted-foreground">{story.location}</p>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
-                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. Tax deductibility depends on your business structure. A licensed agent will quote you directly.
-                    </p>
                   </div>
                 </section>
 
@@ -849,9 +716,8 @@ export default function SelfEmployedPage() {
                 <div className="grid gap-3">
                   {[
                     { label: "Lowest monthly premium", sub: "Keep cash flow high month-to-month", icon: <DollarSign className="w-5 h-5 text-green-600" /> },
-                    { label: "HSA-eligible (tax savings)", sub: "Reduce taxable income, grow tax-free savings", icon: <PiggyBank className="w-5 h-5 text-[#D4AF37]" /> },
                     { label: "Low deductible", sub: "Pay less when you actually use it", icon: <Shield className="w-5 h-5 text-blue-500" /> },
-                    { label: "Maximum flexibility/PPO", sub: "See any doctor, no referrals needed", icon: <TrendingUp className="w-5 h-5 text-purple-500" /> },
+                    { label: "Maximum flexibility", sub: "Access to a broad PPO network", icon: <TrendingUp className="w-5 h-5 text-purple-500" /> },
                   ].map((opt) => (
                     <button
                       key={opt.label}
@@ -955,7 +821,7 @@ export default function SelfEmployedPage() {
                     </div>
                     {answers.govCoverage === "Yes" && (
                       <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2 mt-2">
-                        Our private PPO plans are designed for self-employed adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
+                        Our private health coverage is designed for self-employed adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
                       </p>
                     )}
                     {errors.govCoverage && <p className="text-red-500 text-xs mt-1">{errors.govCoverage}</p>}
@@ -995,7 +861,7 @@ export default function SelfEmployedPage() {
                       className="mt-0.5 w-4 h-4 flex-shrink-0 cursor-pointer accent-[#D4AF37]"
                     />
                     <label htmlFor="tcpa-se" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
-                      By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. See our{" "}
+                      By checking this box and submitting this form, I provide my electronic signature through which I expressly consent to be contacted by Holy Impact Media and its licensed insurance partners, including licensed insurance agents affiliated with Dynasty Insurance Group and USHEALTH Advisors, LLC, at the telephone number I have provided and that such contact shall be made via telephone calls, text messages (including via automated telephone dialing systems or artificial / prerecorded voice message), and email regarding health coverage options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services and may be revoked at any time. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. Message and data rates may apply. Message frequency varies. I further agree to the{" "}
                       <a href="/terms" className="underline hover:text-foreground">Terms of Service</a> and{" "}
                       <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>.
                     </label>
@@ -1062,7 +928,7 @@ export default function SelfEmployedPage() {
                     {isSubmitting ? "Submitting..." : "See My Plan Options →"}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground">
-                    Your information is encrypted and never sold to third parties.
+                    Your information is encrypted and shared only with our licensed insurance partners.
                   </p>
                 </div>
               </div>

@@ -18,7 +18,6 @@ import {
   DollarSign,
   Users,
   Heart,
-  Star,
   Lock,
   ArrowRight,
   Stethoscope,
@@ -27,7 +26,6 @@ import {
   XCircle,
   Pill,
   Activity,
-  Eye,
   Smile,
   Zap,
   FileText,
@@ -41,32 +39,29 @@ const US_STATES = SERVICED_STATES
 const TOTAL_STEPS = 7
 
 const COVERAGE_GAPS = [
-  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "See any specialist without a referral" },
-  { icon: <Globe className="w-5 h-5" />, label: "Nationwide Coverage", desc: "Use any doctor or hospital, anywhere" },
-  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "Covered at any ER, in or out of network" },
-  { icon: <Pill className="w-5 h-5" />, label: "Prescriptions", desc: "Broad formulary with preferred drug tiers" },
-  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options with most PPO plans" },
-  { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling fully covered" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals, screenings, vaccines" },
-  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual doctor visits 24/7" },
+  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "You may be able to see specialists without a referral" },
+  { icon: <Globe className="w-5 h-5" />, label: "PPO Network Access", desc: "Coverage that can access a PPO network of doctors and hospitals" },
+  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "Emergency room care coverage, depending on your plan" },
+  { icon: <Pill className="w-5 h-5" />, label: "Prescriptions", desc: "Broad formulary" },
+  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options with some plans" },
+  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits, not available with every plan or in every state" },
 ]
 
 const HMO_PROBLEMS = [
   "Restricted to narrow networks, your doctor may not be covered",
   "Need referrals just to see a specialist",
-  "High deductibles before any benefits kick in",
-  "No coverage outside your plan's service area",
+  "Deductibles that must be met before some benefits apply",
+  "Limited coverage outside your plan's service area",
   "Limited plan options in rural areas",
   "Pre-authorization delays for procedures",
 ]
 
 const PPO_ADVANTAGES = [
-  "See ANY doctor or specialist, no referral needed",
-  "Nationwide PPO network, covered anywhere in the US",
-  "Lower deductibles and more day-one benefits",
-  "Out-of-network coverage included",
-  "No gatekeeper, you control your care",
-  "Faster approvals and less red tape",
+  "You may be able to see the doctors and specialists you want, often without a referral",
+  "Coverage that can access a PPO network of doctors and hospitals",
+  "Plan options with a range of deductibles and benefits",
+  "You stay in control of your care",
+  "Often less red tape than narrow-network plans",
 ]
 
 export default function PPOQuizPage() {
@@ -262,13 +257,13 @@ export default function PPOQuizPage() {
             <div className="relative max-w-3xl mx-auto text-center space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                 <Shield className="w-4 h-4" />
-                Private PPO Health Insurance
+                Private Health Coverage
               </div>
               <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
                 Stop <span className="text-[#D4AF37]">Asking Permission</span> to See a Doctor
               </h1>
               <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                Private PPO plans for healthy adults under 65. See <span className="text-[#D4AF37] font-semibold">any specialist</span>, skip the referrals, and pay <span className="text-[#D4AF37] font-semibold">less than COBRA</span>.
+                Private health coverage for healthy adults under 65. You may be able to see the <span className="text-[#D4AF37] font-semibold">specialists you want</span> and skip the referrals.
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
@@ -287,7 +282,7 @@ export default function PPOQuizPage() {
                 size="lg"
                 className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold h-14 px-10 text-base w-full sm:w-auto"
               >
-                Check My PPO Options - Free
+                Check My Coverage Options - Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <p className="text-gray-400 text-xs">Takes 90 seconds. No obligation. Licensed agents only.</p>
@@ -298,10 +293,10 @@ export default function PPOQuizPage() {
           <section className="bg-[#D4AF37] py-5 px-6">
             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-              { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO networks accepted" },
-              { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No referrals. Ever." },
-              { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "Keep your doctors" },
-              { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free specialist consultation" },
+              { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Access to a PPO network" },
+              { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Often no referrals needed" },
+              { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "You may keep your doctors" },
+              { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free consultation with a licensed agent" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                   {item.icon}
@@ -320,7 +315,7 @@ export default function PPOQuizPage() {
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                   Every restriction in your HMO plan saves them money. Referrals. Narrow networks.
-                  Prior authorizations. Pre-auth delays. A private PPO removes all of it.
+                  Prior authorizations. Pre-auth delays. Private health coverage can remove much of that.
                 </p>
               </div>
 
@@ -357,7 +352,7 @@ export default function PPOQuizPage() {
                       </div>
                       <div>
                         <p className="text-xs text-green-600 font-semibold uppercase tracking-wide">The Solution</p>
-                        <h3 className="font-bold text-foreground">Private PPO Coverage</h3>
+                        <h3 className="font-bold text-foreground">Private Health Coverage</h3>
                       </div>
                     </div>
                     <ul className="space-y-3">
@@ -378,9 +373,9 @@ export default function PPOQuizPage() {
           <section className="py-16 px-6 bg-muted/30">
             <div className="max-w-4xl mx-auto space-y-10">
               <div className="text-center space-y-3">
-                <h2 className="text-3xl font-bold text-foreground">What a Real PPO Plan Covers From Day One</h2>
+                <h2 className="text-3xl font-bold text-foreground">What Private Health Coverage Can Include</h2>
                 <p className="text-muted-foreground text-lg">
-                  No waiting. No referrals. No narrow networks.
+                  Benefits vary by plan and availability.
                 </p>
               </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -416,12 +411,12 @@ export default function PPOQuizPage() {
                   {
                     step: "2",
                     title: "Choose Your Plan",
-                    desc: "We compare top-rated private PPO plans nationwide and present your best options with clear, side-by-side pricing.",
+                    desc: "A licensed agent compares private health coverage options and walks you through what may fit, with clear pricing from the carrier.",
                   },
                   {
                     step: "3",
                     title: "Rest Easy",
-                    desc: "Enroll in minutes and get real coverage that lets you see any doctor, anywhere, without asking permission.",
+                    desc: "Enroll and get coverage that may let you see the doctors you want, without asking permission.",
                   },
                 ].map((item, i) => (
                   <div key={i} className="text-center space-y-4">
@@ -448,19 +443,19 @@ export default function PPOQuizPage() {
                   Real Coverage. Real People. No Runaround.
                 </h2>
                 <p className="text-gray-300 leading-relaxed">
-                  Dynasty Insurance Group is a team of licensed specialists. We do not push a plan on you.
+                  Dynasty Insurance Group is a team of licensed insurance agents. We do not push a plan on you.
                   We look at your doctors, your budget, and your life. Then we find what fits.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
-                  No pressure. No hidden fees. No surprises. Just a plan that works.
+                  No pressure. No hidden fees. Just a plan that fits.
                 </p>
               </div>
               <div className="space-y-4">
                 {[
                   { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                  { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We're compensated by the carriers." },
-                  { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
+                  { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
+                  { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
+                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "Your information goes to our licensed insurance partners so a licensed agent can contact you about coverage options." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 bg-white/5 rounded-xl p-4">
                     <div className="w-10 h-10 bg-[#D4AF37]/20 rounded-lg flex items-center justify-center text-[#D4AF37] flex-shrink-0">
@@ -476,89 +471,22 @@ export default function PPOQuizPage() {
             </div>
           </section>
 
-          {/* Social Proof */}
-          <section className="py-16 px-6 bg-muted/30">
-            <div className="max-w-5xl mx-auto space-y-10">
-              <div className="text-center space-y-3">
-                <h2 className="text-3xl font-bold text-foreground">Real PPO Switches. Real Monthly Savings.</h2>
-                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                  These clients dropped their old narrow-network plans, kept their doctors,
-                  and walked away paying hundreds less every month.
-                </p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  {
-                    name: "Marcus T.",
-                    location: "Dallas, TX",
-                    before: "$1,090/mo",
-                    after: "$640/mo",
-                    text: "I was paying over a thousand a month for a narrow-network plan that wouldn't let me see my cardiologist. Switched to a private PPO and now I see whoever I want for $640. Wish I did this years ago.",
-                    stars: 5,
-                  },
-                  {
-                    name: "Jennifer R.",
-                    location: "Phoenix, AZ",
-                    before: "$1,210/mo",
-                    after: "$795/mo",
-                    text: "My old plan had a $7,000 deductible and was costing me $1,210 a month. My new PPO is $795, the deductible is $2,500, and I can go out of network. The specialist found it in 20 minutes.",
-                    stars: 5,
-                  },
-                  {
-                    name: "David & Lisa K.",
-                    location: "Atlanta, GA",
-                    before: "$1,480/mo",
-                    after: "$820/mo",
-                    text: "We needed a plan that covered our daughter's pediatric specialist out of state. We went from $1,480 a month to $820 on a nationwide PPO that actually covers her doctor. Great experience.",
-                    stars: 5,
-                  },
-                ].map((review, i) => (
-                  <Card key={i} className="p-6 space-y-4 border-2 border-[#D4AF37]/30 bg-white">
-                    <div className="flex gap-1">
-                      {Array.from({ length: review.stars }).map((_, j) => (
-                        <Star key={j} className="w-4 h-4 fill-[#D4AF37] text-[#D4AF37]" />
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-center">
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                        <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
-                        <p className="text-xl font-bold text-red-700">{review.before}</p>
-                      </div>
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
-                        <p className="text-xl font-bold text-green-700">{review.after}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed italic">&ldquo;{review.text}&rdquo;</p>
-                    <div className="pt-2 border-t border-border">
-                      <p className="font-semibold text-foreground text-sm">{review.name}</p>
-                      <p className="text-xs text-muted-foreground">{review.location}</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-              <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
-                Client savings stories are illustrative of typical outcomes. Actual rates depend on age, state, plan selection, and underwriting. A licensed agent will quote you directly.
-              </p>
-            </div>
-          </section>
-
           {/* Final CTA */}
           <section className="py-16 px-6 bg-[#0A1128] text-white">
             <div className="max-w-2xl mx-auto text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold text-balance">
-                See What PPO Plans You Qualify For Right Now
+                See What Private Health Coverage You May Qualify For
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                Takes 90 seconds. No obligation. A licensed specialist will contact you within 5 minutes
-                with your best private PPO options.
+                Takes 90 seconds. No obligation. A licensed agent will contact you within 5 minutes
+                with private health coverage options that may fit.
               </p>
               <Button
                 onClick={() => setShowQuiz(true)}
                 size="lg"
               className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold h-14 px-10 text-base w-full sm:w-auto"
             >
-              Check My PPO Options - Free
+              Check My Coverage Options - Free
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-400 pt-2">
@@ -615,13 +543,7 @@ export default function PPOQuizPage() {
         onClose={() => setShowExitIntent(false)}
         onContinue={() => setShowExitIntent(false)}
         progress={progress}
-        savingsAmount="$5,400"
-        headline="Skip the referrals. Skip the bill. Don't skip your match."
-        beforeLabel="Was paying"
-        beforeValue="$1,090/mo"
-        afterLabel="Now pays"
-        afterValue="$640/mo"
-        comparisonName="Marcus T. - Dallas, TX"
+        headline="Skip the referrals. Don't skip your coverage options."
       />
 
           <div className="flex-1 flex items-start justify-center px-4 py-6 sm:px-6 sm:items-center">
@@ -650,8 +572,8 @@ export default function PPOQuizPage() {
                       You&apos;re All Set, {answers.firstName}!
                     </h1>
                     <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                      A licensed PPO specialist is reviewing your information right now and will contact you
-                      within 5 minutes with your best plan options.
+                      A licensed agent is reviewing your information right now and will contact you
+                      within 5 minutes with coverage options that may fit.
                     </p>
                   </div>
                 </div>
@@ -662,14 +584,12 @@ export default function PPOQuizPage() {
                     <div className="text-center space-y-5">
                       <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                         <Stethoscope className="w-4 h-4" />
-                        What a PPO Gives You
+                        What a PPO Network Can Offer
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
                         {[
-                          { label: "Network", hmo: "Narrow, limited doctors", ppo: "Any doctor, nationwide" },
-                          { label: "Referrals", hmo: "Required for specialists", ppo: "Never needed" },
-                          { label: "Out-of-Network", hmo: "Not covered", ppo: "Covered (higher cost share)" },
-                          { label: "Deductible", hmo: "Varies by plan tier", ppo: "Varies by plan tier" },
+                          { label: "Network", hmo: "Narrow, limited doctors", ppo: "Access to a broad PPO network" },
+                          { label: "Referrals", hmo: "Required for specialists", ppo: "Often not needed" },
                         ].map((row, i) => (
                           <div key={i} className="bg-white/5 rounded-lg p-3 space-y-2">
                             <p className="text-[#D4AF37] text-xs font-semibold uppercase tracking-wide">{row.label}</p>
@@ -700,9 +620,9 @@ export default function PPOQuizPage() {
                       </div>
                       <div className="space-y-5">
                         {[
-                          { icon: <CheckCircle2 className="w-6 h-6 text-green-600" />, bg: "bg-green-100", title: "Right Now: Complete", desc: "Your information is submitted and a specialist has been notified.", badge: "Done", badgeColor: "bg-green-100 text-green-700" },
-                          { icon: <Clock className="w-6 h-6 text-[#D4AF37]" />, bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]", title: "Within 5 Minutes", desc: "A licensed PPO specialist reviews your answers and prepares a personalized plan comparison.", badge: "In Progress", badgeColor: "bg-blue-100 text-blue-700" },
-                          { icon: <Phone className="w-6 h-6 text-gray-400" />, bg: "bg-gray-100", title: "Enrollment Call", desc: "Your specialist walks you through your options and can enroll you same-day if you're ready.", badge: "Upcoming", badgeColor: "bg-gray-100 text-gray-600" },
+                          { icon: <CheckCircle2 className="w-6 h-6 text-green-600" />, bg: "bg-green-100", title: "Right Now: Complete", desc: "Your information is submitted and a licensed agent has been notified.", badge: "Done", badgeColor: "bg-green-100 text-green-700" },
+                          { icon: <Clock className="w-6 h-6 text-[#D4AF37]" />, bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]", title: "Within 5 Minutes", desc: "A licensed agent reviews your answers and prepares a personalized needs analysis.", badge: "In Progress", badgeColor: "bg-blue-100 text-blue-700" },
+                          { icon: <Phone className="w-6 h-6 text-gray-400" />, bg: "bg-gray-100", title: "Enrollment Call", desc: "Your licensed agent conducts a needs analysis, walks you through your options, and can help you enroll if you decide to.", badge: "Upcoming", badgeColor: "bg-gray-100 text-gray-600" },
                         ].map((item, i) => (
                           <div key={i} className="flex gap-4">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${item.bg}`}>
@@ -733,7 +653,7 @@ export default function PPOQuizPage() {
                 {currentStep === 1 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Who needs PPO coverage?</h2>
+                      <h2 className="text-3xl font-bold text-foreground">Who needs coverage?</h2>
                       <p className="text-muted-foreground">This helps us find the right plan size and pricing.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -769,7 +689,7 @@ export default function PPOQuizPage() {
                       {[
                         { label: "I have an HMO or narrow-network plan", value: "hmo" },
                         { label: "I currently have no health insurance", value: "uninsured" },
-                        { label: "I'm on COBRA and want a private PPO alternative", value: "cobra" },
+                        { label: "I'm currently on COBRA", value: "cobra" },
                         { label: "I have employer coverage but want better options", value: "employer" },
                         { label: "I'm self-employed or between jobs", value: "self_employed" },
                       ].map((opt) => (
@@ -797,7 +717,7 @@ export default function PPOQuizPage() {
                     <div className="space-y-3">
                       {[
                         { label: "Choosing my own doctors and specialists", value: "doctor_choice", icon: <Stethoscope className="w-5 h-5" /> },
-                        { label: "Nationwide coverage, I travel or work remotely", value: "nationwide", icon: <Globe className="w-5 h-5" /> },
+                        { label: "Broad network coverage, I travel or work remotely", value: "nationwide", icon: <Globe className="w-5 h-5" /> },
                         { label: "Low monthly premium", value: "low_premium", icon: <DollarSign className="w-5 h-5" /> },
                         { label: "Low deductible, I use my insurance regularly", value: "low_deductible", icon: <Activity className="w-5 h-5" /> },
                         { label: "Prescription coverage for ongoing medications", value: "prescriptions", icon: <Pill className="w-5 h-5" /> },
@@ -822,7 +742,7 @@ export default function PPOQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">What&apos;s your monthly budget for coverage?</h2>
-                      <p className="text-muted-foreground">PPO plans range widely. This helps narrow your options.</p>
+                      <p className="text-muted-foreground">Coverage options range widely. This helps narrow your options.</p>
                     </div>
                     <div className="space-y-3">
                       {PPO_BUDGET_BRACKETS.map((opt) => (
@@ -845,7 +765,7 @@ export default function PPOQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">What state do you need coverage in?</h2>
-                      <p className="text-muted-foreground">PPO availability varies by state. We&apos;ll check your area.</p>
+                      <p className="text-muted-foreground">Availability varies by state. We&apos;ll check your area.</p>
                     </div>
                     <Input
                       type="text"
@@ -874,8 +794,8 @@ export default function PPOQuizPage() {
                 {currentStep === 6 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Where should we send your PPO options?</h2>
-                      <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
+                      <h2 className="text-3xl font-bold text-foreground">Where should we send your coverage options?</h2>
+                      <p className="text-muted-foreground">A licensed agent will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
                       <div>
@@ -912,7 +832,7 @@ export default function PPOQuizPage() {
                         </div>
                         {answers.govCoverage === "Yes" && (
                           <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
-                            Our private PPO plans are designed for adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
+                            Our private health coverage options are designed for adults not currently enrolled in Medicaid or Medicare. A licensed agent can still walk you through your options.
                           </p>
                         )}
                         {errors.govCoverage && <p className="text-red-500 text-xs">{errors.govCoverage}</p>}
@@ -946,7 +866,7 @@ export default function PPOQuizPage() {
                             className="mt-1"
                           />
                           <span className="text-xs text-muted-foreground leading-relaxed">
-                            By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. See our{" "}
+                            By checking this box and submitting this form, I provide my electronic signature through which I expressly consent to be contacted by Holy Impact Media and its licensed insurance partners, including licensed insurance agents affiliated with Dynasty Insurance Group and USHEALTH Advisors, LLC, at the telephone number I have provided and that such contact shall be made via telephone calls, text messages (including via automated telephone dialing systems or artificial / prerecorded voice message), and email regarding health coverage options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services and may be revoked at any time. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. Message and data rates may apply. Message frequency varies. I further agree to the{" "}
                             <a href="/terms" className="underline hover:text-foreground">Terms of Service</a> and{" "}
                             <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>.
                           </span>
@@ -957,12 +877,12 @@ export default function PPOQuizPage() {
                         onClick={handleContactSubmit}
                         className="w-full h-12 bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold"
                       >
-                        See My PPO Options
+                        See My Coverage Options
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                         <Lock className="w-3 h-3" />
-                        Your information is secure and never sold
+                        Your information is kept secure
                       </div>
                     </div>
                   </div>
@@ -973,7 +893,7 @@ export default function PPOQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-3">
                       <h2 className="text-3xl font-bold text-foreground">Last step: what&apos;s your name?</h2>
-                      <p className="text-muted-foreground">So your specialist can personalize your plan options.</p>
+                      <p className="text-muted-foreground">So your licensed agent can personalize your options.</p>
                     </div>
                     <div className="space-y-4">
                       <div>
@@ -1008,7 +928,7 @@ export default function PPOQuizPage() {
                         disabled={isSubmitting}
                         className="w-full h-12 bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold"
                       >
-                        {isSubmitting ? "Submitting..." : "Get My PPO Plans"}
+                        {isSubmitting ? "Submitting..." : "Get My Coverage Options"}
                         {!isSubmitting && <ArrowRight className="w-4 h-4 ml-2" />}
                       </Button>
                     </div>

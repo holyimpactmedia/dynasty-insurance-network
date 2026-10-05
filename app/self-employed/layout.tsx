@@ -1,11 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
 
-const TITLE = "Self-Employed Health Insurance That Deducts"
+const TITLE = "Self-Employed Health Coverage"
 const DESC =
-  "Private PPO plans for healthy 1099 workers, freelancers, and contractors under 65. Nationwide coverage, no referrals, and premiums that may be 100% tax deductible."
+  "Private health coverage for healthy 1099 workers, freelancers, and contractors under 65. Coverage that can access a PPO network, with your options explained by a licensed agent."
 const SHORT_DESC =
-  "Private PPO plans for 1099 workers. Nationwide coverage. Premiums may be 100% tax deductible for qualifying self-employed filers."
+  "Private health coverage for 1099 workers. Coverage that can access a PPO network. A licensed agent walks you through your options."
 
 export const metadata: Metadata = {
   title: TITLE,

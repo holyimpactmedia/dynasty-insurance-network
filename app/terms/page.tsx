@@ -11,7 +11,7 @@ export default function TermsOfUsePage() {
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold text-foreground mb-4">Terms of Use</h1>
-        <p className="text-sm text-muted-foreground mb-8">Last Updated: May 7, 2026</p>
+        <p className="text-sm text-muted-foreground mb-8">Last Updated: September 30, 2026</p>
 
         <div className="prose prose-sm max-w-none space-y-6 text-foreground">
           <section>
@@ -21,6 +21,14 @@ export default function TermsOfUsePage() {
               (&ldquo;Terms&rdquo;). The Site is owned and operated by Holy Impact Media, LLC (&ldquo;Holy Impact Media,&rdquo; &ldquo;we,&rdquo;
               &ldquo;us,&rdquo; or &ldquo;our&rdquo;), a marketing and lead-generation company. If you do not agree to these Terms, do not use
               the Site.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              This Agreement contains a binding arbitration agreement. These Terms affect your legal rights, including
+              an agreement to resolve disputes that may arise between us by arbitration on an individual basis instead
+              of by class actions or jury trials. As a condition of using this Site, you agree that any disputes
+              pertaining to information presented herein and use of the Site (including any services purchased) shall
+              be resolved through binding arbitration and not in a court. You have the right to opt-out of our
+              agreement to arbitrate.
             </p>
           </section>
 
@@ -39,9 +47,9 @@ export default function TermsOfUsePage() {
           <section>
             <h2 className="text-2xl font-semibold mb-3">3. Plans Presented</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Health plans presented through this Site are private health insurance products available off-exchange
-              (purchased directly through licensed independent insurance agents, without federal premium tax credits
-              or cost-sharing reductions). Plan availability, premiums, deductibles, and benefit design vary by
+              Health plans presented through this Site are private, non-Affordable Care Act health insurance products
+              that you may purchase directly through licensed independent insurance agents, without federal premium
+              tax credits or cost-sharing reductions. Plan availability, premiums, deductibles, and benefit design vary by
               carrier, household composition, age, tobacco use, state, and underwriting. Final plan terms are
               determined by the issuing carrier.
             </p>
@@ -61,10 +69,11 @@ export default function TermsOfUsePage() {
           <section>
             <h2 className="text-2xl font-semibold mb-3">5. Agent Compensation</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Holy Impact Media may receive compensation when leads we generate enroll in coverage with a licensed
-              insurance partner, including Dynasty Insurance Group. Licensed agents may receive commissions or other
-              compensation from insurance carriers for policies sold. This compensation does not affect the premium
-              rates you pay, which are set by the carriers.
+              Holy Impact Media is compensated on a per-lead basis by the licensed insurance partners, including
+              Dynasty Insurance Group, that purchase the leads we generate. This compensation is for the lead itself
+              and is not contingent on whether you enroll in any coverage. Licensed agents may separately receive
+              commissions or other compensation from insurance carriers for policies sold. None of this compensation
+              affects the premium rates you pay, which are set by the carriers.
             </p>
           </section>
 
@@ -144,11 +153,13 @@ export default function TermsOfUsePage() {
             <h2 className="text-2xl font-semibold mb-3">13. Communications Consent (TCPA &amp; State Laws)</h2>
             <p className="text-muted-foreground leading-relaxed">
               By submitting your contact information through the Site and checking the consent box on a quiz form, you
-              provide express written consent under the Telephone Consumer Protection Act (TCPA), the Florida
-              Telephone Solicitation Act (FTSA), and any other applicable state telemarketing laws to be contacted by
-              Holy Impact Media and its licensed insurance partners (including Dynasty Insurance Group) by phone
-              calls, text messages (including via autodialer or prerecorded message), and email regarding health
-              insurance options. Consent is not required as a condition of any purchase. You may revoke consent at any
+              provide your electronic signature through which you expressly consent under the Telephone Consumer
+              Protection Act (TCPA), the Florida Telephone Solicitation Act (FTSA), and any other applicable state
+              telemarketing laws to be contacted by Holy Impact Media and its licensed insurance partners (including
+              licensed insurance agents associated with Dynasty Insurance Group, USHEALTH Advisors, LLC and USHEALTH
+              Group, Inc.) at the number you have provided, and that such contact shall be made by telephone calls,
+              text messages (including via automated telephone dialing system or prerecorded voice message), and email
+              regarding health coverage options. Consent is not required as a condition of any purchase. You may revoke consent at any
               time by replying STOP to a text, replying STOP or unsubscribing from email, or emailing
               privacy@holyimpactmedia.com to be added to our internal Do-Not-Call list. We honor the National Do Not
               Call Registry as required by law.
@@ -204,9 +215,14 @@ export default function TermsOfUsePage() {
               and resolved under AAA&apos;s Mass Arbitration Supplementary Rules.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              <strong className="text-foreground">Carve-Outs.</strong> Either party may bring (i) an individual action
-              in small-claims court for any claim within that court&apos;s jurisdiction, (ii) an action seeking only
-              injunctive or equitable relief to protect intellectual property, and (iii) any claim that cannot
+              <strong className="text-foreground">Third-Party Beneficiaries.</strong> Dynasty Insurance Group,
+              USHEALTH Group, Inc., USHEALTH Advisors, LLC, their affiliates and its independent insurance advisors
+              are express and intended third-party beneficiaries of this agreement to arbitrate and shall have the
+              right to enforce it against you to the same extent as if they were a party to this agreement.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              <strong className="text-foreground">Carve-Outs.</strong> Either party may bring (i) an action seeking
+              only injunctive or equitable relief to protect intellectual property, and (ii) any claim that cannot
               lawfully be subject to a pre-dispute arbitration agreement (including, where applicable, certain
               consumer-protection claims).
             </p>

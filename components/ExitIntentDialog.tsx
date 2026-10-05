@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Lock, Shield, TrendingDown, X } from "lucide-react"
+import { ArrowRight, Lock, Shield, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export interface ExitIntentDialogProps {
@@ -13,20 +13,20 @@ export interface ExitIntentDialogProps {
   // Progress through the quiz, 0-100. Surfaces a sunk-cost cue.
   progress: number
 
-  // Funnel-specific copy. All loss-framed (Kahneman: losses ~2x as motivating
-  // as equivalent gains). The headline names a specific dollar figure the user
-  // would walk away from; the comparison line cites a real before/after from
-  // that funnel's testimonials.
-  savingsAmount: string       // e.g. "$7,920"
-  savingsTimeframe?: string   // default "/year"
-  headline: string            // e.g. "Don't walk away from a real family plan"
-  beforeLabel: string         // e.g. "Was paying"
-  beforeValue: string         // e.g. "$1,420/mo"
-  afterLabel: string          // e.g. "Now pays"
-  afterValue: string          // e.g. "$760/mo"
-  comparisonName: string      // e.g. "The Ramirez Family, Houston, TX"
+  // Funnel headline shown at the top of the dialog body.
+  headline: string
   continueLabel?: string      // default "Finish My Quiz (60 seconds)"
   dismissLabel?: string       // default "I'll come back later"
+
+  // Retained for caller compatibility. No longer displayed: the dialog does
+  // not render savings figures or before/after comparisons.
+  savingsAmount?: string
+  savingsTimeframe?: string
+  beforeLabel?: string
+  beforeValue?: string
+  afterLabel?: string
+  afterValue?: string
+  comparisonName?: string
 }
 
 export function ExitIntentDialog({
@@ -34,14 +34,7 @@ export function ExitIntentDialog({
   onClose,
   onContinue,
   progress,
-  savingsAmount,
-  savingsTimeframe = "/year",
   headline,
-  beforeLabel,
-  beforeValue,
-  afterLabel,
-  afterValue,
-  comparisonName,
   continueLabel = "Finish My Quiz (60 seconds)",
   dismissLabel = "I'll come back later",
 }: ExitIntentDialogProps) {
@@ -130,12 +123,8 @@ export function ExitIntentDialog({
 
             {/* Body */}
             <div className="space-y-5 px-6 py-6 sm:px-8 sm:py-7">
-              {/* Loss-framed headline with concrete dollar figure */}
+              {/* Headline plus a neutral prompt (no savings figures or comparisons) */}
               <div className="space-y-2 text-center">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-600">
-                  <TrendingDown className="h-3.5 w-3.5" />
-                  Don&apos;t leave money on the table
-                </div>
                 <h2
                   id="exit-intent-headline"
                   className="text-2xl font-bold leading-tight text-foreground sm:text-3xl"
@@ -143,33 +132,7 @@ export function ExitIntentDialog({
                   {headline}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Households like yours are saving{" "}
-                  <span className="font-bold text-foreground">
-                    up to {savingsAmount}
-                    {savingsTimeframe}
-                  </span>
-                  .
-                </p>
-              </div>
-
-              {/* Real before/after - matches the testimonials on the page */}
-              <div className="rounded-xl border-2 border-[#D4AF37]/30 bg-gradient-to-br from-[#D4AF37]/5 to-transparent p-4">
-                <div className="grid grid-cols-2 gap-2 text-center">
-                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-red-600">
-                      {beforeLabel}
-                    </p>
-                    <p className="text-lg font-bold text-red-700 sm:text-xl">{beforeValue}</p>
-                  </div>
-                  <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">
-                      {afterLabel}
-                    </p>
-                    <p className="text-lg font-bold text-green-700 sm:text-xl">{afterValue}</p>
-                  </div>
-                </div>
-                <p className="mt-2.5 text-center text-[11px] text-muted-foreground">
-                  {comparisonName}
+                  See your coverage options in just a few more steps.
                 </p>
               </div>
 
