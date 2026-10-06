@@ -131,4 +131,6 @@ See section 7.
 
 ## 9. Question for legal (Erica Gibbs)
 
-May Dynasty send Meta (Facebook) a "Lead" event when a visitor submits a quiz form, including SHA-256 hashed email, phone, name and ZIP for ad matching? If yes, what wording replaces privacy policy §7.2 ("We do not share the personal information you submit through quiz forms with advertisers")? Until answered, Meta tracking stays off in production.
+May Dynasty send Meta (Facebook) a "Lead" event when a visitor submits a quiz form? It would carry SHA-256 hashed email, phone, name and country, plus the visitor's IP address and browser user agent (not hashed), Meta's browser cookies (`fbp`, `fbc`) and the page URL; the browser pixel would also report page views with their URLs, including UTM and click-ID parameters. Dynasty collects no ZIP. If yes, what wording replaces privacy policy §7.2 ("We do not share the personal information you submit through quiz forms with advertisers")? Until answered, Meta tracking stays off in production.
+
+(Corrected 2026-10-06: the first version listed only hashed email, phone, name and ZIP.)
