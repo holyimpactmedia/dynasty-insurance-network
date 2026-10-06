@@ -150,7 +150,7 @@ update "user" set role = 'admin' where email = 'person@example.com';
 | `503` | `{"status":"error","reason":"database_unconfigured","provider":"neon"}` | `DATABASE_URL` missing |
 | `503` | `{"status":"error","reason":"leads_table_unreachable","provider":"neon"}` | database unreachable or schema missing; details in Vercel runtime logs (`[health] database check failed`) |
 
-Wire it into the uptime check.
+Wire it into an uptime check at a 5-minute or longer interval: every check wakes the Neon database, which costs compute. The dashboard polls every 30 s (leads) and 60 s (stats) only while its tab is visible, for the same reason.
 
 ## Lead intake when the database is down
 

@@ -2,7 +2,7 @@
 
 Part of [docs/plan.md](../../../plan.md). Read its Global Constraints first.
 
-**Goal:** the admin dashboard and projections read leads only through role-checked server routes (`/api/admin/leads`, `/api/admin/stats`, `/api/admin/export`), refresh by polling (8 s leads, 15 s stats) instead of Supabase Realtime, and look exactly as they do today. A guard test proves every route under `app/api/admin/**` answers 401 with no session.
+**Goal:** the admin dashboard and projections read leads only through role-checked server routes (`/api/admin/leads`, `/api/admin/stats`, `/api/admin/export`), refresh by polling (30 s leads, 60 s stats, plus on window focus) instead of Supabase Realtime, and look exactly as they do today. A guard test proves every route under `app/api/admin/**` answers 401 with no session.
 
 **Files:**
 - Create (copy verbatim): `lib/api/lead-filters.ts`, `lib/api/lead-filters.test.ts`, `lib/data/dashboard-view.ts`, `app/api/admin/leads/route.ts`, `app/api/admin/stats/route.ts`
@@ -277,9 +277,11 @@ import { LeadDetailDrawer } from "@/components/dashboard/LeadDetailDrawer"
 import type { Lead } from "@/lib/types/lead"
 import { FUNNEL_LABELS } from "@/lib/types/lead"
 
-// Polling replaces Supabase Realtime. Both polls run only while the tab is visible.
-const LEADS_POLL_MS = 8_000
-const STATS_POLL_MS = 15_000
+// Polling replaces Supabase Realtime. Both polls run only while the tab is
+// visible; a focus refresh covers a returning admin. Kept slow on purpose: each
+// poll wakes the Neon database, and this dashboard does not need seconds-fresh data.
+const LEADS_POLL_MS = 30_000
+const STATS_POLL_MS = 60_000
 
 interface DashboardStats {
   totalLeads: number
@@ -507,7 +509,7 @@ export default function AdminDashboardClient({
   }, [search, filterFunnel, filterMarketplace, filterMinScore])
 
   // ── live updates ─────────────────────────────────────────────────────────────
-  // The visible page refreshes every 8s while the tab is visible, and right
+  // The visible page refreshes every 30s while the tab is visible, and right
   // away when the window regains focus.
   useEffect(() => {
     const poll = () => {
@@ -556,7 +558,7 @@ export default function AdminDashboardClient({
     void loadPage(page)
   }, [refreshStats, loadPage, page])
 
-  // Stats poll: every 15s while the tab is visible, and on window focus.
+  // Stats poll: every 60s while the tab is visible, and on window focus.
   useEffect(() => {
     const poll = () => {
       if (document.visibilityState === "visible") void refreshStats(true)
@@ -583,7 +585,7 @@ Then, in the untouched markup, replace `      {loadError && (` with `      {(lea
 
 Check the markup still compiles against the new names: `pnpm exec tsc --noEmit`. If tsc reports an identifier the markup uses that the block above no longer defines (for example a handler name), stop and compare against `git show origin/redesign/union-private-healthcare:components/dashboard/AdminDashboardClient.tsx`; do not invent a replacement.
 
-Kept from main on purpose (not ported from redesign): the Dynasty title "Dynasty Insurance Network: Admin", bar fill `#1e3a8a`, funnel bar `bg-[#1e3a8a]`, no `font-display`. Redesign behavior intentionally not copied: its polls set the loading spinner and could abort a user's Next click every 8 to 15 s; here polls are silent and yield to user actions.
+Kept from main on purpose (not ported from redesign): the Dynasty title "Dynasty Insurance Network: Admin", bar fill `#1e3a8a`, funnel bar `bg-[#1e3a8a]`, no `font-display`. Redesign behavior intentionally not copied: its polls (every 8 and 15 s) set the loading spinner and could abort a user's Next click; here polls are silent, yield to user actions, and run every 30 and 60 s (senior review: database wake-ups cost money).
 
 - [ ] **Step 7: Projections page on the store**
 

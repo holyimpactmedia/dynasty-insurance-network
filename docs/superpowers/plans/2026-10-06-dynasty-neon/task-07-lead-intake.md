@@ -6,11 +6,11 @@ Part of [docs/plan.md](../../../plan.md). Read its Global Constraints first.
 
 **Files:**
 - Replace: `app/api/leads/route.ts`, `app/api/leads/route.test.ts`
-- Create: `app/api/leads/route.parity.test.ts`, `app/api/unsubscribe/route.test.ts`
-- Modify: `app/api/unsubscribe/route.ts`, `lib/ai/scoreLeadWithAI.ts`, `lib/types/lead.ts` (comment), `lib/time/ranges.ts` (comment)
+- Create: `app/api/leads/route.parity.test.ts`, `app/api/leads/route.trustedform.test.ts`, `app/api/trustedform/claim/route.test.ts`, `app/api/unsubscribe/route.test.ts`
+- Modify: `app/api/unsubscribe/route.ts`, `app/api/trustedform/claim/route.ts` (scan phrases), `lib/ai/scoreLeadWithAI.ts`, `lib/types/lead.ts` (comment), `lib/time/ranges.ts` (comment)
 - Replace (copy verbatim): `lib/usha/postLead.ts`
 - Delete: `lib/supabase/admin.ts`
-- Untouched on purpose: `lib/email/sendLeadConfirmation.ts` (legal-frozen), `lib/email/notifyAdmin.ts` (every redesign change there is Union branding), `app/api/trustedform/claim/route.ts` (separate task)
+- Untouched on purpose: `lib/email/sendLeadConfirmation.ts` (legal-frozen), `lib/email/notifyAdmin.ts` (every redesign change there is Union branding)
 
 **Interfaces:**
 - Consumes: Task 4 `getPlatformStore()` and `PlatformStore` (`isConfigured`, `findRecentDuplicate`, `createLead`, `updateAiScore`, `updateMarketplaceStatus`, `recordSuppression`).
@@ -596,20 +596,25 @@ export async function POST(request: NextRequest) {
     // the work, so on Vercel these integrations actually complete.
     after(async () => {
       // 1. Claim the TrustedForm certificate (TCPA compliance evidence).
+      //    Field names must match app/api/trustedform/claim/route.ts. An
+      //    unclaimed certificate expires, so a failed claim is logged loudly.
       if (trustedFormCertUrl) {
         try {
-          await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
+          const claim = await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              certificateUrl: trustedFormCertUrl,
-              leadId: data.id,
+              certUrl: trustedFormCertUrl,
+              reference: referenceNumber,
               email: normalizedEmail,
               phone,
             }),
           })
+          if (!claim.ok) {
+            console.error('TRUSTEDFORM CLAIM FAILED:', claim.status, { referenceNumber })
+          }
         } catch (err) {
-          console.error('TrustedForm claim error:', err)
+          console.error('TRUSTEDFORM CLAIM FAILED:', err, { referenceNumber })
         }
       }
 
@@ -708,7 +713,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-The USHA and admin-email payloads deliberately keep main's raw `age` and `priorities` handling, so those outputs match main too. The TrustedForm body is main's (its field-name bug is fixed by the separate task).
+The USHA and admin-email payloads deliberately keep main's raw `age` and `priorities` handling, so those outputs match main too. The TrustedForm claim body is FIXED here (main sent `certificateUrl` and `leadId`, but the claim route reads `certUrl` and `reference`, so every claim returned 400); Step 7 pins it with tests.
 
 - [ ] **Step 5: Run the intake tests to confirm they pass**
 
@@ -723,7 +728,158 @@ Expected: all PASS (10 parity, 8 route).
 1. Delete the `storedPriorities` normalization (pass `priorities: priorities || null`), run: the PPO parity case must FAIL. Restore.
 2. Move the `findRecentDuplicate` call outside its try/catch, run: "still returns 200 when the duplicate lookup fails" must FAIL. Restore.
 
-- [ ] **Step 7: Unsubscribe test first**
+- [ ] **Step 7: TrustedForm claim (folded in after review: pressure test C1)**
+
+Two defects keep every TCPA certificate unclaimed today: the intake route sends field names the claim route does not read (fixed in Step 4's code), and the claim route asks TrustedForm to scan for phrases that appear in none of the funnels (`"I agree to the terms"`, `"I consent to be contacted"`), so even a working claim would record the required consent language as missing. The replacement phrases below appear verbatim in all six funnels on `main` AND in legal's approved consent text on `legal/dynasty-compliance`, so they hold before and after the legal branch lands.
+
+Create `app/api/leads/route.trustedform.test.ts`:
+
+```ts
+// @vitest-environment node
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
+
+const h = vi.hoisted(() => ({ callbacks: [] as Array<() => Promise<void>> }))
+
+vi.mock("next/server", async (orig) => ({
+  ...(await orig<typeof import("next/server")>()),
+  after: vi.fn((cb: () => Promise<void>) => {
+    h.callbacks.push(cb)
+  }),
+}))
+vi.mock("@/lib/data/store", () => ({
+  getPlatformStore: async () => ({
+    isConfigured: () => true,
+    findRecentDuplicate: async () => null,
+    createLead: async () => ({ id: "lead-1", createdAt: "2026-10-06 15:04:05+00" }),
+  }),
+}))
+vi.mock("@/lib/email/sendLeadConfirmation", () => ({ sendLeadConfirmation: vi.fn() }))
+vi.mock("@/lib/email/notifyAdmin", () => ({ notifyAdmin: vi.fn() }))
+vi.mock("@/lib/usha/postLead", () => ({ postLeadToUsha: vi.fn() }))
+vi.mock("@/lib/ai/scoreLeadWithAI", () => ({ scoreAndUpdateLead: vi.fn() }))
+
+import { POST } from "@/app/api/leads/route"
+import { __resetRateLimit } from "@/lib/rate-limit"
+import { NextRequest } from "next/server"
+
+const CERT = "https://cert.trustedform.com/0123456789abcdef0123456789abcdef01234567"
+
+async function submitAndRunBackground() {
+  const res = await POST(
+    new NextRequest("https://www.dynastyinsurancenetwork.com/api/leads", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.50" },
+      body: JSON.stringify({ firstName: "A", lastName: "B", email: "A@B.com", phone: "5550100", tcpaConsent: true, trustedFormCertUrl: CERT }),
+    }),
+  )
+  for (const cb of h.callbacks) await cb()
+  return res
+}
+
+describe("TrustedForm claim from /api/leads", () => {
+  beforeEach(() => {
+    __resetRateLimit()
+    h.callbacks = []
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
+
+  it("posts certUrl and reference, the fields the claim route reads", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }))
+    vi.stubGlobal("fetch", fetchMock)
+    const res = await submitAndRunBackground()
+    const { referenceNumber } = await res.json()
+    const call = fetchMock.mock.calls.find(([url]) => String(url).endsWith("/api/trustedform/claim"))
+    expect(call).toBeDefined()
+    expect(JSON.parse(call![1].body)).toEqual({ certUrl: CERT, reference: referenceNumber, email: "a@b.com", phone: "5550100" })
+  })
+
+  it("logs loudly when the claim is rejected", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("bad", { status: 400 })))
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    await submitAndRunBackground()
+    expect(errorSpy.mock.calls.some(([msg]) => String(msg).includes("TRUSTEDFORM CLAIM FAILED"))).toBe(true)
+  })
+})
+```
+
+Create `app/api/trustedform/claim/route.test.ts`:
+
+```ts
+// @vitest-environment node
+import { readFileSync } from "node:fs"
+import { describe, it, expect, afterEach, vi } from "vitest"
+import { NextRequest } from "next/server"
+
+const FUNNELS = ["individual", "family", "cobra", "ppo", "self-employed"]
+const CERT = "https://cert.trustedform.com/0123456789abcdef0123456789abcdef01234567"
+
+describe("POST /api/trustedform/claim", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.unstubAllGlobals()
+    vi.resetModules()
+  })
+
+  it("asks TrustedForm to scan for phrases every live funnel's consent text contains", async () => {
+    vi.stubEnv("TRUSTEDFORM_API_KEY", "tf_test_key")
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }))
+    vi.stubGlobal("fetch", fetchMock)
+    const { POST } = await import("@/app/api/trustedform/claim/route")
+    const res = await POST(
+      new NextRequest("http://localhost/api/trustedform/claim", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ certUrl: CERT, reference: "HL-1", email: "a@b.com" }),
+      }),
+    )
+    expect(res.status).toBe(200)
+    const sent = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(sent.reference).toBe("HL-1")
+    expect(sent.required_scan_terms.length).toBeGreaterThan(0)
+    for (const funnel of FUNNELS) {
+      const page = readFileSync(`app/${funnel}/page.tsx`, "utf8").replace(/\s+/g, " ")
+      for (const term of sent.required_scan_terms) {
+        expect(page, `${funnel} consent text must contain "${term}"`).toContain(term)
+      }
+    }
+  })
+})
+```
+
+(The `/business` funnel is deliberately not in the list: legal removed it, and the guard keeps it unchanged until the legal branch deletes it.)
+
+Run `pnpm vitest run app/api/leads/route.trustedform.test.ts app/api/trustedform`. Expected: the leads tests PASS (Step 4 already fixed the body); the claim test FAILS (current scan terms are found in no funnel).
+
+In `app/api/trustedform/claim/route.ts`, replace:
+
+```ts
+    // Add required TCPA scan terms
+    claimBody.required_scan_terms = [
+      'I agree to the terms',
+      'I consent to be contacted',
+    ]
+```
+
+with:
+
+```ts
+    // Phrases TrustedForm must find on the page the consumer saw. Each appears
+    // verbatim in the approved consent text of every live funnel (pinned by
+    // app/api/trustedform/claim/route.test.ts); keep them in sync with legal's text.
+    claimBody.required_scan_terms = [
+      'consent to be contacted by Holy Impact Media',
+      'Reply STOP to opt out of SMS',
+    ]
+```
+
+Re-run: all PASS. Positive control: change one term to `'I agree to the terms'`, re-run, expect FAIL naming the funnel; restore.
+
+Add `app/api/trustedform/claim/route.ts` and both new test files to this task's commit.
+
+- [ ] **Step 7b: Unsubscribe test first**
 
 Create `app/api/unsubscribe/route.test.ts`:
 
@@ -1007,6 +1163,6 @@ Expected: `no importers left`.
 
 ```bash
 pnpm exec tsc --noEmit && pnpm test && pnpm lint && pnpm check:guards && pnpm build
-git add app/api/leads app/api/unsubscribe lib/ai/scoreLeadWithAI.ts lib/usha/postLead.ts lib/types/lead.ts lib/time/ranges.ts
-git commit -m "feat(leads): intake, unsubscribe, scoring and USHA status on Neon with TCPA parity; escape unsubscribe page"
+git add app/api/leads app/api/unsubscribe app/api/trustedform lib/ai/scoreLeadWithAI.ts lib/usha/postLead.ts lib/types/lead.ts lib/time/ranges.ts
+git commit -m "feat(leads): intake, unsubscribe, scoring and USHA status on Neon with TCPA parity; fix TrustedForm claim; escape unsubscribe page"
 ```

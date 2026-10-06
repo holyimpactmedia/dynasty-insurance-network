@@ -28,13 +28,23 @@ npx neonctl@latest auth
 
 Then confirm the project is visible: `npx neonctl@latest projects list`. If more than one project is listed, ask the owner which one holds the Dynasty database and pass `--project-id <id>` to every later `neonctl` command.
 
+Find the production branch's real name (newer Neon projects call it `production`, older ones `main`):
+
+```bash
+npx neonctl@latest branches list
+```
+
+The production branch is the one marked default (and the one whose endpoint host matches the host in `.env.local`'s `DATABASE_URL`; compare hosts with `grep '^DATABASE_URL=' .env.local | grep -o '@[^/:?]*'`, which prints the host name only, never the credentials before the `@`). Use that name as `<PROD_BRANCH>` here and in Task 12; record it in `docs/build-log.md`.
+
 - [ ] **Step 3: Create the preview branch**
 
 ```bash
-npx neonctl@latest branches create --name preview --parent main
+npx neonctl@latest branches create --name preview --parent <PROD_BRANCH>
 ```
 
 It starts as a copy-on-write copy of production (the two real accounts and one test lead). Nothing written to it reaches `main`.
+
+(Wherever a later command in this task or Task 12 says `main` for the Neon branch, use `<PROD_BRANCH>`.)
 
 - [ ] **Step 4: Verify its schema, read-only**
 
@@ -120,7 +130,7 @@ Start `preview_start` name `dev`. In the browser pane (localhost, test credentia
 1. `/api/health` returns `{"status":"ok","provider":"neon"}`.
 2. Sign in as `test-superadmin@dynasty.test`: dashboard loads in the Dynasty look; nav shows Lead CRM, Projections, Users, Settings.
 3. Submit one test lead through each funnel (`/individual`, `/family`, `/cobra`, `/ppo`, `/self-employed`, `/business`) using `@dynasty.test` addresses and the PPO funnel with a priority picked. Each shows its normal thank-you screen.
-4. Within 15 seconds each lead appears on the dashboard without reloading; open one in the drawer; CSV export downloads `dynasty-leads-YYYY-MM-DD.csv`.
+4. Within 30 seconds each lead appears on the dashboard without reloading (or immediately on switching back to the tab); open one in the drawer; CSV export downloads `dynasty-leads-YYYY-MM-DD.csv`.
 5. Users page: invite `invitee@dynasty.test` as admin; expect the amber "Account created, but the invite email was not sent" (email is off locally) and the user in the list.
 6. Settings: switch Projections off; the nav entry disappears and `/dashboard/projections` redirects to `/dashboard/admin`; switch it back on.
 7. Sign out; sign in as `test-admin@dynasty.test`: no Users or Settings in the nav; `/dashboard/users` and `/dashboard/settings` redirect away.
@@ -128,6 +138,8 @@ Start `preview_start` name `dev`. In the browser pane (localhost, test credentia
    `await fetch("/api/auth/update-user",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({role:"superadmin"})}).then(r=>r.status)` expect 400;
    `await fetch("/api/auth/admin/set-role",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({userId:"x",role:"superadmin"})}).then(r=>r.status)` expect 401 or 403.
 9. `/auth/reset-password?token=bad&error=INVALID_TOKEN` shows the expired-link message (Review Focus 5).
+
+Record the two status codes from item 8 and the role query result below in `docs/build-log.md` under today's date as the self-promotion evidence (senior review).
 
 Then the parity check on the stored rows (Review Focus 2), read-only:
 
@@ -175,7 +187,8 @@ grep '^RESEND_API_KEY=' .env.local | cut -d= -f2- | tr -d '\n' | vercel --scope 
 1. `curl -s https://<ALIAS>/api/health` returns `{"status":"ok","provider":"neon"}`.
 2. Owner action (their own account; Claude never types their password): open `https://<ALIAS>/auth/forgot-password`, request a reset for their email, use the emailed link, set a password, sign in. Confirm the dashboard and the six test leads from Step 7.
 3. Owner submits one lead through any funnel with their own email: the consumer confirmation email and the admin notification email arrive; the lead appears on the dashboard.
-4. Screenshot (Claude, read-only): `/auth/login`, a funnel thank-you page, desktop and mobile.
+4. Owner, on the Users page, invites a second address they control: the green "Invite sent" appears, the invite email arrives, its link opens the set-password page, and the new account can sign in (proves the invite-sent signal is accurate on a real deployment).
+5. Screenshot (Claude, read-only): `/auth/login`, a funnel thank-you page, desktop and mobile.
 
 - [ ] **Step 11: Commit the test-user script**
 
