@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     "private health coverage",
     "health coverage with PPO network access",
     "health coverage with provider choice",
-    "COBRA alternative",
     "self-employed health coverage",
     "private health coverage for healthy adults",
     "Dynasty Insurance Group",

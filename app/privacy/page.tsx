@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-muted-foreground leading-relaxed mb-2">We use the information we collect to:</p>
             <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
               <li>Connect you with licensed insurance agents who can present coverage options</li>
-              <li>Provide private health insurance plan recommendations</li>
+              <li>Provide private health coverage recommendations</li>
               <li>Communicate with you about insurance products and follow up on your inquiry</li>
               <li>Respond to your inquiries and provide customer support</li>
               <li>Improve the Site and our services</li>
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold mb-3">4. Information Sharing and Disclosure</h2>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Lead Recipients:</strong> Holy Impact Media shares your information
-              with Dynasty Insurance Group, operated by licensed independent insurance agents, and the US Health Advisors agent
+              with Dynasty Insurance Group, operated by licensed independent insurance agents, and the USHEALTH Advisors, LLC agent
               network so that licensed agents can present you with coverage options. Compensation we receive for
               providing qualified leads is described in our Terms of Use.
             </p>
@@ -94,7 +94,7 @@ export default function PrivacyPolicyPage() {
             <h3 className="text-xl font-semibold mb-2 mt-4">4.1 Licensed Insurance Agents</h3>
             <p className="text-muted-foreground leading-relaxed">
               We share your information with licensed insurance agents and brokers who can help you evaluate and
-              enroll in private health insurance plans. Those agents are independent contractors or employees who are
+              enroll in private health coverage. Those agents are independent contractors or employees who are
               licensed in the state where you reside.
             </p>
 

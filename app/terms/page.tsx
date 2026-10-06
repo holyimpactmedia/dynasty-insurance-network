@@ -157,7 +157,7 @@ export default function TermsOfUsePage() {
               Protection Act (TCPA), the Florida Telephone Solicitation Act (FTSA), and any other applicable state
               telemarketing laws to be contacted by Holy Impact Media and its licensed insurance partners (including
               licensed insurance agents associated with Dynasty Insurance Group, USHEALTH Advisors, LLC and USHEALTH
-              Group, Inc.) at the number you have provided, and that such contact shall be made by telephone calls,
+              Group, Inc.) at the number you have provided and that such contact shall be made by telephone calls,
               text messages (including via automated telephone dialing system or prerecorded voice message), and email
               regarding health coverage options. Consent is not required as a condition of any purchase. You may revoke consent at any
               time by replying STOP to a text, replying STOP or unsubscribing from email, or emailing
@@ -215,9 +215,9 @@ export default function TermsOfUsePage() {
               and resolved under AAA&apos;s Mass Arbitration Supplementary Rules.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-3">
-              <strong className="text-foreground">Third-Party Beneficiaries.</strong> Dynasty Insurance Group,
+              <strong className="text-foreground">Third Party Beneficiaries.</strong> Dynasty Insurance Group,
               USHEALTH Group, Inc., USHEALTH Advisors, LLC, their affiliates and its independent insurance advisors
-              are express and intended third-party beneficiaries of this agreement to arbitrate and shall have the
+              are express and intended third party beneficiaries of this agreement to arbitrate and shall have the
               right to enforce it against you to the same extent as if they were a party to this agreement.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-3">

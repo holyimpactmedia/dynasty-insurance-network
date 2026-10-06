@@ -363,9 +363,7 @@ export default function COBRAQuizPage() {
 
                     {/* Disclaimer */}
                     <p className="text-xs text-center text-muted-foreground px-4">
-                      By submitting this form, you consent to be contacted by licensed insurance agents about coverage
-                      options. Consent is not a condition of purchase. Actual premiums depend on age, location, and plan
-                      selection.
+                      Actual premiums depend on age, location, and plan selection.
                     </p>
                   </div>
             ) : currentStep === 0 ? (
@@ -572,7 +570,7 @@ export default function COBRAQuizPage() {
                     <div className="grid gap-3">
                       {[
                         { value: "just-received", label: "Just got the COBRA notice", desc: "Recently lost job coverage" },
-                        { value: "on-cobra-expensive", label: "Currently on COBRA, too expensive", desc: "Actively paying COBRA now" },
+                        { value: "on-cobra-expensive", label: "Currently on COBRA", desc: "Actively paying COBRA now" },
                         { value: "cobra-ending", label: "COBRA ending in 60 days", desc: "Approaching the 18-month limit" },
                         { value: "exploring", label: "Exploring options before deciding", desc: "Haven't signed up for COBRA yet" },
                       ].map((option) => (

@@ -41,7 +41,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/cobra" className="text-gray-400 hover:text-white transition-colors">
-                  COBRA Alternatives
+                  Coverage After Job Loss
                 </Link>
               </li>
               <li>

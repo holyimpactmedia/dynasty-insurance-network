@@ -359,11 +359,6 @@ export default function SelfEmployedPage() {
                     </div>
                   </Card>
                 </motion.div>
-
-                <p className="text-xs text-center text-muted-foreground px-4">
-                  By submitting this form, you agree to be contacted by licensed insurance agents about coverage options.
-                  Consent is not a condition of purchase.
-                </p>
               </div>
 
             ) : currentStep === 0 ? (

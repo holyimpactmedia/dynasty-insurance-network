@@ -472,8 +472,7 @@ export default function FamilyQuizPage() {
                 </motion.div>
 
                 <p className="text-xs text-center text-muted-foreground px-4">
-                  By submitting this form, you agree to be contacted by licensed insurance agents. Coverage estimates
-                  are illustrative only. Actual premiums depend on age, location, and plan selection.
+                  Coverage estimates are illustrative only. Actual premiums depend on age, location, and plan selection.
                 </p>
               </div>
 
@@ -1105,10 +1104,6 @@ export default function FamilyQuizPage() {
                     </span>
                   )}
                 </Button>
-
-                <p className="text-xs text-center text-muted-foreground">
-                  By submitting, you agree to be contacted by licensed insurance agents about coverage options. Consent is not a condition of purchase.
-                </p>
               </div>
 
             ) : null}

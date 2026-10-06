@@ -688,7 +688,7 @@ export default function PPOQuizPage() {
                     <div className="space-y-3">
                       {[
                         { label: "I have an HMO or narrow-network plan", value: "hmo" },
-                        { label: "I currently have no health insurance", value: "uninsured" },
+                        { label: "I currently have no health coverage", value: "uninsured" },
                         { label: "I'm currently on COBRA", value: "cobra" },
                         { label: "I have employer coverage but want better options", value: "employer" },
                         { label: "I'm self-employed or between jobs", value: "self_employed" },
