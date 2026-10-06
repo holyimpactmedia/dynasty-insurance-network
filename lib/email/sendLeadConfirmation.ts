@@ -57,7 +57,7 @@ export async function sendLeadConfirmation({
                 Hi ${firstName},
               </p>
               <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
-                You recently requested health coverage information through Holy Impact Media. We've matched you with a licensed specialist at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
+                You recently requested health coverage information through Holy Impact Media. We've matched you with a licensed agent at Dynasty Insurance Group, who will contact you within 5 minutes on business days at the phone number or email you provided.
               </p>
               
               <!-- Reference Number Box -->
@@ -98,7 +98,7 @@ export async function sendLeadConfirmation({
                         </td>
                         <td style="padding-left: 12px;">
                           <p style="margin: 0; color: #333333; font-weight: 600;">Within 2 Hours</p>
-                          <p style="margin: 4px 0 0 0; color: #666666; font-size: 14px;">A licensed specialist will call you to discuss your personalized options</p>
+                          <p style="margin: 4px 0 0 0; color: #666666; font-size: 14px;">A licensed agent will call you to discuss your personalized options</p>
                         </td>
                       </tr>
                     </table>

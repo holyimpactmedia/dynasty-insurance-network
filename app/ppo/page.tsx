@@ -49,7 +49,7 @@ const COVERAGE_GAPS = [
 
 const HMO_PROBLEMS = [
   "Restricted to narrow networks, your doctor may not be covered",
-  "Need referrals just to see a specialist",
+  "Referrals often required just to see a specialist",
   "Deductibles that must be met before some benefits apply",
   "Limited coverage outside your plan's service area",
   "Limited plan options in rural areas",
@@ -267,9 +267,9 @@ export default function PPOQuizPage() {
               </p>
               <div className="space-y-3 text-left max-w-xl mx-auto">
                 {[
-                  "Your current plan makes you get a referral just to see a specialist.",
-                  "Your premium climbs every renewal but your network keeps shrinking.",
-                  "Your plan charges you full price until you hit a deductible you never reach.",
+                  "Your current plan may require a referral just to see a specialist.",
+                  "Your premium may climb at renewal while your network shrinks.",
+                  "You may pay full price for care until you meet a deductible you rarely reach.",
                 ].map((q, i) => (
                   <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                     <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -311,11 +311,11 @@ export default function PPOQuizPage() {
             <div className="max-w-4xl mx-auto space-y-12">
               <div className="text-center space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                  HMO Plans Were Built for Insurance Companies. Not for You.
+                  HMO Plans Can Put Limits Between You and Your Doctor.
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Every restriction in your HMO plan saves them money. Referrals. Narrow networks.
-                  Prior authorizations. Pre-auth delays. Private health coverage can remove much of that.
+                  Many HMO plans manage costs with referrals, narrow networks, and prior authorizations.
+                  Private health coverage that accesses a PPO network may reduce some of that.
                 </p>
               </div>
 

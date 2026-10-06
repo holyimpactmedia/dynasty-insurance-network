@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 
 const TITLE = "Private Family Health Coverage"
 const DESC =
-  "Private health coverage for working households that can access a PPO network. Keep your doctors, explore specialist options, and review coverage for your whole family with a licensed agent."
+  "Private health coverage for working households that can access a PPO network. You may be able to keep your doctors, explore specialist options, and review coverage for your whole family with a licensed agent."
 const SHORT_DESC =
-  "Private family health coverage that can access a PPO network. Keep your doctors. Free consultation."
+  "Private family health coverage that can access a PPO network. You may keep your doctors. Free consultation."
 
 export const metadata: Metadata = {
   title: TITLE,

@@ -66,7 +66,6 @@ const funnels = [
       "Private health coverage for healthy adults",
       "Options a licensed agent can walk you through",
       "Access to a PPO network",
-      "Loss-of-coverage qualifying event for enrollment",
     ],
     cta: "Find Coverage Options",
     ctaStyle: "bg-red-600 text-white hover:bg-red-700",
@@ -140,7 +139,7 @@ export default function PlansPage() {
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto text-pretty leading-relaxed">
               Private health coverage for healthy adults and families <span className="text-[#D4AF37] font-semibold">under 65</span>.
-              Keep your doctor, access a PPO network, and explore your options with a licensed agent.
+              You may be able to keep your doctor, access a PPO network, and explore your options with a licensed agent.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400 pt-2">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-400" /> Concierge Service</span>
@@ -156,7 +155,7 @@ export default function PlansPage() {
             <div className="text-center mb-12 space-y-3">
               <h2 className="text-3xl font-bold text-foreground">Choose Your Coverage Type</h2>
               <p className="text-muted-foreground text-lg">
-                Answer a few quick questions and get matched with a licensed specialist.
+                Answer a few quick questions and get matched with a licensed agent.
               </p>
             </div>
 
@@ -254,7 +253,7 @@ export default function PlansPage() {
           <div className="max-w-2xl mx-auto text-center space-y-5">
             <h2 className="text-3xl font-bold">Not Sure Which Plan Type You Need?</h2>
             <p className="text-gray-300">
-              Start with our individual coverage quiz and our specialists will match you to the right plan.
+              Start with our individual coverage quiz and a licensed agent will help you find the right plan.
             </p>
             <Button asChild size="lg" className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90 font-bold h-14 px-10">
               <Link href="/individual">

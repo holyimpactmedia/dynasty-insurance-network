@@ -38,7 +38,7 @@ import {
   parseHouseholdSize,
 } from "@/lib/income-thresholds"
 const FAMILY_COVERAGE_ITEMS = [
-  { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Routine checkups, vaccines, and specialist visits for kids" },
+  { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Checkups, vaccines, and specialist visits for kids, though not all plans include preventive care" },
   { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "See specialists in the plan network, often without a referral" },
   { icon: <Globe className="w-5 h-5" />, label: "PPO Network Access", desc: "Coverage that can access a broad PPO network of providers" },
   { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "Emergency room care may be covered under your plan" },
@@ -50,7 +50,6 @@ const FAMILY_PROBLEMS = [
   "Employer family coverage can carry high monthly premiums with limited networks",
   "Narrow networks mean your pediatrician may not be covered",
   "High deductibles can leave families exposed to unexpected bills",
-  "Kids aging off your plan at 26 with limited private options",
   "Regional coverage limits can leave your family with gaps when traveling",
   "Many plans may not include dental and vision options for your family",
 ]
@@ -493,13 +492,13 @@ export default function FamilyQuizPage() {
                       Private Family Health Coverage That <span className="text-[#D4AF37]">Fits Your Family</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Private health coverage for working families that can access a PPO network. Keep your doctors and explore specialist options for your household.
+                      Private health coverage for working families that can access a PPO network. You may be able to keep your doctors and explore specialist options for your household.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Families paying high monthly premiums for narrow-network plans they can barely use.",
-                        "Pediatricians and specialists who suddenly aren't in-network when you need them most.",
-                        "Employer family coverage with deductibles so high one ER visit wipes out your savings.",
+                        "Families may be paying high monthly premiums for narrow-network plans.",
+                        "Pediatricians and specialists who may not be in-network when you need them.",
+                        "Employer family coverage with deductibles that can be high enough to strain your savings.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -524,7 +523,7 @@ export default function FamilyQuizPage() {
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
                       { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Access to a PPO network" },
-                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Keep your doctors" },
+                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "You may keep your doctors" },
                       { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "See specialists in-network" },
                       { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free consultation" },
                     ].map((item, i) => (
@@ -799,7 +798,7 @@ export default function FamilyQuizPage() {
                 <div className="text-center space-y-2">
                   <p className="text-sm font-medium text-[#D4AF37] uppercase tracking-wide">Step 3 of {TOTAL_STEPS}</p>
                   <h2 className="text-3xl font-bold text-foreground">A Couple Quick Qualifying Questions</h2>
-                  <p className="text-muted-foreground">Helps us route you to the right specialist</p>
+                  <p className="text-muted-foreground">Helps us route you to the right licensed agent</p>
                 </div>
 
                 <div className="space-y-6 max-w-md mx-auto w-full">
@@ -1052,7 +1051,7 @@ export default function FamilyQuizPage() {
                 <div className="text-center space-y-2">
                   <p className="text-sm font-medium text-[#D4AF37] uppercase tracking-wide">Last Step</p>
                   <h2 className="text-3xl font-bold text-foreground">Almost done. What&apos;s your name?</h2>
-                  <p className="text-muted-foreground">Your specialist will greet you personally</p>
+                  <p className="text-muted-foreground">Your licensed agent will greet you personally</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>

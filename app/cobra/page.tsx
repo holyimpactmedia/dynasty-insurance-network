@@ -751,7 +751,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">Where should we send your options?</h2>
-                      <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
+                      <p className="text-muted-foreground">A licensed agent will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -879,7 +879,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">Almost there. What&apos;s your name?</h2>
-                      <p className="text-muted-foreground">So your specialist can personalize your options.</p>
+                      <p className="text-muted-foreground">So your licensed agent can personalize your options.</p>
                     </div>
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

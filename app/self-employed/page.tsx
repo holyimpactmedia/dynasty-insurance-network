@@ -45,7 +45,7 @@ const SE_PROBLEMS = [
   "No employer contribution. You pay 100% of premiums alone.",
   "Narrow networks that limit your doctor choices",
   "Referral requirements that slow down your care",
-  "Regional plans that do not work when you travel for business",
+  "Regional plans that may not work when you travel for business",
   "Generic plans not designed for entrepreneurs and contractors",
   "Lack of flexibility to match your actual healthcare needs",
 ]
@@ -297,7 +297,7 @@ export default function SelfEmployedPage() {
                     You&apos;re in great hands, {answers.firstName}.
                   </h1>
                   <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                    A self-employed coverage specialist will contact you within 5 minutes.
+                    A licensed agent will contact you within 5 minutes.
                   </p>
                 </div>
 
@@ -311,14 +311,14 @@ export default function SelfEmployedPage() {
                           bg: "bg-green-100",
                           title: "Right Now",
                           badge: { text: "Complete", cls: "bg-green-100 text-green-700" },
-                          desc: "Your information has been securely submitted. We're matching you with self-employed plan specialists in your state.",
+                          desc: "Your information has been securely submitted. We're matching you with licensed agents in your state.",
                         },
                         {
                           icon: <Clock className="w-6 h-6 text-[#D4AF37]" />,
                           bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
                           title: "Within 5 Minutes",
                           badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
-                          desc: "A self-employed coverage specialist will call or email you with plan options tailored to your income and priorities.",
+                          desc: "A licensed agent will call or email you with plan options tailored to your income and priorities.",
                           extra: (
                             <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg mt-2">
                               <Mail className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -334,7 +334,7 @@ export default function SelfEmployedPage() {
                           bg: "bg-gray-100",
                           title: "Next Steps",
                           badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                          desc: "Your specialist will walk you through private health coverage options and conduct a needs analysis with you.",
+                          desc: "Your licensed agent will walk you through private health coverage options and conduct a needs analysis with you.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="flex gap-4">
@@ -382,9 +382,9 @@ export default function SelfEmployedPage() {
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "You shop solo. Premiums keep climbing while networks keep shrinking.",
-                        "You cross state lines for clients. Your plan stops at the border.",
-                        "You want coverage that keeps up with your business. Generic plans do not.",
+                        "You shop solo. Premiums may climb while networks shrink.",
+                        "You cross state lines for clients. A regional plan may not go with you.",
+                        "You want coverage that keeps up with your business. Generic plans may not.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -429,8 +429,8 @@ export default function SelfEmployedPage() {
                         You Run Your Own Business. Your Health Plan Should Match.
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        Generic narrow-network plans are built for people who sit in one office and see one doctor.
-                        You do not. Private health coverage with access to a PPO network can give you broader doctor
+                        Narrow-network plans may suit people who stay in one place and see one doctor. If that is
+                        not you, private health coverage with access to a PPO network can give you broader doctor
                         choice and coverage that travels with your business.
                       </p>
                     </div>
@@ -567,7 +567,7 @@ export default function SelfEmployedPage() {
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is licensed in your state." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
-                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
                         { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Carefully", desc: "Your details go to our licensed insurance partners so they can contact you about coverage options." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
@@ -816,7 +816,7 @@ export default function SelfEmployedPage() {
                     </div>
                     {answers.govCoverage === "Yes" && (
                       <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2 mt-2">
-                        Our private health coverage is designed for self-employed adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
+                        Our private health coverage is designed for self-employed adults not currently enrolled in Medicaid or Medicare. A licensed agent can still walk you through your options.
                       </p>
                     )}
                     {errors.govCoverage && <p className="text-red-500 text-xs mt-1">{errors.govCoverage}</p>}
@@ -880,7 +880,7 @@ export default function SelfEmployedPage() {
                   <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
                     Last step: what&apos;s your name?
                   </h2>
-                  <p className="text-muted-foreground">So your specialist can greet you personally.</p>
+                  <p className="text-muted-foreground">So your licensed agent can greet you personally.</p>
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

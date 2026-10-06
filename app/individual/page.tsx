@@ -49,17 +49,17 @@ const INDIV_COVERAGE_ITEMS = [
 ]
 
 const INDIV_PROBLEMS = [
-  "Your premiums keep climbing every year while your plan covers less and less",
-  "Narrow networks force you to get referrals just to see a specialist",
-  "The doctors and hospitals you actually want are not in your network",
-  "Deductibles are so high you end up paying out-of-pocket for everything anyway",
-  "You travel or work across state lines, but your plan barely works at home",
-  "You are healthy but stuck overpaying for benefits you do not use",
+  "Your premiums may keep climbing while your plan covers less",
+  "Narrow networks can require referrals just to see a specialist",
+  "The doctors and hospitals you want may not be in your network",
+  "Deductibles can be high enough that you pay out-of-pocket for most care",
+  "If you travel or work across state lines, a regional plan may not go with you",
+  "You may be paying for benefits you do not use",
 ]
 
 const INDIV_ADVANTAGES = [
   "Private health coverage for adults who want real choice",
-  "Keep your doctors and see specialists, often without a referral",
+  "You may be able to keep your doctors and see specialists, often without a referral",
   "Access to a PPO network, depending on availability in your state",
   "PPO network coverage at participating hospitals and physicians",
   "Plan options that may offer broader network access, depending on the plan",
@@ -342,7 +342,7 @@ export default function HealthcareQuizPage() {
                           {"You're all set, "}{answers.firstName}{"."}
                         </h1>
                         <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                          A licensed specialist is reviewing your profile right now. They will reach out
+                          A licensed agent is reviewing your profile right now. They will reach out
                           within 5 minutes with private health coverage options built for your situation.
                         </p>
                       </div>
@@ -361,11 +361,11 @@ export default function HealthcareQuizPage() {
                             Your Private Coverage Options Are Ready
                           </div>
                           <p className="text-lg leading-relaxed">
-                            Your specialist is curating private health coverage options tailored to your coverage needs, preferred
+                            Your licensed agent is curating private health coverage options tailored to your coverage needs, preferred
                             physicians, and lifestyle, with network details explained.
                           </p>
                           <p className="text-xs opacity-80">
-                            A licensed specialist will walk you through your options on your call.
+                            A licensed agent will walk you through your options on your call.
                           </p>
                         </div>
                       </Card>
@@ -423,7 +423,7 @@ export default function HealthcareQuizPage() {
                                   </span>
                                 </div>
                                 <p className="text-sm text-muted-foreground mb-2">
-                                  A licensed healthcare specialist will review your application and prepare personalized
+                                  A licensed insurance agent will review your application and prepare personalized
                                   plan options.
                                 </p>
                                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg">
@@ -459,7 +459,7 @@ export default function HealthcareQuizPage() {
                                   <div className="space-y-2 text-xs bg-blue-50 p-3 rounded-lg border border-blue-200">
                                     <p className="font-medium text-blue-900">📱 Watch for our call</p>
                                     <p className="text-blue-700">
-                                      Your specialist will call from a US number within 5 minutes. Answer the phone or save the call to keep your spot in line.
+                                      Your licensed agent will call from a US number within 5 minutes. Answer the phone or save the call to keep your spot in line.
                                     </p>
                                   </div>
                                 )}
@@ -478,8 +478,7 @@ export default function HealthcareQuizPage() {
                                   <h3 className="font-semibold text-foreground">After Your Call</h3>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                  Complete a simple enrollment form and your coverage can start as soon as the 1st of
-                                  next month.
+                                  Complete a simple enrollment form. Your licensed agent explains when coverage can begin.
                                 </p>
                               </div>
                             </div>
@@ -561,8 +560,7 @@ export default function HealthcareQuizPage() {
                               <span>When does coverage actually start?</span>
                             </h4>
                             <p className="text-sm text-muted-foreground pl-6">
-                              Coverage begins on the 1st of the month following your enrollment. If you enroll before
-                              the 15th, coverage can start the next month.
+                              Start dates vary by plan and carrier. Your licensed agent explains when coverage can begin.
                             </p>
                           </div>
 
@@ -579,10 +577,10 @@ export default function HealthcareQuizPage() {
                           <div className="border-t pt-4 space-y-2">
                             <h4 className="font-medium text-foreground text-sm flex items-start gap-2">
                               <span className="text-[#D4AF37]">Q:</span>
-                              <span>How is your specialist compensated?</span>
+                              <span>How is your licensed agent compensated?</span>
                             </h4>
                             <p className="text-sm text-muted-foreground pl-6">
-                              Your specialist is paid by our licensed insurance partners, never by you. Premiums are
+                              Your licensed agent is paid by our licensed insurance partners, never by you. Premiums are
                               identical whether you work with us or not, you simply gain a private advisor.
                             </p>
                           </div>
@@ -666,7 +664,7 @@ export default function HealthcareQuizPage() {
                       <div className="relative max-w-3xl mx-auto text-center space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                           <Award className="w-4 h-4" />
-                          Licensed Independent Insurance Specialists
+                          Licensed Independent Insurance Agents
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
                           Private Health Coverage Built for <span className="text-[#D4AF37]">Working Adults</span>
@@ -676,9 +674,9 @@ export default function HealthcareQuizPage() {
                         </p>
                         <div className="space-y-3 text-left max-w-xl mx-auto">
                           {[
-                            "Premiums climbing every year on a plan that covers less than it used to.",
-                            "Narrow networks that make you beg for a referral just to see a specialist.",
-                            "Deductibles so high you end up paying out-of-pocket for everything anyway.",
+                            "Premiums that may climb year after year on a plan that covers less.",
+                            "Narrow networks that can require a referral just to see a specialist.",
+                            "Deductibles that can be high enough to leave you paying out-of-pocket for most care.",
                           ].map((q, i) => (
                             <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                               <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -694,7 +692,7 @@ export default function HealthcareQuizPage() {
                           Find My Plan - Free
                           <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
-                        <p className="text-gray-400 text-xs">90 seconds. No cost. Real licensed specialists.</p>
+                        <p className="text-gray-400 text-xs">90 seconds. No cost. Real licensed agents.</p>
                       </div>
                     </section>
 
@@ -704,7 +702,7 @@ export default function HealthcareQuizPage() {
                         {[
                           { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "PPO network access" },
                           { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Often no referrals" },
-                          { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "Keep your doctors" },
+                          { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "You may keep your doctors" },
                           { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free licensed agent consultation" },
                         ].map((item, i) => (
                           <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
@@ -720,10 +718,10 @@ export default function HealthcareQuizPage() {
                       <div className="max-w-4xl mx-auto space-y-12">
                         <div className="text-center space-y-4">
                           <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                            Most Plans Look Good on Paper. Then You Try to Use Them.
+                            Many Plans Look Good on Paper. Then You Try to Use Them.
                           </h2>
                           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                            Narrow networks. Mandatory referrals. Deductibles you never hit. Many people do not realize
+                            Narrow networks. Mandatory referrals. Deductibles you may never hit. Many people do not realize
                             how limited their coverage is until they need it most. Private health coverage can help with many of these issues.
                           </p>
                         </div>
@@ -736,7 +734,7 @@ export default function HealthcareQuizPage() {
                                 </div>
                                 <div>
                                   <p className="text-xs text-red-500 font-semibold uppercase tracking-wide">The Reality</p>
-                                  <h3 className="font-bold text-foreground">What Most Americans Face</h3>
+                                  <h3 className="font-bold text-foreground">What Many People Face</h3>
                                 </div>
                               </div>
                               <ul className="space-y-3">
@@ -821,7 +819,7 @@ export default function HealthcareQuizPage() {
                             {
                               step: "3",
                               title: "Pick and Enroll",
-                              desc: "Choose the plan you want. Enroll in minutes. Coverage starts the 1st of next month.",
+                              desc: "Choose the plan you want and enroll. Your licensed agent explains when coverage can begin.",
                             },
                           ].map((item, i) => (
                             <div key={i} className="text-center space-y-4 max-w-xs mx-auto md:max-w-none">
@@ -861,7 +859,7 @@ export default function HealthcareQuizPage() {
                           {[
                             { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                             { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid by our licensed insurance partners." },
-                            { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
+                            { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
                             { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Protected", desc: "Your information is shared with our licensed insurance partners so they can contact you about coverage options." },
                           ].map((item, i) => (
                             <div key={i} className="flex items-start gap-4">
@@ -883,7 +881,7 @@ export default function HealthcareQuizPage() {
                       <div className="max-w-2xl mx-auto text-center space-y-6">
                         <h2 className="text-3xl font-bold text-foreground">Stop Settling. Get Coverage That Actually Works.</h2>
                         <p className="text-muted-foreground text-lg leading-relaxed">
-                          90 seconds. Free. No obligation. A real licensed specialist calls you.
+                          90 seconds. Free. No obligation. A real licensed agent calls you.
                         </p>
                         <Button
                           onClick={nextStep}
@@ -981,7 +979,7 @@ export default function HealthcareQuizPage() {
                   <div className="space-y-8">
                     <div className="text-center space-y-4">
                       <h2 className="text-3xl md:text-4xl font-bold text-foreground">A Couple Quick Qualifying Questions</h2>
-                      <p className="text-muted-foreground">This makes sure we route you to the right specialist</p>
+                      <p className="text-muted-foreground">This makes sure we route you to the right licensed agent</p>
                     </div>
 
                     <div className="space-y-6 max-w-md mx-auto">
@@ -997,7 +995,7 @@ export default function HealthcareQuizPage() {
                             if (age >= 64) {
                               setErrors({
                                 ...errors,
-                                age: "At 64+, you may qualify for Medicare options. Our private health coverage is designed for adults under 65. We can refer you to a licensed Medicare specialist.",
+                                age: "At 64+, you may qualify for Medicare options. Our private health coverage is designed for adults under 65. We can refer you to a licensed Medicare agent.",
                               })
                             } else {
                               setErrors({ ...errors, age: "" })
@@ -1154,10 +1152,10 @@ export default function HealthcareQuizPage() {
                       </p>
                       <Card className="p-4 bg-yellow-50 border-yellow-300 max-w-md mx-auto">
                         <p className="text-sm text-foreground font-medium">
-                          This helps your specialist match you to the right coverage tier and service level.
+                          This helps your licensed agent match you to the right coverage tier and service level.
                         </p>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Best estimate is fine. Your specialist will walk you through every detail on your call.
+                          Best estimate is fine. Your licensed agent will walk you through the details on your call.
                         </p>
                       </Card>
                     </div>
@@ -1381,10 +1379,10 @@ export default function HealthcareQuizPage() {
                         disabled={isSubmitting}
                         className="w-full h-12 bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90 mt-6 disabled:opacity-50"
                       >
-                        {isSubmitting ? "Submitting..." : "Match Me With a Licensed Specialist"}
+                        {isSubmitting ? "Submitting..." : "Match Me With a Licensed Agent"}
                       </Button>
                       <p className="text-xs text-muted-foreground text-center">
-                        Your specialist will walk you through real plan options on your call. Final premiums are quoted
+                        Your licensed agent will walk you through real plan options on your call. Final premiums are quoted
                         by the carrier.
                       </p>
                     </div>
