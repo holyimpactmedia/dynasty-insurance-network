@@ -455,7 +455,7 @@ export default function PPOQuizPage() {
                   { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
                   { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
                   { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
-                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "Your information goes to our licensed insurance partners so a licensed agent can contact you about coverage options." },
+                  { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "This website is operated by Holy Impact Media, a marketing company, which routes your information to licensed insurance agents so they can contact you about coverage options. See our Privacy Policy." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 bg-white/5 rounded-xl p-4">
                     <div className="w-10 h-10 bg-[#D4AF37]/20 rounded-lg flex items-center justify-center text-[#D4AF37] flex-shrink-0">

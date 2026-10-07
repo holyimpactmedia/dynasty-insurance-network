@@ -568,7 +568,7 @@ export default function SelfEmployedPage() {
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is licensed in your state." },
                         { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
                         { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Carefully", desc: "Your details go to our licensed insurance partners so they can contact you about coverage options." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Carefully", desc: "This website is operated by Holy Impact Media, a marketing company, which routes your information to licensed insurance agents so they can contact you about coverage options. See our Privacy Policy." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">
