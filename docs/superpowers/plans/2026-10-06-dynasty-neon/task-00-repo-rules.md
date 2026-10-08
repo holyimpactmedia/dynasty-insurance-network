@@ -94,7 +94,7 @@ As of 2026-10-06
 ## Keys owed
 - Neon CLI sign-in for the preview branch (slice 11).
 - Neon plan, restore window and compute allowance confirmation (slice 12).
-- Counsel's answers to the open questions in the coverage doc.
+- Counsel's sign-off on the legal preview.
 ```
 
 - [ ] **Step 3: Start `docs/build-log.md`**

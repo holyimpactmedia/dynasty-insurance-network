@@ -7,7 +7,7 @@ Part of [docs/plan.md](../../../plan.md). Read its Global Constraints first.
 2. The legal branch (`legal/dynasty-compliance`) has landed on `main` and this branch is rebased on it (the funnel files differ between the two; wiring them before legal lands would mean doing it twice).
 3. The owner approved, in chat, the copy-guard amendment below (Option A). Option B is the alternative if the owner wants the funnel files left byte-identical.
 
-**Goal:** Meta Pixel and Conversions API code that ships switched off. Nothing loads and nothing is sent to Meta unless `META_TRACKING_APPROVED` is exactly `"true"`, which is not set anywhere until legal answers the open question in counsel's coverage doc (what is sent: hashed email, phone, name and country; IP address and browser user agent unhashed; Meta cookies `fbp` and `fbc`; the page URL; the pixel also reports page views with URLs including UTM and click-ID parameters). The privacy policy is not edited here.
+**Goal:** Meta Pixel and Conversions API code that ships switched off. Nothing loads and nothing is sent to Meta unless `META_TRACKING_APPROVED` is exactly `"true"`, which is not set anywhere until legal approves Meta tracking. The owner decides whether and when to ask legal; it is not raised with counsel otherwise (owner rule, 2026-10-07: counsel is asked only about items counsel raised). What would be sent: hashed email, phone, name and country; IP address and browser user agent unhashed; Meta cookies `fbp` and `fbc`; the page URL; the pixel also reports page views with URLs including UTM and click-ID parameters. The privacy policy is not edited here.
 
 **Files:**
 - Create (copy verbatim): `lib/meta/hash.ts`, `lib/meta/meta.test.ts`
