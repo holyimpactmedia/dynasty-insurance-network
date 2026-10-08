@@ -11,7 +11,7 @@ export function Footer() {
           <div className="space-y-3">
             <img src="/images/logo.avif" alt="Dynasty" className="h-20 md:h-24 w-auto mx-auto md:mx-0" />
             <p className="text-sm text-gray-400">
-              Licensed insurance agents helping Americans find quality healthcare coverage.
+              Licensed insurance agents helping Americans find quality health coverage.
             </p>
           </div>
 
@@ -36,22 +36,17 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/ppo" className="text-gray-400 hover:text-white transition-colors">
-                  PPO Coverage
+                  Coverage Options
                 </Link>
               </li>
               <li>
                 <Link href="/cobra" className="text-gray-400 hover:text-white transition-colors">
-                  COBRA Alternatives
+                  Coverage After Job Loss
                 </Link>
               </li>
               <li>
                 <Link href="/self-employed" className="text-gray-400 hover:text-white transition-colors">
                   Self-Employed Coverage
-                </Link>
-              </li>
-              <li>
-                <Link href="/business" className="text-gray-400 hover:text-white transition-colors">
-                  Group Health Benefits
                 </Link>
               </li>
             </ul>
@@ -78,7 +73,7 @@ export function Footer() {
           <div className="space-y-3">
             <h3 className="font-semibold text-white">Get Started</h3>
             <p className="text-sm text-gray-400">
-              See your private PPO options in 90 seconds.
+              See your coverage options in 90 seconds.
             </p>
             <Link
               href="/individual"
@@ -101,8 +96,8 @@ export function Footer() {
             Holy Impact Media is not an insurance agency. Dynasty Insurance Group is operated by independent licensed
             insurance agents and is not affiliated with or endorsed by any government entity, Healthcare.gov, the Health
             Insurance Marketplace, or the Centers for Medicare &amp; Medicaid Services. Holy Impact Media connects
-            consumers with Dynasty Insurance Group and its licensed agents. We may receive compensation for leads
-            provided.
+            consumers with Dynasty Insurance Group and its licensed agents. We may receive compensation for the leads
+            we provide.
           </p>
         </div>
       </div>

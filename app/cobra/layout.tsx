@@ -1,11 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
 
-const TITLE = "COBRA Alternatives That Can Cost Half"
+const TITLE = "Private Health Coverage After Job Loss"
 const DESC =
-  "Healthy adults under 65 can replace COBRA with a private PPO and keep their doctors. Many save 30 to 60% per month versus COBRA. Compare options with a licensed specialist."
+  "Healthy adults under 65 losing job-based coverage can explore private health coverage that accesses a PPO network and may keep their doctors. Review your options with a licensed agent."
 const SHORT_DESC =
-  "Replace COBRA with a private PPO. Keep your doctors. Many save 30 to 60% per month."
+  "Losing job-based coverage? Explore private health coverage with a licensed agent."
 
 export const metadata: Metadata = {
   title: TITLE,

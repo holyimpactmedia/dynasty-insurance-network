@@ -12,21 +12,17 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dynastyinsurancegro
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dynasty Insurance Group | Private Health Insurance Plans",
+    default: "Dynasty Insurance Group | Private Health Coverage Plans",
     template: "%s | Dynasty Insurance Group",
   },
   description:
-    "Private PPO health insurance plans for healthy Americans under 65. See any doctor, skip referrals, and get nationwide network coverage. Get matched in 90 seconds.",
+    "Private health coverage that accesses PPO networks, for adults and families under 65. See the doctors you want, often without a referral, with broad network access. Get matched in about 90 seconds.",
   keywords: [
-    "private health insurance",
-    "PPO plans",
-    "private PPO health insurance",
-    "no referral health insurance",
-    "COBRA alternative",
-    "self-employed health insurance",
-    "family PPO plan",
-    "small business group health insurance",
-    "private health insurance for healthy adults",
+    "private health coverage",
+    "health coverage with PPO network access",
+    "health coverage with provider choice",
+    "self-employed health coverage",
+    "private health coverage for healthy adults",
     "Dynasty Insurance Group",
   ],
   authors: [{ name: "Holy Impact Media", url: "https://holyimpactmedia.com" }],
@@ -38,15 +34,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Dynasty Insurance Group",
-    title: "Dynasty Insurance Group | Private Health Insurance Plans",
+    title: "Dynasty Insurance Group | Private Health Coverage Plans",
     description:
-      "Private PPO health insurance plans for healthy Americans under 65. See any doctor. No referrals. Nationwide networks.",
+      "Private health coverage that accesses PPO networks, for adults and families under 65. See the doctors you want, often without a referral.",
     images: [
       {
         url: "/og/home.jpg",
         width: 1200,
         height: 630,
-        alt: "Dynasty Insurance Group: Private Health Insurance Plans",
+        alt: "Dynasty Insurance Group: Private Health Coverage Plans",
         type: "image/jpeg",
       },
     ],
@@ -55,9 +51,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@DynastyInsGroup",
     creator: "@DynastyInsGroup",
-    title: "Dynasty Insurance Group | Private Health Insurance Plans",
+    title: "Dynasty Insurance Group | Private Health Coverage Plans",
     description:
-      "Private PPO health insurance plans for healthy adults. See any doctor. No referrals. Get matched in 90 seconds.",
+      "Private health coverage with broad PPO network access. See the doctors you want, often without a referral. Get matched in about 90 seconds.",
     images: ["/og/home.jpg"],
   },
   robots: {
@@ -111,7 +107,7 @@ export default function RootLayout({
                   url: siteUrl,
                   logo: `${siteUrl}/images/logo.avif`,
                   description:
-                    "Private PPO health insurance plans for healthy Americans under 65.",
+                    "Private health coverage that accesses PPO networks, for adults and families under 65.",
                   sameAs: [],
                 },
                 {

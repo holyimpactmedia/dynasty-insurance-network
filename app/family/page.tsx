@@ -20,14 +20,12 @@ import {
   DollarSign,
   Baby,
   Home,
-  Star,
   ArrowRight,
   Award,
   Activity,
   XCircle,
   AlertCircle,
   Stethoscope,
-  Eye,
   Smile,
   Zap,
   Globe,
@@ -40,31 +38,28 @@ import {
   parseHouseholdSize,
 } from "@/lib/income-thresholds"
 const FAMILY_COVERAGE_ITEMS = [
-  { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Routine checkups, vaccines, and specialist visits for kids" },
-  { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling for all family members" },
-  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "See any specialist directly, no referrals required" },
-  { icon: <Globe className="w-5 h-5" />, label: "Nationwide Network", desc: "Coverage wherever your family travels" },
-  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER visits covered at any hospital" },
-  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on plans available for the whole family" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual physicals and well-child visits fully covered" },
-  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits 24/7, no waiting room" },
+  { icon: <Baby className="w-5 h-5" />, label: "Pediatric Care", desc: "Checkups, vaccines, and specialist visits for kids, though not all plans include preventive care" },
+  { icon: <Stethoscope className="w-5 h-5" />, label: "Specialist Access", desc: "See specialists in the plan network, often without a referral" },
+  { icon: <Globe className="w-5 h-5" />, label: "PPO Network Access", desc: "Coverage that can access a broad PPO network of providers" },
+  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "Emergency room care may be covered under your plan" },
+  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options available for your family" },
+  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits may be available, not offered with every plan or in every state" },
 ]
 
 const FAMILY_PROBLEMS = [
-  "Employer family coverage can cost $1,200-$1,800/month with limited networks",
+  "Employer family coverage can carry high monthly premiums with limited networks",
   "Narrow networks mean your pediatrician may not be covered",
-  "High deductibles leave families exposed to unexpected bills",
-  "Kids aging off your plan at 26 with no quality private options",
-  "Regional coverage limits leave your family unprotected when traveling",
-  "Most plans lack comprehensive dental and vision for the whole family",
+  "High deductibles can leave families exposed to unexpected bills",
+  "Regional coverage limits can leave your family with gaps when traveling",
+  "Many plans may not include dental and vision options for your family",
 ]
 
 const FAMILY_ADVANTAGES = [
-  "Private PPO plans with nationwide coverage for your entire family",
-  "Pediatric specialists accessible without referrals or waiting",
-  "Keep your family's doctors, including pediatricians and OB-GYNs",
-  "Nationwide PPO networks accepted at hospitals and physicians across the country",
-  "Comprehensive dental and vision add-ons available",
+  "Private health coverage that can access a PPO network for your family",
+  "Pediatric specialists that may be accessible without a referral",
+  "Options that can let you keep your family's doctors, including pediatricians and OB-GYNs",
+  "Access to a broad PPO network of hospitals and physicians",
+  "Dental and vision add-ons available",
   "Flexible enrollment options for growing families",
 ]
 
@@ -273,15 +268,14 @@ export default function FamilyQuizPage() {
 
   const priorityOptions = [
     { value: "Top pediatric specialists & children's hospitals", icon: <Baby className="w-6 h-6" />, label: "Top pediatric specialists & children's hospitals" },
-    { value: "Concierge access to specialists with no referrals", icon: <Stethoscope className="w-6 h-6" />, label: "Concierge access to specialists with no referrals" },
+    { value: "Access to specialists, often without referrals", icon: <Stethoscope className="w-6 h-6" />, label: "Access to specialists, often without referrals" },
     { value: "Low deductibles and predictable family budget", icon: <Shield className="w-6 h-6" />, label: "Low deductibles and predictable family budget" },
-    { value: "Mental health, therapy, and wellness coverage", icon: <Heart className="w-6 h-6" />, label: "Mental health, therapy, and wellness coverage" },
   ]
 
   const coverageOptions = [
     { value: "No coverage right now", label: "No coverage right now" },
     { value: "Employer plan is too restrictive", label: "Employer plan is too restrictive" },
-    { value: "Currently on an HMO and want a private PPO", label: "Currently on an HMO and want a private PPO" },
+    { value: "Currently on an HMO and want private coverage", label: "Currently on an HMO and want private coverage" },
     { value: "Child aging off my plan soon", label: "Child aging off my plan soon" },
   ]
 
@@ -334,13 +328,7 @@ export default function FamilyQuizPage() {
         onClose={() => setShowExitIntent(false)}
         onContinue={() => setShowExitIntent(false)}
         progress={progress}
-        savingsAmount="$7,920"
-        headline="Your family is one step away from real PPO coverage."
-        beforeLabel="Was paying"
-        beforeValue="$1,420/mo"
-        afterLabel="Now pays"
-        afterValue="$680/mo"
-        comparisonName="The Ramirez Family - Houston, TX"
+        headline="Your family is one step away from your coverage options."
       />
 
       {/* Step content */}
@@ -371,7 +359,7 @@ export default function FamilyQuizPage() {
                     Your family coverage options are being prepared, {answers.firstName}.
                   </h1>
                   <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                    A family specialist will contact you within 5 minutes.
+                    A licensed agent will contact you within 5 minutes.
                   </p>
                 </div>
 
@@ -391,25 +379,25 @@ export default function FamilyQuizPage() {
                     <div className="grid grid-cols-3 gap-4 text-center mb-4">
                       <div className="bg-white/10 rounded-xl p-4">
                         <p className="text-xs text-gray-300 mb-1">Network</p>
-                        <p className="text-xl font-bold">Nationwide</p>
-                        <p className="text-xs text-gray-400 mt-1">All 50 states</p>
+                        <p className="text-xl font-bold">PPO</p>
+                        <p className="text-xs text-gray-400 mt-1">Broad provider access</p>
                       </div>
                       <div className="bg-[#D4AF37]/20 rounded-xl p-4 border border-[#D4AF37]/40">
                         <p className="text-xs text-[#D4AF37] mb-1">Referrals</p>
-                        <p className="text-xl font-bold text-[#D4AF37]">None</p>
-                        <p className="text-xs text-[#D4AF37]/70 mt-1">See any specialist</p>
+                        <p className="text-xl font-bold text-[#D4AF37]">Flexible</p>
+                        <p className="text-xs text-[#D4AF37]/70 mt-1">Varies by plan</p>
                       </div>
                       <div className="bg-white/10 rounded-xl p-4">
                         <p className="text-xs text-gray-300 mb-1">Pediatric</p>
-                        <p className="text-xl font-bold">Included</p>
-                        <p className="text-xs text-gray-400 mt-1">From day one</p>
+                        <p className="text-xl font-bold">Available</p>
+                        <p className="text-xs text-gray-400 mt-1">Ask your agent</p>
                       </div>
                     </div>
                     <p className="text-center text-sm text-gray-300">
-                      Your specialist will present private PPO family plans tailored to your household.
+                      Your licensed agent will present private health coverage options tailored to your household.
                     </p>
                     <p className="text-center text-xs text-gray-500 mt-2">
-                      Rates depend on age, location, and plan selection. Your specialist shows you exact pricing.
+                      Rates depend on age, location, and plan selection. Your licensed agent shows you exact pricing.
                     </p>
                   </Card>
                 </motion.div>
@@ -437,7 +425,7 @@ export default function FamilyQuizPage() {
                           bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
                           title: "Within 5 Minutes",
                           badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
-                          desc: "A licensed family health specialist will review your situation and prepare personalized plan comparisons including pediatric benefits.",
+                          desc: "A licensed insurance agent will review your situation and prepare personalized health coverage options including pediatric benefits.",
                           extra: (
                             <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg mt-2">
                               <Mail className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -455,7 +443,7 @@ export default function FamilyQuizPage() {
                           bg: "bg-gray-100",
                           title: "Next Steps",
                           badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                          desc: "Your specialist will walk you through family plan options, comparing monthly premiums, deductibles, and pediatric networks side by side.",
+                          desc: "Your licensed agent will conduct a needs analysis and review private health coverage options with you.",
                           extra: null,
                         },
                       ].map((item, i) => (
@@ -483,8 +471,7 @@ export default function FamilyQuizPage() {
                 </motion.div>
 
                 <p className="text-xs text-center text-muted-foreground px-4">
-                  By submitting this form, you agree to be contacted by licensed insurance agents. Coverage estimates
-                  are illustrative only. Actual premiums depend on age, location, and plan selection.
+                  Coverage estimates are illustrative only. Actual premiums depend on age, location, and plan selection.
                 </p>
               </div>
 
@@ -499,19 +486,19 @@ export default function FamilyQuizPage() {
                   <div className="relative max-w-3xl mx-auto text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                       <Heart className="w-4 h-4" />
-                      Family Health Insurance - Free Consultation
+                      Family Health Coverage - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      Private Family Health Plans That <span className="text-[#D4AF37]">Travel With You</span>
+                      Private Family Health Coverage That <span className="text-[#D4AF37]">Fits Your Family</span>
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Real PPO coverage for working families. Keep your pediatrician, see any specialist, and protect every member nationwide.
+                      Private health coverage for working families that can access a PPO network. You may be able to keep your doctors and explore specialist options for your household.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "Families paying $1,200 to $1,800 a month for narrow-network plans they can barely use.",
-                        "Pediatricians and specialists who suddenly aren't in-network when you need them most.",
-                        "Employer family coverage with deductibles so high one ER visit wipes out your savings.",
+                        "Families may be paying high monthly premiums for narrow-network plans.",
+                        "Pediatricians and specialists who may not be in-network when you need them.",
+                        "Employer family coverage with deductibles that can be high enough to strain your savings.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -535,10 +522,10 @@ export default function FamilyQuizPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO networks" },
-                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Keep your pediatrician" },
-                      { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "No referrals for specialists" },
-                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free family plan consultation" },
+                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Access to a PPO network" },
+                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "You may keep your doctors" },
+                      { icon: <Shield className="w-4 h-4 flex-shrink-0" />, text: "See specialists in-network" },
+                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free consultation" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                         {item.icon}
@@ -553,11 +540,11 @@ export default function FamilyQuizPage() {
                   <div className="max-w-4xl mx-auto space-y-12">
                     <div className="text-center space-y-4">
                       <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                        Your Family Deserves Better Than HMO Restrictions
+                        Your Family Deserves Coverage That Works Around You
                       </h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        Most family plans lock you into narrow networks with mandatory referrals for every specialist.
-                        Private PPO coverage gives your family the freedom to see any doctor, anywhere, without asking permission.
+                        Many family plans limit you to narrow networks with referrals for specialists.
+                        Private health coverage that accesses a PPO network can give your family more freedom to choose doctors.
                       </p>
                     </div>
                     <div className="grid md:grid-cols-2 gap-6">
@@ -590,7 +577,7 @@ export default function FamilyQuizPage() {
                             </div>
                             <div>
                               <p className="text-xs text-green-600 font-semibold uppercase tracking-wide">The Solution</p>
-                              <h3 className="font-bold text-foreground">Private PPO Family Plans</h3>
+                              <h3 className="font-bold text-foreground">Private Health Coverage</h3>
                             </div>
                           </div>
                           <ul className="space-y-3">
@@ -611,9 +598,9 @@ export default function FamilyQuizPage() {
                 <section className="py-16 px-6 bg-muted/30">
                   <div className="max-w-4xl mx-auto space-y-10">
                     <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Everything Your Family Needs. All in One Plan.</h2>
+                      <h2 className="text-3xl font-bold text-foreground">Coverage Options for Your Whole Family</h2>
                       <p className="text-muted-foreground text-lg">
-                        Private PPO family plans include every benefit. No asterisks.
+                        Private health coverage with benefit options for your family.
                       </p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -649,12 +636,12 @@ export default function FamilyQuizPage() {
                         {
                           step: "2",
                           title: "See Your Options",
-                          desc: "A specialist shows you private PPO family plans with real pricing. Side by side.",
+                          desc: "A licensed agent shows you private health coverage options and pricing, side by side.",
                         },
                         {
                           step: "3",
                           title: "Enroll and Relax",
-                          desc: "Pick your plan. Enroll in minutes. The whole family is covered starting the 1st.",
+                          desc: "Pick your plan and enroll. Your licensed agent explains when coverage can begin.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="text-center space-y-4">
@@ -678,12 +665,12 @@ export default function FamilyQuizPage() {
                         Why Dynasty
                       </div>
                       <h2 className="text-3xl font-bold leading-tight">
-                        Your Family Should Never Have to Fight for Good Care
+                        Your Family Deserves Better Access to Care
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Dynasty Insurance Group finds private PPO family plans that let your kids see their
-                        pediatrician without a referral, and that work with nationwide carrier networks so a
-                        family trip never means an out-of-network bill.
+                        Dynasty Insurance Group finds private health coverage options that can let your kids
+                        see their pediatrician, often without a referral, and that can access a broad PPO
+                        network of providers.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
                         One call. No pressure. We handle the comparison work for you.
@@ -692,9 +679,9 @@ export default function FamilyQuizPage() {
                     <div className="space-y-4">
                       {[
                         { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don’t sell your information to advertisers. Your details go only to our licensed insurance partners." },
+                        { icon: <DollarSign className="w-5 h-5" />, title: "100% Free to You", desc: "Our service costs you nothing. We are paid per lead by our licensed insurance partners." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Carefully", desc: "This website is operated by Holy Impact Media, a marketing company, which routes your information to licensed insurance agents so they can contact you about coverage options. See our Privacy Policy." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">
@@ -707,70 +694,6 @@ export default function FamilyQuizPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </section>
-
-                {/* Family Savings Stories */}
-                <section className="py-16 px-6 bg-muted/30">
-                  <div className="max-w-5xl mx-auto space-y-10">
-                    <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Real Families. Real Savings.</h2>
-                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Working families are switching to private PPO plans and keeping hundreds of dollars
-                        every month without losing access to their doctors.
-                      </p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-6">
-                      {[
-                        {
-                          name: "The Ramirez Family",
-                          location: "Houston, TX",
-                          before: "$1,420/mo",
-                          after: "$680/mo",
-                          quote: "We were paying over $1,400 a month for a plan that wouldn't even cover our kids' pediatrician. Switched to a private PPO and now we pay $680 and the whole family is in-network.",
-                        },
-                        {
-                          name: "The Patel Family",
-                          location: "Atlanta, GA",
-                          before: "$1,180/mo",
-                          after: "$745/mo",
-                          quote: "Our employer family plan was eating $1,180 a month and the deductible was painfully high. Found a private PPO for $745, kept our doctor, and the deductible is half what we had.",
-                        },
-                        {
-                          name: "The Johnson Family",
-                          location: "Charlotte, NC",
-                          before: "$1,650/mo",
-                          after: "$820/mo",
-                          quote: "Three kids, two with specialists. We were drowning at $1,650 a month. New private plan is $820, no referrals, and our pediatrician and orthopedist are both still covered.",
-                        },
-                      ].map((story, i) => (
-                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
-                          <div className="flex items-center gap-1 text-[#D4AF37]">
-                            {[...Array(5)].map((_, s) => (
-                              <Star key={s} className="w-4 h-4 fill-current" />
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-center">
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
-                              <p className="text-xl font-bold text-red-700">{story.before}</p>
-                            </div>
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
-                              <p className="text-xl font-bold text-green-700">{story.after}</p>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
-                          <div className="pt-2 border-t border-border">
-                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
-                            <p className="text-xs text-muted-foreground">{story.location}</p>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
-                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. A licensed agent will quote your family directly.
-                    </p>
                   </div>
                 </section>
 
@@ -875,7 +798,7 @@ export default function FamilyQuizPage() {
                 <div className="text-center space-y-2">
                   <p className="text-sm font-medium text-[#D4AF37] uppercase tracking-wide">Step 3 of {TOTAL_STEPS}</p>
                   <h2 className="text-3xl font-bold text-foreground">A Couple Quick Qualifying Questions</h2>
-                  <p className="text-muted-foreground">Helps us route you to the right specialist</p>
+                  <p className="text-muted-foreground">Helps us route you to the right licensed agent</p>
                 </div>
 
                 <div className="space-y-6 max-w-md mx-auto w-full">
@@ -893,7 +816,7 @@ export default function FamilyQuizPage() {
                     {answers.primaryAge && Number.parseInt(answers.primaryAge) >= 64 && (
                       <Card className="p-4 bg-blue-50 border-blue-200">
                         <p className="text-sm text-blue-700">
-                          At 64+, you may qualify for Medicare options. Our private PPO plans are designed for healthy adults under 65. A licensed Medicare specialist can still help.
+                          At 64+, you may qualify for Medicare options. Our private health coverage is designed for healthy adults under 65. A licensed agent can still help.
                         </p>
                       </Card>
                     )}
@@ -921,7 +844,7 @@ export default function FamilyQuizPage() {
                     {answers.healthScreen === "Yes" && (
                       <Card className="p-4 bg-amber-50 border-amber-200">
                         <p className="text-sm text-amber-700">
-                          Our private PPO family plans are designed for healthy households. With a significant medical history, a guaranteed-issue plan may be a better fit for your family. A licensed specialist can still walk you through every option you have.
+                          Our private health coverage is designed for healthy households. With a significant medical history, a guaranteed-issue plan may be a better fit for your family. A licensed agent can still conduct a needs analysis with you.
                         </p>
                       </Card>
                     )}
@@ -949,7 +872,7 @@ export default function FamilyQuizPage() {
                     {answers.govCoverage === "Yes" && (
                       <Card className="p-4 bg-blue-50 border-blue-200">
                         <p className="text-sm text-blue-700">
-                          Our private PPO plans are designed for households not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through every option you have on your call.
+                          Our private health coverage is designed for households not currently enrolled in Medicaid or Medicare. A licensed agent can still conduct a needs analysis with you on your call.
                         </p>
                       </Card>
                     )}
@@ -1099,7 +1022,7 @@ export default function FamilyQuizPage() {
                         className="mt-1 w-4 h-4 accent-[#D4AF37]"
                       />
                       <span className="text-xs text-muted-foreground leading-relaxed">
-                        By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. I have read and agree to the{" "}
+                        By checking this box and submitting this form, I provide my electronic signature through which I expressly consent to be contacted by Holy Impact Media and its licensed insurance partners, including licensed insurance agents affiliated with Dynasty Insurance Group and USHEALTH Advisors, LLC, at the telephone number I have provided and that such contact shall be made via telephone calls, text messages (including via automated telephone dialing systems or artificial / prerecorded voice message), and email regarding health coverage options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services and may be revoked at any time. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. Message and data rates may apply. Message frequency varies. I further agree to the{" "}
                         <a href="/terms" className="text-[#D4AF37] hover:underline">Terms of Service</a>{" "}
                         and{" "}
                         <a href="/privacy" className="text-[#D4AF37] hover:underline">Privacy Policy</a>.
@@ -1118,7 +1041,7 @@ export default function FamilyQuizPage() {
 
                 <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                   <Lock className="w-3 h-3" />
-                  <span>Your information is encrypted and never sold</span>
+                  <span>Your information is encrypted and shared only with licensed insurance partners</span>
                 </div>
               </div>
 
@@ -1128,7 +1051,7 @@ export default function FamilyQuizPage() {
                 <div className="text-center space-y-2">
                   <p className="text-sm font-medium text-[#D4AF37] uppercase tracking-wide">Last Step</p>
                   <h2 className="text-3xl font-bold text-foreground">Almost done. What&apos;s your name?</h2>
-                  <p className="text-muted-foreground">Your specialist will greet you personally</p>
+                  <p className="text-muted-foreground">Your licensed agent will greet you personally</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -1180,10 +1103,6 @@ export default function FamilyQuizPage() {
                     </span>
                   )}
                 </Button>
-
-                <p className="text-xs text-center text-muted-foreground">
-                  By submitting, you confirm your agreement to be contacted. No purchase necessary.
-                </p>
               </div>
 
             ) : null}

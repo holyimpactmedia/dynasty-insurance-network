@@ -1,11 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
 
-const TITLE = "Private Family Health Insurance Plans"
+const TITLE = "Private Family Health Coverage"
 const DESC =
-  "Private PPO family health insurance plans for working households. Keep your pediatrician, see any specialist without referrals, and cover the whole family nationwide."
+  "Private health coverage for working households that can access a PPO network. You may be able to keep your doctors, explore specialist options, and review coverage for your whole family with a licensed agent."
 const SHORT_DESC =
-  "Private PPO family plans. Keep your pediatrician. Nationwide coverage. Free consultation."
+  "Private family health coverage that can access a PPO network. You may keep your doctors. Free consultation."
 
 export const metadata: Metadata = {
   title: TITLE,

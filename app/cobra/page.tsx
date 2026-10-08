@@ -18,52 +18,27 @@ import {
   DollarSign,
   Users,
   Heart,
-  Calendar,
   Pill,
   Activity,
   ArrowRight,
   Lock,
-  Star,
-  TrendingDown,
   Award,
-  XCircle,
   Stethoscope,
   Eye,
   Smile,
   Zap,
   Globe,
-  FileText,
-  X,
 } from "lucide-react"
 
 import { SERVICED_STATES } from "@/lib/serviced-states"
 const COVERAGE_ITEMS = [
-  { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Primary care and specialist visits covered" },
-  { icon: <Globe className="w-5 h-5" />, label: "Nationwide Access", desc: "Use doctors anywhere in the country" },
-  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "ER visits covered at any hospital" },
-  { icon: <Pill className="w-5 h-5" />, label: "Prescriptions", desc: "Broad drug formulary, often at lower cost" },
-  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options available with most plans" },
-  { icon: <Heart className="w-5 h-5" />, label: "Mental Health", desc: "Therapy and counseling covered" },
-  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual exams, screenings, and vaccines" },
-  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Concierge virtual visits 24/7 with board-certified physicians" },
-]
-
-const COBRA_PROBLEMS = [
-  "Costs up to 102% of your full premium - your former employer's share plus yours",
-  "Locked into your old employer's plan and network with no flexibility",
-  "Must pay in full each billing cycle or lose coverage with limited grace",
-  "Standard COBRA expires after 18 months (some qualifying events extend to 29 or 36 months)",
-  "Same plan even if it no longer fits your life or budget",
-  "Premiums can increase as the underlying group plan rates change at renewal",
-]
-
-const ALTERNATIVE_ADVANTAGES = [
-  "Private PPO plans with nationwide coverage and doctor freedom",
-  "Keep your preferred doctors or switch to better specialists",
-  "Flexible plan tiers to match your healthcare needs and lifestyle",
-  "Coverage that continues as long as you need it",
-  "No referrals required to see any specialist, anywhere",
-  "Enroll in days, not weeks. Same-day applications available.",
+  { icon: <Stethoscope className="w-5 h-5" />, label: "Doctor Visits", desc: "Primary care and specialist visits" },
+  { icon: <Globe className="w-5 h-5" />, label: "PPO Network Access", desc: "Access to doctors within a PPO network" },
+  { icon: <Activity className="w-5 h-5" />, label: "Emergency Care", desc: "Emergency room visits may be covered" },
+  { icon: <Pill className="w-5 h-5" />, label: "Prescriptions", desc: "Broad drug formulary" },
+  { icon: <Smile className="w-5 h-5" />, label: "Dental & Vision", desc: "Add-on options may be available with some plans" },
+  { icon: <Eye className="w-5 h-5" />, label: "Preventive Care", desc: "Annual exams and screenings, though not all plans include preventive care" },
+  { icon: <Zap className="w-5 h-5" />, label: "Telemedicine", desc: "Virtual visits, not available with every plan or in every state" },
 ]
 
 const US_STATES = SERVICED_STATES
@@ -247,18 +222,6 @@ export default function COBRAQuizPage() {
     s.toLowerCase().includes(stateSearch.toLowerCase())
   )
 
-  // Calculate estimated savings based on cobra cost bracket
-  const getEstimatedSavings = () => {
-    const cost = answers.cobraCost
-    const ranges: Record<string, { cobra: string; low: number; high: number }> = {
-      "Under $400/month":    { cobra: "~$400/mo",   low: 160, high: 240 },
-      "$400 - $700/month":   { cobra: "~$550/mo",   low: 220, high: 330 },
-      "$700 - $1,200/month": { cobra: "~$950/mo",   low: 380, high: 570 },
-      "Over $1,200/month":   { cobra: "~$1,200+/mo", low: 480, high: 720 },
-    }
-    return ranges[cost] || { cobra: "your current amount", low: 200, high: 400 }
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -296,13 +259,7 @@ export default function COBRAQuizPage() {
         onClose={() => setShowExitIntent(false)}
         onContinue={() => setShowExitIntent(false)}
         progress={progress}
-        savingsAmount="$5,400"
-        headline="Every month on COBRA is money you'll never get back."
-        beforeLabel="Was paying"
-        beforeValue="$1,090/mo COBRA"
-        afterLabel="Now pays"
-        afterValue="$640/mo PPO"
-        comparisonName="Marcus B. - Houston, TX"
+        headline="Your coverage options are ready when you are."
       />
 
       {/* Step content */}
@@ -318,9 +275,6 @@ export default function COBRAQuizPage() {
           >
             {/* ── THANK YOU ─────────────────────────────────────── */}
             {showThankYou ? (
-              (() => {
-                const savings = getEstimatedSavings()
-                return (
                   <div className="space-y-8 pb-12">
                     <div className="text-center space-y-4">
                       <motion.div
@@ -332,45 +286,12 @@ export default function COBRAQuizPage() {
                         <CheckCircle2 className="w-10 h-10 text-white" />
                       </motion.div>
                       <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-                        Great news, {answers.firstName}. Alternatives exist.
+                        Thank you, {answers.firstName}. We received your request.
                       </h1>
                       <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                        A licensed specialist is reviewing your options now and will reach out within 5 minutes.
+                        A licensed agent is reviewing your options now and will reach out within 5 minutes.
                       </p>
                     </div>
-
-                    {/* Savings comparison card */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      <Card className="p-8 border-2 border-[#D4AF37] bg-gradient-to-br from-[#0A1128] to-[#1a2744] text-white">
-                        <div className="text-center mb-6">
-                          <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
-                            <TrendingDown className="w-4 h-4" />
-                            Estimated Savings
-                          </span>
-                        </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div className="bg-red-900/40 rounded-xl p-5 text-center border border-red-500/30">
-                            <p className="text-sm text-red-300 mb-2 font-medium">Your COBRA</p>
-                            <p className="text-3xl font-bold text-red-200">{savings.cobra}</p>
-                            <p className="text-xs text-red-400 mt-1">Before tax</p>
-                          </div>
-                          <div className="bg-green-900/40 rounded-xl p-5 text-center border border-green-500/30">
-                            <p className="text-sm text-green-300 mb-2 font-medium">Estimated Alternative</p>
-                            <p className="text-3xl font-bold text-green-200">
-                              ${savings.low}–${savings.high}/mo
-                            </p>
-                            <p className="text-xs text-green-400 mt-1">Private PPO alternative</p>
-                          </div>
-                        </div>
-                        <p className="text-center text-xs text-gray-400 mt-4">
-                          Estimates based on national plan averages. Actual rates depend on plan selection and coverage level.
-                        </p>
-                      </Card>
-                    </motion.div>
 
                     {/* Timeline */}
                     <motion.div
@@ -387,7 +308,7 @@ export default function COBRAQuizPage() {
                               bg: "bg-green-100",
                               title: "Right Now",
                               badge: { text: "Complete", cls: "bg-green-100 text-green-700" },
-                              desc: "Your information has been securely submitted. Our system is matching you with COBRA alternatives available in your state.",
+                              desc: "Your information has been securely submitted. Our system is matching you with private health coverage options available in your state.",
                               extra: null,
                             },
                             {
@@ -395,7 +316,7 @@ export default function COBRAQuizPage() {
                               bg: "bg-[#D4AF37]/10 border-2 border-[#D4AF37]",
                               title: "Within 5 Minutes",
                               badge: { text: "In Progress", cls: "bg-blue-100 text-blue-700" },
-                              desc: "A licensed health insurance specialist will review your COBRA situation and prepare alternative plan comparisons.",
+                              desc: "A licensed insurance agent will review your situation and conduct a needs analysis of your private health coverage options.",
                               extra: (
                                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg mt-2">
                                   <Mail className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -413,7 +334,7 @@ export default function COBRAQuizPage() {
                               bg: "bg-gray-100",
                               title: "Next Steps",
                               badge: { text: "Upcoming", cls: "bg-gray-100 text-gray-600" },
-                              desc: "Your specialist will walk you through private PPO options side-by-side with your current COBRA costs and benefits.",
+                              desc: "Your licensed agent will conduct a needs analysis and walk you through your private health coverage options.",
                               extra: null,
                             },
                           ].map((item, i) => (
@@ -442,12 +363,9 @@ export default function COBRAQuizPage() {
 
                     {/* Disclaimer */}
                     <p className="text-xs text-center text-muted-foreground px-4">
-                      By submitting this form, you agree to be contacted by licensed insurance agents. Coverage estimates
-                      are illustrative only. Actual premiums depend on age, location, and plan selection.
+                      Actual premiums depend on age, location, and plan selection.
                     </p>
                   </div>
-                )
-              })()
             ) : currentStep === 0 ? (
               /* ── LANDING PAGE ─────────────────────────────────── */
               <div className="w-full max-w-none">
@@ -459,19 +377,19 @@ export default function COBRAQuizPage() {
                   <div className="relative max-w-3xl mx-auto text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/20 rounded-full text-[#D4AF37] text-sm font-semibold">
                       <AlertCircle className="w-4 h-4" />
-                      COBRA Alternatives - Free Consultation
+                      Private Health Coverage - Free Consultation
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight text-balance">
-                      COBRA Is <span className="text-[#D4AF37]">Expensive</span>. A Private PPO Can <span className="text-[#D4AF37]">Cost Half</span>.
+                      Losing Job-Based Coverage? Explore <span className="text-[#D4AF37]">Private Health Coverage</span>.
                     </h1>
                     <p className="text-lg text-gray-300 max-w-xl mx-auto">
-                      Healthy adults under 65 can replace COBRA with a private PPO and keep their doctors. Many clients save <span className="text-[#D4AF37] font-semibold">30 to 60%</span> per month.
+                      Healthy adults under 65 losing job-based coverage can explore private health coverage that accesses a PPO network and may keep their doctors.
                     </p>
                     <div className="space-y-3 text-left max-w-xl mx-auto">
                       {[
-                        "You are paying 102% of the full premium. Your employer pays nothing.",
-                        "COBRA expires in 18 months and you need a long-term plan that fits your life.",
-                        "You are locked into a plan that may not match the doctors or coverage you actually need now.",
+                        "Your job-based coverage is ending and you need a plan that fits your life.",
+                        "You want coverage you can keep for as long as you need it.",
+                        "You want coverage that may fit the doctors and care you need now.",
                       ].map((q, i) => (
                         <div key={i} className="flex items-start gap-3 bg-white/10 rounded-lg p-4">
                           <AlertCircle className="w-5 h-5 text-[#D4AF37] mt-0.5 flex-shrink-0" />
@@ -484,7 +402,7 @@ export default function COBRAQuizPage() {
                       size="lg"
                       className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold h-14 px-10 text-base w-full sm:w-auto"
                     >
-                      See My COBRA Alternatives - Free
+                      See My Coverage Options - Free
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                     <p className="text-gray-400 text-xs">Takes 90 seconds. No obligation. Licensed agents only.</p>
@@ -495,10 +413,10 @@ export default function COBRAQuizPage() {
                 <section className="bg-[#D4AF37] py-5 px-6">
                   <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[
-                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "COBRA: hundreds to thousands/mo" },
-                      { icon: <TrendingDown className="w-4 h-4 flex-shrink-0" />, text: "Most clients save 30-50%" },
-                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Nationwide PPO Networks" },
-                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "No Referrals Required" },
+                      { icon: <DollarSign className="w-4 h-4 flex-shrink-0" />, text: "Free to you, no obligation" },
+                      { icon: <CheckCircle2 className="w-4 h-4 flex-shrink-0" />, text: "Coverage for adults under 65" },
+                      { icon: <Globe className="w-4 h-4 flex-shrink-0" />, text: "Access to PPO networks" },
+                      { icon: <Stethoscope className="w-4 h-4 flex-shrink-0" />, text: "Licensed agents in your state" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-center gap-2 text-[#0A1128] font-semibold text-sm text-center">
                         {item.icon}
@@ -508,73 +426,13 @@ export default function COBRAQuizPage() {
                   </div>
                 </section>
 
-                {/* Problem Agitation */}
-                <section className="py-16 px-6 bg-background">
-                  <div className="max-w-4xl mx-auto space-y-12">
-                    <div className="text-center space-y-4">
-                      <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                        COBRA Was Never Meant to Be a Long-Term Plan
-                      </h2>
-                      <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                        COBRA is a bridge. It was never built to be affordable. The moment you lose your job,
-                        your employer stops paying. You pay everything plus a 2% admin fee.
-                        Most people can get the same or better coverage for far less.
-                      </p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Card className="p-6 border-2 border-red-200 bg-red-50/50">
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                              <XCircle className="w-5 h-5 text-red-600" />
-                            </div>
-                            <div>
-                              <p className="text-xs text-red-500 font-semibold uppercase tracking-wide">The Problem</p>
-                              <h3 className="font-bold text-foreground">Staying on COBRA</h3>
-                            </div>
-                          </div>
-                          <ul className="space-y-3">
-                            {COBRA_PROBLEMS.map((item, i) => (
-                              <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-                                <XCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </Card>
-                      <Card className="p-6 border-2 border-green-200 bg-green-50/50">
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                              <CheckCircle2 className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div>
-                              <p className="text-xs text-green-600 font-semibold uppercase tracking-wide">The Solution</p>
-                              <h3 className="font-bold text-foreground">Private PPO Alternatives</h3>
-                            </div>
-                          </div>
-                          <ul className="space-y-3">
-                            {ALTERNATIVE_ADVANTAGES.map((item, i) => (
-                              <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-                                <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </Card>
-                    </div>
-                  </div>
-                </section>
-
                 {/* What You Get */}
                 <section className="py-16 px-6 bg-muted/30">
                   <div className="max-w-4xl mx-auto space-y-10">
                     <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Private PPO Plans Cover Everything COBRA Did</h2>
+                      <h2 className="text-3xl font-bold text-foreground">What Private Health Coverage Can Include</h2>
                       <p className="text-muted-foreground text-lg">
-                        Same benefits. Real networks. A fraction of the cost.
+                        Real networks. Coverage built around your needs.
                       </p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -597,25 +455,25 @@ export default function COBRAQuizPage() {
                 <section className="py-16 px-6 bg-background">
                   <div className="max-w-3xl mx-auto space-y-10">
                     <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Switching Takes 3 Steps. COBRA Takes Your Money.</h2>
-                      <p className="text-muted-foreground text-lg">Stop overpaying. Start today.</p>
+                      <h2 className="text-3xl font-bold text-foreground">Getting Coverage Takes 3 Simple Steps.</h2>
+                      <p className="text-muted-foreground text-lg">Simple and quick. Start today.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {[
                         {
                           step: "1",
                           title: "Tell Us Your Situation",
-                          desc: "Answer a few quick questions about your timeline and current COBRA cost. Takes 90 seconds.",
+                          desc: "Answer a few quick questions about your situation and coverage needs. Takes 90 seconds.",
                         },
                         {
                           step: "2",
                           title: "See Your Options",
-                          desc: "A licensed specialist compares private PPO plans to your COBRA cost side by side.",
+                          desc: "A licensed agent conducts a needs analysis and reviews your private health coverage options.",
                         },
                         {
                           step: "3",
-                          title: "Switch and Save",
-                          desc: "Enroll in minutes. Coverage starts the 1st of next month. No lapse in coverage.",
+                          title: "Get Covered",
+                          desc: "Enroll with help from your licensed agent, who guides you through the next steps.",
                         },
                       ].map((item, i) => (
                         <div key={i} className="text-center space-y-4 max-w-xs mx-auto md:max-w-none">
@@ -642,9 +500,9 @@ export default function COBRAQuizPage() {
                         Losing Your Job Is Hard. Losing Your Coverage Does Not Have to Follow.
                       </h2>
                       <p className="text-gray-300 leading-relaxed">
-                        Dynasty Insurance Group connects executives and entrepreneurs leaving COBRA with private PPO
-                        plans built for high earners, often with broader networks and richer benefits. We are not a
-                        public exchange. We are licensed specialists who curate carrier-direct options for you.
+                        Dynasty Insurance Group connects adults losing job-based coverage with private health coverage
+                        options through licensed insurance agents. We are not a public exchange. Our licensed agents
+                        review carrier-direct options with you.
                       </p>
                       <p className="text-gray-300 leading-relaxed">
                         No pressure. Concierge service. Just answers.
@@ -652,10 +510,10 @@ export default function COBRAQuizPage() {
                     </div>
                     <div className="space-y-4">
                       {[
-                        { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed and compliant." },
-                        { icon: <DollarSign className="w-5 h-5" />, title: "Carrier-Compensated", desc: "Premiums are identical whether you work with us or buy direct. Carriers compensate us." },
-                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A real specialist contacts you within 5 minutes on business days." },
-                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Secure", desc: "We don&rsquo;t sell your information to advertisers. Your details go only to our licensed insurance partners." },
+                        { icon: <Shield className="w-5 h-5" />, title: "Licensed in Your State", desc: "Every agent we work with is state-licensed." },
+                        { icon: <DollarSign className="w-5 h-5" />, title: "Free to You", desc: "You never pay us. We are paid a per-lead fee by our licensed insurance partners." },
+                        { icon: <Clock className="w-5 h-5" />, title: "5-Minute Response", desc: "A licensed agent contacts you within 5 minutes on business days." },
+                        { icon: <Lock className="w-5 h-5" />, title: "Your Data Is Handled Responsibly", desc: "This website is operated by Holy Impact Media, a marketing company, which routes your information to licensed insurance agents so they can contact you about coverage options. See our Privacy Policy." },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-full flex items-center justify-center flex-shrink-0 text-[#D4AF37]">
@@ -671,87 +529,19 @@ export default function COBRAQuizPage() {
                   </div>
                 </section>
 
-                {/* COBRA Switch Stories */}
-                <section className="py-16 px-6 bg-muted/30">
-                  <div className="max-w-5xl mx-auto space-y-10">
-                    <div className="text-center space-y-3">
-                      <h2 className="text-3xl font-bold text-foreground">Real People Who Dropped COBRA</h2>
-                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Healthy adults under 65 are walking away from COBRA, keeping their doctors,
-                        and saving hundreds every month with private PPO plans.
-                      </p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-6">
-                      {[
-                        {
-                          name: "Marcus B.",
-                          situation: "Laid off after 12 years",
-                          location: "Houston, TX",
-                          before: "$1,090/mo COBRA",
-                          after: "$640/mo PPO",
-                          quote: "COBRA was killing my severance. The agent showed me a private PPO at $640 with the same network as my old job. Saved me almost $5,000 over six months.",
-                        },
-                        {
-                          name: "Sandra L.",
-                          situation: "Family of 4, severance ending",
-                          location: "Atlanta, GA",
-                          before: "$1,820/mo COBRA",
-                          after: "$815/mo PPO",
-                          quote: "Family of four on COBRA was $1,820 a month. We switched to a private family PPO at $815, kept our pediatrician, and the deductible is actually lower.",
-                        },
-                        {
-                          name: "Daniel P.",
-                          situation: "Career change",
-                          location: "Tampa, FL",
-                          before: "$1,150/mo COBRA",
-                          after: "$720/mo PPO",
-                          quote: "I was about to start a new business and COBRA at $1,150 wasn't going to work. Got a private PPO for $720, kept my doctor, and the premiums are tax deductible now too.",
-                        },
-                      ].map((story, i) => (
-                        <Card key={i} className="p-6 border-2 border-[#D4AF37]/30 bg-white space-y-4">
-                          <div className="flex items-center gap-1 text-[#D4AF37]">
-                            {[...Array(5)].map((_, s) => (
-                              <Star key={s} className="w-4 h-4 fill-current" />
-                            ))}
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-center">
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                              <p className="text-xs text-red-600 font-semibold uppercase tracking-wide">Was paying</p>
-                              <p className="text-lg font-bold text-red-700">{story.before}</p>
-                            </div>
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Now pays</p>
-                              <p className="text-lg font-bold text-green-700">{story.after}</p>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-700 leading-relaxed italic">&ldquo;{story.quote}&rdquo;</p>
-                          <div className="pt-2 border-t border-border">
-                            <p className="text-sm font-semibold text-foreground">{story.name}</p>
-                            <p className="text-xs text-muted-foreground">{story.situation}</p>
-                            <p className="text-xs text-muted-foreground">{story.location}</p>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                    <p className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
-                      Client savings stories are illustrative of typical outcomes. Actual rates depend on age, household composition, state, plan selection, and underwriting. A licensed agent will quote you directly.
-                    </p>
-                  </div>
-                </section>
-
                 {/* Final CTA */}
                 <section className="py-16 px-6 bg-background">
                   <div className="max-w-2xl mx-auto text-center space-y-6">
-                    <h2 className="text-3xl font-bold text-foreground">Stop Overpaying. Start Saving.</h2>
+                    <h2 className="text-3xl font-bold text-foreground">Explore Your Coverage Options Today.</h2>
                     <p className="text-muted-foreground text-lg leading-relaxed">
-                      It takes 90 seconds to find out how much you could save. Licensed agents, no obligation.
+                      It takes 90 seconds to explore your options. Licensed agents, no obligation.
                     </p>
                     <Button
                       onClick={() => setCurrentStep(1)}
                       size="lg"
                       className="bg-[#D4AF37] text-[#0A1128] hover:bg-[#c9a430] active:bg-[#b89228] font-bold h-14 px-10 text-base w-full sm:w-auto"
                     >
-                      Check My Alternatives - Free
+                      Check My Options - Free
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                     <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
@@ -780,7 +570,7 @@ export default function COBRAQuizPage() {
                     <div className="grid gap-3">
                       {[
                         { value: "just-received", label: "Just got the COBRA notice", desc: "Recently lost job coverage" },
-                        { value: "on-cobra-expensive", label: "Currently on COBRA, too expensive", desc: "Actively paying COBRA now" },
+                        { value: "on-cobra-expensive", label: "Currently on COBRA", desc: "Actively paying COBRA now" },
                         { value: "cobra-ending", label: "COBRA ending in 60 days", desc: "Approaching the 18-month limit" },
                         { value: "exploring", label: "Exploring options before deciding", desc: "Haven't signed up for COBRA yet" },
                       ].map((option) => (
@@ -810,7 +600,7 @@ export default function COBRAQuizPage() {
                 {currentStep === 2 && (
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
-                      <h2 className="text-3xl font-bold text-foreground">What are you paying for COBRA each month?</h2>
+                      <h2 className="text-3xl font-bold text-foreground">What are you currently paying for coverage each month?</h2>
                       <p className="text-muted-foreground">Include all family members on the plan.</p>
                     </div>
                     <div className="grid gap-3">
@@ -961,7 +751,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">Where should we send your options?</h2>
-                      <p className="text-muted-foreground">A licensed specialist will reach out within 5 minutes.</p>
+                      <p className="text-muted-foreground">A licensed agent will reach out within 5 minutes.</p>
                     </div>
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -1003,7 +793,7 @@ export default function COBRAQuizPage() {
                         </div>
                         {answers.govCoverage === "Yes" && (
                           <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
-                            Our private PPO alternatives are designed for adults not currently enrolled in Medicaid or Medicare. A licensed specialist can still walk you through your options.
+                            Our private health coverage options are designed for adults not currently enrolled in Medicaid or Medicare. A licensed agent can still walk you through your options.
                           </p>
                         )}
                         {errors.govCoverage && (
@@ -1061,7 +851,7 @@ export default function COBRAQuizPage() {
                             className="mt-1 w-4 h-4 accent-[#D4AF37]"
                           />
                           <span className="text-xs text-muted-foreground leading-relaxed">
-                            By checking this box and submitting this form, I provide my express written consent to be contacted by Holy Impact Media and its licensed insurance partners, including Dynasty Insurance Group, via phone calls, text messages (including via autodialer or prerecorded message), and email regarding health insurance options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. See our{" "}
+                            By checking this box and submitting this form, I provide my electronic signature through which I expressly consent to be contacted by Holy Impact Media and its licensed insurance partners, including licensed insurance agents affiliated with Dynasty Insurance Group and USHEALTH Advisors, LLC, at the telephone number I have provided and that such contact shall be made via telephone calls, text messages (including via automated telephone dialing systems or artificial / prerecorded voice message), and email regarding health coverage options. I understand this website is operated by Holy Impact Media, a marketing company, which will route my information to licensed insurance agents. Consent is not required to purchase any goods or services and may be revoked at any time. Reply STOP to opt out of SMS. I also consent under any applicable state telemarketing laws, including the Florida Telephone Solicitation Act. Message and data rates may apply. Message frequency varies. I further agree to the{" "}
                             <a href="/terms" className="underline hover:text-foreground">Terms of Service</a> and{" "}
                             <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>.
                           </span>
@@ -1089,7 +879,7 @@ export default function COBRAQuizPage() {
                   <div className="space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-3xl font-bold text-foreground">Almost there. What&apos;s your name?</h2>
-                      <p className="text-muted-foreground">So your specialist can personalize your options.</p>
+                      <p className="text-muted-foreground">So your licensed agent can personalize your options.</p>
                     </div>
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1137,13 +927,13 @@ export default function COBRAQuizPage() {
                         disabled={isSubmitting}
                         className="w-full h-12 bg-[#D4AF37] text-[#0A1128] hover:bg-[#D4AF37]/90 font-bold text-base disabled:opacity-50"
                       >
-                        {isSubmitting ? "Finding your options..." : "Show My COBRA Alternatives"}
+                        {isSubmitting ? "Finding your options..." : "Show My Coverage Options"}
                         {!isSubmitting && <ArrowRight className="w-4 h-4 ml-2" />}
                       </Button>
 
                       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                         <Lock className="w-3 h-3" />
-                        <span>Your information is encrypted and never sold</span>
+                        <span>Your information is encrypted and handled securely</span>
                       </div>
                     </div>
                   </div>
