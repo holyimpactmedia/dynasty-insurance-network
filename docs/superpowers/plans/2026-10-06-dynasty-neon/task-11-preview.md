@@ -129,7 +129,7 @@ git check-ignore -q .env.development.local && echo ignored
 Start `preview_start` name `dev`. In the browser pane (localhost, test credentials created in Step 5), desktop and mobile:
 1. `/api/health` returns `{"status":"ok","provider":"neon"}`.
 2. Sign in as `test-superadmin@dynasty.test`: dashboard loads in the Dynasty look; nav shows Lead CRM, Projections, Users, Settings.
-3. Submit one test lead through each funnel (`/individual`, `/family`, `/cobra`, `/ppo`, `/self-employed`, `/business`) using `@dynasty.test` addresses and the PPO funnel with a priority picked. Each shows its normal thank-you screen.
+3. Submit one test lead through each funnel (`/individual`, `/family`, `/cobra`, `/ppo`, `/self-employed`) using `@dynasty.test` addresses and the PPO funnel with a priority picked. Each shows its normal thank-you screen.
 4. Within 30 seconds each lead appears on the dashboard without reloading (or immediately on switching back to the tab); open one in the drawer; CSV export downloads `dynasty-leads-YYYY-MM-DD.csv`.
 5. Users page: invite `invitee@dynasty.test` as admin; expect the amber "Account created, but the invite email was not sent" (email is off locally) and the user in the list.
 6. Settings: switch Projections off; the nav entry disappears and `/dashboard/projections` redirects to `/dashboard/admin`; switch it back on.
@@ -147,7 +147,7 @@ Then the parity check on the stored rows (Review Focus 2), read-only:
 psql "$(npx neonctl@latest connection-string preview)" -c "select funnel_type, age, priorities, tcpa_consent, tcpa_consent_at is not null as consent_time, trusted_form_cert_url is not null as cert, ip_address <> 'unknown' as ip from leads where email like '%@dynasty.test' order by created_at" -c "select email, role from \"user\" where email like '%@dynasty.test' order by email"
 ```
 
-(If `psql` is not installed, use the Neon console SQL editor on the `preview` branch with the same queries.) Expected: six rows; the PPO row's `priorities` reads `["<value>"]` (JSON text, not `{...}`); `tcpa_consent` true with a consent time; `test-admin` role still `admin`.
+(If `psql` is not installed, use the Neon console SQL editor on the `preview` branch with the same queries.) Expected: five rows; the PPO row's `priorities` reads `["<value>"]` (JSON text, not `{...}`); `tcpa_consent` true with a consent time; `test-admin` role still `admin`.
 
 - [ ] **Step 8: Push the branch for a Vercel preview**
 

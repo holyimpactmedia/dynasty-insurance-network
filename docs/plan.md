@@ -13,7 +13,7 @@
 
 **Spec:** [`docs/superpowers/specs/2026-10-05-dynasty-neon-design.md`](superpowers/specs/2026-10-05-dynasty-neon-design.md) (owner-approved 2026-10-06). Executors read the spec and their task file.
 
-**Gate status:** written 2026-10-06. `/pressure-test`: CLEAR AFTER FIXES (C1 TrustedForm claim, C2 Neon durability, H1 unsubscribe link, H2 compute wake-ups). `/senior-review`: GO WITH CHANGES (same fixes plus a repo rulebook and slower polling). All fixes are folded into the slices below (deviations 9 to 12). Premise observed. Owner approval pending; nothing builds before it.
+**Gate status:** written 2026-10-06. `/pressure-test`: CLEAR AFTER FIXES (C1 TrustedForm claim, C2 Neon durability, H1 unsubscribe link, H2 compute wake-ups). `/senior-review`: GO WITH CHANGES (same fixes plus a repo rulebook and slower polling). All fixes are folded into the slices below (deviations 9 to 12). Premise observed. **Approved by the owner on 2026-10-08:** single release (no live traffic), Tasks 3 to 9 approved as one batch, executed subagent-driven (fresh implementer and reviewer per slice). Tasks 11, 12 and 13 still wait for their own yes. Rebased onto `main` after the legal merge (`62197a4`).
 
 ## Global Constraints
 
@@ -69,7 +69,7 @@ Hard-stop class under the Gate Policy (Task 0): auth and access (Tasks 3, 5, 6, 
 - [ ] **Task 4: Database layer and health.** Drizzle files byte-identical, `lib/db`, `lib/data` store, `/api/health` on Neon, `db:verify` read-only green against Neon. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-04-database.md)
 - [ ] **Task 5: Auth server and gates.** Better Auth server (Dynasty), gated `/api/auth/*`, `requireAdmin` accepting admin and superadmin, proxy, auth emails. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-05-auth-server.md)
 - [ ] **Task 6: Auth pages in the Dynasty look.** Dynasty `AuthShell`, login, forgot and reset password (with expired-link message), error page, nav sign-out, setup screen. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-06-auth-pages.md)
-- [ ] **Task 7: Lead intake on Neon.** `/api/leads`, unsubscribe, AI scoring, USHA status write to Neon; TCPA parity tests for all six funnels; TrustedForm claims fixed. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-07-lead-intake.md)
+- [ ] **Task 7: Lead intake on Neon.** `/api/leads`, unsubscribe, AI scoring, USHA status write to Neon; TCPA parity tests for every live funnel; TrustedForm claims fixed. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-07-lead-intake.md)
 - [ ] **Task 8: Dashboard on admin APIs.** `/api/admin/{leads,stats,export}`, polling client, admin and projections pages; every admin route proven to answer 401 without a session. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-08-dashboard.md)
 - [ ] **Task 9: Users and Settings.** Super-admin Users page with set-password-link invites, Settings page, nav entries. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-09-users-settings.md)
 - [ ] **Task 10: Remove Supabase, document Neon.** Supabase code, migrations and packages deleted; `.env.example` and docs rewritten for Dynasty on Neon. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10-cleanup-docs.md)

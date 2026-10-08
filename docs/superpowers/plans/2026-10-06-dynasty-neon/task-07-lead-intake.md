@@ -186,7 +186,8 @@ const selfEmployedBody = {
   utmCampaign: "se_q4",
 }
 
-// app/business/page.tsx handleContactSubmit: sends no age.
+// A submission with no age at all (the shape the removed /business funnel
+// sent; kept because older links or scripts can still post it).
 const businessBody = {
   firstName: "Test",
   lastName: "Owner",
@@ -267,7 +268,7 @@ describe("POST /api/leads: TCPA evidence parity with the Supabase-era insert", (
     }))
   })
 
-  it("business funnel (no age sent)", async () => {
+  it("a submission with no age stores age as null", async () => {
     await submit(businessBody, "192.0.2.13")
     expect(storedRecord()).toStrictEqual(expected({
       firstName: "Test", lastName: "Owner", email: "test.owner@example.com", phone: "(555) 010-0140",
@@ -849,7 +850,7 @@ describe("POST /api/trustedform/claim", () => {
 })
 ```
 
-(The `/business` funnel is deliberately not in the list: legal removed it, and the guard keeps it unchanged until the legal branch deletes it.)
+(These are the five live funnels; legal removed `/business`, merged to `main` on 2026-10-08.)
 
 Run `pnpm vitest run app/api/leads/route.trustedform.test.ts app/api/trustedform`. Expected: the leads tests PASS (Step 4 already fixed the body); the claim test FAILS (current scan terms are found in no funnel).
 
