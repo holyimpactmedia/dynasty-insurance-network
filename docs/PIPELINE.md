@@ -28,11 +28,11 @@ A lead crosses the system in five stages. Stage 1 (intake) blocks the response; 
 | Insert lead row | written through the Neon platform store (`getPlatformStore()` in [`lib/data/store.ts`](../lib/data/store.ts), `createLead`); persists every field the funnels send, including `quiz_answers` |
 | Schedule post-response work | `after(async () => { … })`, runs after the 200 is flushed |
 
-The response returns within tens of milliseconds. The funnel's "thank you" page never waits on AI scoring or USHA.
+The response usually returns in well under a second; when Neon is waking from scale-to-zero the first request can take a few seconds. The funnel's "thank you" page never waits on AI scoring or USHA.
 
 ## Stage 2: TrustedForm certificate claim
 
-`POST` to [`/api/trustedform/claim`](../app/api/trustedform/claim/route.ts) with the cert URL. TCPA evidence. Self-fetch from `after()` is fine because `claim` is a separate function invocation.
+`POST` to [`/api/trustedform/claim`](../app/api/trustedform/claim/route.ts) with the cert URL. TCPA evidence. The self-fetch from `after()` runs as a separate function invocation; on a preview with Vercel Deployment Protection it is refused (401) unless a protection bypass is configured.
 
 ## Stage 3: Confirmation email
 
@@ -46,7 +46,7 @@ The response returns within tens of milliseconds. The funnel's "thank you" page 
 |---|---|
 | Feature flag | requires `USHA_ENABLED=true` **and** both `USHA_API_URL` + `USHA_API_KEY`; otherwise the lead is marked `usha_status='pending'` (visible in the dashboard) and the post is skipped |
 | Retry | 3 attempts total (1 + 2 retries) with linear backoff on HTTP 429 / 5xx / network errors |
-| Status writeback | on success: `usha_status='sent'`, `usha_sent_at`, `usha_lead_id`; on terminal failure: `usha_status='failed'` |
+| Status writeback | on success: `usha_status='sent'`, `usha_sent_at`, `usha_lead_id`; on terminal failure: `usha_status='failed'` and `usha_sent_at` (stamped for any status other than `pending`) |
 | Admin alert | the admin notification email always includes the `ushaResult`, so a `failed` status surfaces in the inbox (labelled `USHA Post Failed` in the email body) |
 | **Deferred** | the request body's field mapping and auth header format (`TODO`s in the file); fill in once the LeadArena API spec is available |
 

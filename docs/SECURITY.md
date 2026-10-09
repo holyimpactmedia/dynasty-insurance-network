@@ -10,7 +10,7 @@ Roles live on the Better Auth `user` row: `user` (no dashboard), `admin` (leads,
 
 ## Fail closed
 
-[`lib/platform/provider.ts`](../lib/platform/provider.ts) decides whether the platform is configured. A deployed environment (Vercel production or preview) missing `DATABASE_URL`, `BETTER_AUTH_SECRET` or the site URL, or holding the public placeholder values, is not configured: the dashboard renders the setup screen and `/api/auth/*` answers 503 before Better Auth loads. `lib/auth/server.ts` throws rather than sign anything with a placeholder in a deployed runtime.
+[`lib/platform/provider.ts`](../lib/platform/provider.ts) decides whether the platform is configured. A deployed environment (Vercel production or preview) missing `DATABASE_URL`, `BETTER_AUTH_SECRET` or the site URL, or holding the public placeholder secret or database URL, is not configured (the site URL is checked for presence only, so a wrong origin is accepted and breaks sign-in and email links rather than failing closed): the dashboard renders the setup screen and `/api/auth/*` answers 503 before Better Auth loads. `lib/auth/server.ts` throws rather than sign anything with a placeholder in a deployed runtime.
 
 ## Where the gate runs
 

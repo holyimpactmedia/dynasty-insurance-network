@@ -48,7 +48,7 @@ Never edit or regenerate a migration that has shipped: Drizzle records each file
 
 Sign in as a super admin, open **Users**, enter name, email and role. They receive a one-time "set your password" link that expires in 1 hour; if it expires they use **Forgot password** on the sign-in page. Roles: `admin` sees leads and projections; `superadmin` also manages users and settings. With `RESEND_API_KEY` unset no email goes out, so set it first.
 
-The first accounts come from the one-time local `pnpm auth:bootstrap` script (see the `AUTH_BOOTSTRAP_*` variables in [`.env.example`](../.env.example)). It creates the listed users in whichever database `DATABASE_URL` points at and emails each a set-password link. Run it only after the owner approves; it is the one laptop operation allowed to create users on production.
+The first accounts come from the one-time local `pnpm auth:bootstrap` script (see the `AUTH_BOOTSTRAP_*` variables in [`.env.example`](../.env.example)). It creates the listed users in whichever database `DATABASE_URL` points at and emails each a set-password link. Run it only after the owner approves; it is the one laptop operation allowed to create users on production. Set `AUTH_BOOTSTRAP_MODE` back to `false` (or delete it) in `.env.local` straight after the run: while it is `true`, public sign-up is open for anything run locally against that database.
 
 Roles are stored in the Better Auth `user` table and cannot be changed by the user. The Users page only creates new accounts; it cannot change an existing user's role. To change a role by hand (rare), get the owner's approval first (access changes are a hard stop), then run against the right Neon branch:
 
@@ -66,15 +66,19 @@ update "user" set role = 'admin' where email = 'person@example.com';
 | `503` | `{"status":"error","reason":"database_unconfigured","provider":"neon"}` | `DATABASE_URL` missing |
 | `503` | `{"status":"error","reason":"leads_table_unreachable","provider":"neon"}` | database unreachable or schema missing; details in Vercel runtime logs (`[health] database check failed`) |
 
-Wire it into an uptime check at a 5-minute or longer interval: every check wakes the Neon database, which costs compute. The dashboard polls leads every 30 s and stats every 60 s, plus once when the window regains focus, and only while its tab is visible, for the same reason.
+`/api/health` checks only the database: a `200` does not prove sign-in works (a missing `BETTER_AUTH_SECRET` or site URL still shows the setup screen).
+
+Wire it into an uptime check at an interval well above Neon's scale-to-zero delay (5 minutes by default), for example every 15 to 30 minutes. Every check wakes the database, and a check every 5 minutes or less keeps it awake around the clock, which uses compute all month; confirm the interval against the Neon plan's compute allowance. The dashboard polls leads every 30 s and stats every 60 s, plus once when the window regains focus, and only while its tab is visible, for the same reason.
 
 ## Lead intake when the database is down
 
-The funnels keep working: the consumer sees success, and the confirmation email, admin email and USHA post still go out. The insert failure is logged as `LEAD INSERT FAILED` (or `LEAD DEDUP LOOKUP FAILED`). Those leads exist only in the admin emails until re-entered.
+The funnels keep working: the consumer sees success, and the confirmation email, admin email and USHA post still go out. A failed write is logged as `LEAD INSERT FAILED` (or `LEAD DEDUP LOOKUP FAILED`); with `DATABASE_URL` missing, the line is the warning `Platform database not configured. Lead sent via email only.` Such a lead exists only in the admin notification email.
+
+Restoring one is an owner-approved SQL insert into `leads` on the production branch that copies the original values from that admin email: `reference_number`, name, email, phone, age, state, funnel, income, household, qualifying event, priorities, UTM fields, the consent time (`tcpa_consent_at`), `ip_address` and `trusted_form_cert_url`, with `tcpa_consent = true` (the intake refuses any lead without consent). Never re-submit the lead through a public funnel: that records your IP address, a new consent time and a new or missing TrustedForm certificate as if the consumer had consented again. The quiz answers are not in the admin email and cannot be restored.
 
 ## TrustedForm claims
 
-Each lead's TrustedForm certificate is claimed first in the background work after the response, with a 10 s timeout. A failed claim is logged as `TRUSTEDFORM CLAIM FAILED` in the Vercel runtime logs; an unclaimed certificate expires, so search the logs for that line. The absence of that line proves TrustedForm accepted the claim, not that the scan phrases matched: a claim that TrustedForm accepts but whose phrase scan fails still returns 201, because [`app/api/trustedform/claim/route.ts`](../app/api/trustedform/claim/route.ts) does not check `outcome` or the scan results, and nothing logs them. Check the certificate in TrustedForm if in doubt. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text.
+Each lead's TrustedForm certificate is claimed first in the background work after the response, with a 10 s timeout. A failed claim is logged as `TRUSTEDFORM CLAIM FAILED` in the Vercel runtime logs; an unclaimed certificate expires, so search the logs for that line. When the lead carried a certificate URL, the absence of that line proves TrustedForm accepted the claim, not that the scan phrases matched: a claim that TrustedForm accepts but whose phrase scan fails still returns 201, because [`app/api/trustedform/claim/route.ts`](../app/api/trustedform/claim/route.ts) does not gate its status on `outcome` or the scan results, and the intake never reads them. Check the certificate in TrustedForm if in doubt. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text.
 
 ## USHA marketplace alerts
 
