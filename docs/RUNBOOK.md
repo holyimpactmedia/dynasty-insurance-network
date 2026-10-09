@@ -28,7 +28,7 @@ If `DATABASE_URL`, `BETTER_AUTH_SECRET` or the site URL is missing in a deployed
 
 - **Production:** the Neon project's `main` branch.
 - **Preview:** a separate Neon branch named `preview`. Preview deployments never point at production data.
-- Local `.env.local` may point at `main` for read-only checks only. Never submit leads, create users or reset passwords against `main` from a laptop.
+- Local `.env.local` may point at `main` for read-only checks only. Never submit leads, create users or reset passwords against `main` from a laptop. The one exception is the owner-approved `pnpm auth:bootstrap` run described under "Give someone dashboard access".
 
 The app connects through a `pg` pool (max 5 connections, 30 s idle timeout, 10 s connect timeout) per serverless instance. An idle connection that Neon closes is logged as `[db] idle client error`; the pool drops it and carries on.
 
@@ -48,9 +48,9 @@ Never edit or regenerate a migration that has shipped: Drizzle records each file
 
 Sign in as a super admin, open **Users**, enter name, email and role. They receive a one-time "set your password" link that expires in 1 hour; if it expires they use **Forgot password** on the sign-in page. Roles: `admin` sees leads and projections; `superadmin` also manages users and settings. With `RESEND_API_KEY` unset no email goes out, so set it first.
 
-The first accounts come from the one-time local `pnpm auth:bootstrap` script (see the `AUTH_BOOTSTRAP_*` variables in [`.env.example`](../.env.example)). It writes to whichever database `DATABASE_URL` points at, so run it only with the owner's approval.
+The first accounts come from the one-time local `pnpm auth:bootstrap` script (see the `AUTH_BOOTSTRAP_*` variables in [`.env.example`](../.env.example)). It creates the listed users in whichever database `DATABASE_URL` points at and emails each a set-password link. Run it only after the owner approves; it is the one laptop operation allowed to create users on production.
 
-Roles are stored in the Better Auth `user` table and cannot be changed by the user. To change a role by hand (rare), run against the right Neon branch:
+Roles are stored in the Better Auth `user` table and cannot be changed by the user. The Users page only creates new accounts; it cannot change an existing user's role. To change a role by hand (rare), get the owner's approval first (access changes are a hard stop), then run against the right Neon branch:
 
 ```sql
 update "user" set role = 'admin' where email = 'person@example.com';
@@ -74,11 +74,11 @@ The funnels keep working: the consumer sees success, and the confirmation email,
 
 ## TrustedForm claims
 
-Each lead's TrustedForm certificate is claimed first in the background work after the response, with a 10 s timeout. A failed claim is logged as `TRUSTEDFORM CLAIM FAILED` in the Vercel runtime logs; an unclaimed certificate expires, so search the logs for that line. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text.
+Each lead's TrustedForm certificate is claimed first in the background work after the response, with a 10 s timeout. A failed claim is logged as `TRUSTEDFORM CLAIM FAILED` in the Vercel runtime logs; an unclaimed certificate expires, so search the logs for that line. The absence of that line proves TrustedForm accepted the claim, not that the scan phrases matched: a claim that TrustedForm accepts but whose phrase scan fails still returns 201, because [`app/api/trustedform/claim/route.ts`](../app/api/trustedform/claim/route.ts) does not check `outcome` or the scan results, and nothing logs them. Check the certificate in TrustedForm if in doubt. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text.
 
 ## USHA marketplace alerts
 
-On a terminal `failed` status the admin notification email shows the USHA result; search the inbox for `USHA: failed`. The dashboard's Marketplace filter (`failed`) lists the backlog. [`lib/usha/postLead.ts`](../lib/usha/postLead.ts) retries 3 times. Posting stays off unless `USHA_ENABLED` is exactly `true` and both `USHA_API_URL` and `USHA_API_KEY` are set.
+On a terminal `failed` status the admin notification email shows the USHA result in its body (the subject does not carry it); search the inbox for `USHA Post Failed`. The dashboard's Marketplace filter (`failed`) lists the backlog. [`lib/usha/postLead.ts`](../lib/usha/postLead.ts) makes up to 3 attempts. Posting stays off unless `USHA_ENABLED` is exactly `true` and both `USHA_API_URL` and `USHA_API_KEY` are set.
 
 ## Previews
 
@@ -90,7 +90,7 @@ Sign-in works only on the origin in `BETTER_AUTH_URL`. For previews that is the 
 |---|---|---|
 | Setup screen on the dashboard | `DATABASE_URL`, `BETTER_AUTH_SECRET` or site URL missing (or a placeholder) | set them in Vercel for that environment and redeploy |
 | Sign-in fails on a preview | opened the per-deployment URL | use the branch alias |
-| Admin sent to `/` after sign-in | account role is `user` | change the role (Users page or SQL above) |
+| Admin sent to `/` after sign-in | account role is `user` | change the role with the SQL in "Give someone dashboard access", after the owner approves (the Users page only creates new accounts) |
 | Users or Settings missing from the nav | account is `admin`, not `superadmin` | expected |
 | Invite or reset email never arrives | `RESEND_API_KEY` unset (or the link expired after 1 hour) | set the key; use **Forgot password** to get a new link |
 | `/api/leads` returns 429 | rate limit from one IP | wait 10 min or tune [`lib/rate-limit.ts`](../lib/rate-limit.ts) |

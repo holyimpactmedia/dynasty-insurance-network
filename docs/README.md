@@ -13,7 +13,7 @@ Master index. **This file is an index only: every fact lives in exactly one sub-
 
 A Next.js 16 / React 19 application on Neon Postgres with Better Auth. It is a **lead pass-through tracker**, not a CRM. Consumer funnels capture insurance leads; TCPA consent and the TrustedForm certificate are recorded, the lead is AI-scored, and it is forwarded to the USHA Marketplace for agents to buy. The admin dashboard tracks each lead through that pipeline and shows the money (leads sent × sell price).
 
-The codebase ships in five PR-sized changes documented in [`.claude/plans/lets-make-a-plan-transient-aurora.md`](../.claude/plans/lets-make-a-plan-transient-aurora.md):
+The codebase shipped in five PR-sized changes:
 
 1. **PR0**: Build integrity (removed `ignoreBuildErrors`, added Vitest).
 2. **PR1**: Schema + authorization + closed the open mutation routes ([SCHEMA.md](./SCHEMA.md), [SECURITY.md](./SECURITY.md)).
