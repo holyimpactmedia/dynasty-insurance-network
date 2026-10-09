@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold text-foreground mb-4">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mb-8">Last Updated: May 7, 2026</p>
+        <p className="text-sm text-muted-foreground mb-8">Last Updated: October 9, 2026</p>
 
         <div className="prose prose-sm max-w-none space-y-6 text-foreground">
           <section>
@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
             <h3 className="text-xl font-semibold mb-2 mt-4">4.3 Service Providers</h3>
             <p className="text-muted-foreground leading-relaxed">
               We share information with third-party service providers performing services on our behalf, including
-              hosting (Vercel, Supabase), email delivery (Resend), TCPA proof-of-consent (TrustedForm by ActiveProspect),
+              hosting (Vercel, Neon), email delivery (Resend), TCPA proof-of-consent (TrustedForm by ActiveProspect),
               analytics (Google Analytics), and lead distribution (LeadArena / USHA Marketplace). These providers are
               contractually obligated to protect your information and use it only for the purposes we specify.
             </p>

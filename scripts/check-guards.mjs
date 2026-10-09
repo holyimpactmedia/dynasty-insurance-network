@@ -28,8 +28,21 @@ const FROZEN = [
 ]
 
 // Added lines allowed per file. Empty until the owner approves an amendment
-// (Task 13). Removed lines are never allowed.
+// (Task 13).
 const ALLOWED_ADDITIONS = {}
+
+// Exact, owner-approved replacements inside frozen files, as [from, to] pairs.
+// A removed line passes only when the same hunk adds that very line with
+// `from` replaced by `to` once and nothing else changed. Every other removed
+// line is a violation.
+const ALLOWED_REPLACEMENTS = {
+  // Owner, 2026-10-09: consumer data moved from Supabase to Neon (Task 10c);
+  // section 14 of the policy requires the "Last Updated" date to move with it.
+  "app/privacy/page.tsx": [
+    ["hosting (Vercel, Supabase)", "hosting (Vercel, Neon)"],
+    ["Last Updated: May 7, 2026", "Last Updated: October 9, 2026"],
+  ],
+}
 
 const mergeBase = execFileSync("git", ["merge-base", "HEAD", BASE], { encoding: "utf8" }).trim()
 const diff = execFileSync("git", [
@@ -38,14 +51,46 @@ const diff = execFileSync("git", [
 ], { encoding: "utf8" })
 let currentFile = ""
 let inHunk = false
+let removed = []
+let added = []
+
+// Judge one hunk's removed and added lines together, so an allowed
+// replacement pairs a removed line with its exact counterpart.
+function closeHunk() {
+  const pairs = ALLOWED_REPLACEMENTS[currentFile] || []
+  const usedAdded = new Set()
+  for (const minus of removed) {
+    const text = minus.slice(1)
+    const allowed = pairs.some(([from, to]) => {
+      if (!text.includes(from)) return false
+      const index = added.findIndex((plus, i) => !usedAdded.has(i) && plus === `+${text.replace(from, to)}`)
+      if (index === -1) return false
+      usedAdded.add(index)
+      return true
+    })
+    if (!allowed) problems.push(`frozen file changed (${currentFile}): ${minus}`)
+  }
+  added.forEach((plus, i) => {
+    if (usedAdded.has(i)) return
+    if ((ALLOWED_ADDITIONS[currentFile] || []).some((re) => re.test(plus))) return
+    problems.push(`frozen file changed (${currentFile}): ${plus}`)
+  })
+  removed = []
+  added = []
+}
+
 for (const line of diff.split("\n")) {
-  const header = line.match(/^diff --git a\/(.+) b\/(.+)$/)
-  if (header) {
-    currentFile = header[2]
+  if (line.startsWith("diff --git ")) {
+    closeHunk()
+    // A path git had to quote (non-ASCII and similar) does not match the plain
+    // form; it gets a name no allowance can match, so every change in it counts.
+    const header = line.match(/^diff --git a\/(.+) b\/(.+)$/)
+    currentFile = header ? header[2] : `(unparsed path) ${line.slice("diff --git ".length)}`
     inHunk = false
     continue
   }
   if (line.startsWith("@@")) {
+    closeHunk()
     inHunk = true
     continue
   }
@@ -54,10 +99,10 @@ for (const line of diff.split("\n")) {
     if (/^(Binary files |old mode |new mode |new file mode |deleted file mode )/.test(line)) problems.push(`frozen file changed (${currentFile}): ${line}`)
     continue
   }
-  if (!line.startsWith("+") && !line.startsWith("-")) continue
-  if (line.startsWith("+") && (ALLOWED_ADDITIONS[currentFile] || []).some((re) => re.test(line))) continue
-  problems.push(`frozen file changed (${currentFile}): ${line}`)
+  if (line.startsWith("-")) removed.push(line)
+  else if (line.startsWith("+")) added.push(line)
 }
+closeHunk()
 // A new file under a frozen path counts even before it is committed.
 const untracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...FROZEN], { encoding: "utf8" })
 for (const f of untracked.split("\n").filter(Boolean)) problems.push(`untracked file under a frozen path: ${f}`)
