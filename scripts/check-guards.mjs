@@ -32,26 +32,35 @@ const FROZEN = [
 const ALLOWED_ADDITIONS = {}
 
 const mergeBase = execFileSync("git", ["merge-base", "HEAD", BASE], { encoding: "utf8" }).trim()
-const diff = execFileSync(
-  "git",
-  ["diff", "--unified=0", "--no-color", mergeBase, "--", ...FROZEN],
-  { encoding: "utf8" },
-)
+const diff = execFileSync("git", [
+  "diff", "--unified=0", "--no-color", "--no-ext-diff", "--no-textconv", "--no-renames",
+  "--src-prefix=a/", "--dst-prefix=b/", mergeBase, "--", ...FROZEN,
+], { encoding: "utf8" })
 let currentFile = ""
+let inHunk = false
 for (const line of diff.split("\n")) {
-  if (line.startsWith("+++ ")) {
-    currentFile = line.replace(/^\+\+\+ (b\/)?/, "")
+  const header = line.match(/^diff --git a\/(.+) b\/(.+)$/)
+  if (header) {
+    currentFile = header[2]
+    inHunk = false
     continue
   }
-  if (line.startsWith("--- ")) continue
-  if (!line.startsWith("+") && !line.startsWith("-")) continue
-  if (line.startsWith("+")) {
-    const allowed = ALLOWED_ADDITIONS[currentFile] || []
-    if (allowed.some((re) => re.test(line))) continue
+  if (line.startsWith("@@")) {
+    inHunk = true
+    continue
   }
+  if (!inHunk) {
+    // Mode and binary changes have no hunk lines; any of them is a change.
+    if (/^(Binary files |old mode |new mode )/.test(line)) problems.push(`frozen file changed (${currentFile}): ${line}`)
+    continue
+  }
+  if (!line.startsWith("+") && !line.startsWith("-")) continue
+  if (line.startsWith("+") && (ALLOWED_ADDITIONS[currentFile] || []).some((re) => re.test(line))) continue
   problems.push(`frozen file changed (${currentFile}): ${line}`)
 }
-// Deleting or renaming a frozen file shows up in the diff above as removed lines.
+// A new file under a frozen path counts even before it is committed.
+const untracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...FROZEN], { encoding: "utf8" })
+for (const f of untracked.split("\n").filter(Boolean)) problems.push(`untracked file under a frozen path: ${f}`)
 
 // ── 2. No Union leaks ────────────────────────────────────────────────────────
 const SCAN_DIRS = ["app", "components", "lib", "scripts", "hooks", "proxy.ts"]
