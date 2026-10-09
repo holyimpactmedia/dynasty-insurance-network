@@ -36,6 +36,8 @@ npx neonctl@latest branches list
 
 The production branch is the one marked default (and the one whose endpoint host matches the host in `.env.local`'s `DATABASE_URL`; compare hosts with `grep '^DATABASE_URL=' .env.local | grep -o '@[^/:?]*'`, which prints the host name only, never the credentials before the `@`). Use that name as `<PROD_BRANCH>` here and in Task 12; record it in `docs/build-log.md`.
 
+**Found 2026-10-09 (Step 2):** `.env.local` points at the `dev` branch of the Neon project `dynasty-insurance-network`, not at its default `production` branch. Read-only `db:verify`: `dev` holds the full schema and the two real accounts; `production` has no tables at all. So the preview branch is created from `dev`, the branch that holds today's data. Task 12 needs an owner decision on which branch becomes production (see Task 12 Step 2).
+
 - [ ] **Step 3: Create the preview branch**
 
 ```bash

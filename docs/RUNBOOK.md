@@ -26,9 +26,9 @@ If `DATABASE_URL`, `BETTER_AUTH_SECRET` or the site URL is missing in a deployed
 
 ## Databases
 
-- **Production:** the Neon project's `main` branch.
+- **Production:** the `production` branch of the Neon project `dynasty-insurance-network` (organization Holy Impact Media).
 - **Preview:** a separate Neon branch named `preview`. Preview deployments never point at production data.
-- Local `.env.local` may point at `main` for read-only checks only. Never submit leads, create users or reset passwords against `main` from a laptop. The one exception is the owner-approved `pnpm auth:bootstrap` run described under "Give someone dashboard access".
+- Local `.env.local` may point at production data for read-only checks only. Never submit leads, create users or reset passwords against it from a laptop. The one exception is the owner-approved `pnpm auth:bootstrap` run described under "Give someone dashboard access".
 
 The app connects through a `pg` pool (max 5 connections, 30 s idle timeout, 10 s connect timeout) per serverless instance. An idle connection that Neon closes is logged as `[db] idle client error`; the pool drops it and carries on.
 

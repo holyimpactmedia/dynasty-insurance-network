@@ -13,3 +13,7 @@ node_modules
 # Tooling / local state
 .claude/
 *.tsbuildinfo
+# Neon CLI default organization (neonctl writes it on first use)
+.neon
+# Local test-account credentials (scripts/create-test-users.ts)
+.test-users.local.json
