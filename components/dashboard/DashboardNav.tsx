@@ -20,6 +20,8 @@ import {
   LogOut,
   ChevronDown,
   BarChart3,
+  Settings,
+  Users,
 } from "lucide-react"
 
 // Unused agent/routing imports kept in original file: removed here since
@@ -29,9 +31,15 @@ interface DashboardNavProps {
   userRole: string
   userName: string
   userEmail: string
+  projectionsEnabled: boolean
 }
 
-export default function DashboardNav({ userRole, userName, userEmail }: DashboardNavProps) {
+export default function DashboardNav({
+  userRole,
+  userName,
+  userEmail,
+  projectionsEnabled,
+}: DashboardNavProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -51,23 +59,42 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
     }
   }
 
-  // Admin-only nav: agent and routing items removed (USHA Marketplace handles lead distribution)
+  // Admin-only nav: agent and routing items removed (USHA Marketplace handles lead distribution).
+  // `enabled` lets a super admin hide a section globally from the Settings panel.
   const navItems = [
     {
       href: "/dashboard/admin",
       label: "Lead CRM",
       icon: LayoutDashboard,
       roles: ["admin", "superadmin"],
+      enabled: true,
     },
     {
       href: "/dashboard/projections",
       label: "Projections",
       icon: BarChart3,
       roles: ["admin", "superadmin"],
+      enabled: projectionsEnabled,
+    },
+    {
+      href: "/dashboard/users",
+      label: "Users",
+      icon: Users,
+      roles: ["superadmin"],
+      enabled: true,
+    },
+    {
+      href: "/dashboard/settings",
+      label: "Settings",
+      icon: Settings,
+      roles: ["superadmin"],
+      enabled: true,
     },
   ]
 
-  const filteredNavItems = navItems.filter(item => item.roles.includes(userRole))
+  const filteredNavItems = navItems.filter(
+    item => item.enabled && item.roles.includes(userRole),
+  )
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -140,18 +167,17 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/admin" className="flex items-center">
-                    <LayoutDashboard className="w-4 h-4 mr-2" />
-                    Lead CRM
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/projections" className="flex items-center">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    Projections
-                  </Link>
-                </DropdownMenuItem>
+                {filteredNavItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link href={item.href} className="flex items-center">
+                        <Icon className="w-4 h-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  )
+                })}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}

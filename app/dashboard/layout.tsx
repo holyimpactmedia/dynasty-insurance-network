@@ -2,6 +2,7 @@ import DashboardNav from "@/components/dashboard/DashboardNav"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
 import { requireAdmin } from "@/lib/auth/requireAdmin"
 import { isPlatformConfigured } from "@/lib/platform/provider"
+import { getProjectionsEnabled } from "@/lib/settings"
 
 export default async function DashboardLayout({
   children,
@@ -15,6 +16,7 @@ export default async function DashboardLayout({
   // Authoritative gate: authenticated AND an admin/superadmin role on the
   // Better Auth session. Redirects non-admins; never returns otherwise.
   const { user, profile } = await requireAdmin()
+  const projectionsEnabled = await getProjectionsEnabled()
 
   const userName =
     [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
@@ -27,6 +29,7 @@ export default async function DashboardLayout({
         userRole={profile.role}
         userName={userName}
         userEmail={user.email ?? ""}
+        projectionsEnabled={projectionsEnabled}
       />
       {children}
     </div>
