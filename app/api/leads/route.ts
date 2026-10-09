@@ -18,6 +18,10 @@ function generateReferenceNumber(): string {
 // AI scoring / USHA / email.
 const DEDUP_WINDOW_MS = 10 * 60 * 1000
 
+// The claim runs before the consumer and admin emails in after(); a hung
+// TrustedForm call must not hold them back.
+const TRUSTEDFORM_CLAIM_TIMEOUT_MS = 10_000
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -169,6 +173,7 @@ export async function POST(request: NextRequest) {
               email: normalizedEmail,
               phone,
             }),
+            signal: AbortSignal.timeout(TRUSTEDFORM_CLAIM_TIMEOUT_MS),
           })
           if (!claim.ok) {
             console.error('TRUSTEDFORM CLAIM FAILED:', claim.status, { referenceNumber })

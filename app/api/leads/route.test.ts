@@ -7,28 +7,44 @@ const state = vi.hoisted(() => ({
   duplicateError: null as unknown,
   insertResult: { id: "lead-1", createdAt: "2026-01-01T00:00:00Z" } as { id: string; createdAt: string } | null,
   insertError: null as unknown,
+  callbacks: [] as Array<() => Promise<void>>,
 }))
 
-// after() is a no-op in tests: we assert on the response, not the background work.
+const spies = vi.hoisted(() => ({
+  findRecentDuplicate: vi.fn(),
+  createLead: vi.fn(),
+  sendLeadConfirmation: vi.fn(),
+  notifyAdmin: vi.fn(),
+  postLeadToUsha: vi.fn(),
+  scoreAndUpdateLead: vi.fn(),
+}))
+
+// after() captures its callback instead of running it. Most tests assert on the
+// response only; the database-down tests run the captured callbacks, because
+// the emails and the USHA post still going out is the point there.
 vi.mock("next/server", async (importOriginal) => {
   const actual = await importOriginal<typeof import("next/server")>()
-  return { ...actual, after: vi.fn() }
+  return {
+    ...actual,
+    after: vi.fn((cb: () => Promise<void>) => {
+      state.callbacks.push(cb)
+    }),
+  }
 })
 
-// Fake platform store: the three methods the intake route calls.
+// Fake platform store: the methods the intake route calls.
 vi.mock("@/lib/data/store", () => ({
   getPlatformStore: async () => ({
     isConfigured: () => state.configured,
-    findRecentDuplicate: async () => {
-      if (state.duplicateError) throw state.duplicateError
-      return state.duplicateReference
-    },
-    createLead: async () => {
-      if (state.insertError) throw state.insertError
-      return state.insertResult
-    },
+    findRecentDuplicate: spies.findRecentDuplicate,
+    createLead: spies.createLead,
   }),
 }))
+
+vi.mock("@/lib/email/sendLeadConfirmation", () => ({ sendLeadConfirmation: spies.sendLeadConfirmation }))
+vi.mock("@/lib/email/notifyAdmin", () => ({ notifyAdmin: spies.notifyAdmin }))
+vi.mock("@/lib/usha/postLead", () => ({ postLeadToUsha: spies.postLeadToUsha }))
+vi.mock("@/lib/ai/scoreLeadWithAI", () => ({ scoreAndUpdateLead: spies.scoreAndUpdateLead }))
 
 import { POST } from "@/app/api/leads/route"
 import { __resetRateLimit } from "@/lib/rate-limit"
@@ -42,6 +58,10 @@ function makeReq(body: unknown, ip = "1.2.3.4"): NextRequest {
   })
 }
 
+async function runBackground() {
+  for (const cb of state.callbacks) await cb()
+}
+
 const validLead = { firstName: "A", lastName: "B", email: "a@b.com", tcpaConsent: true }
 
 describe("POST /api/leads", () => {
@@ -52,6 +72,19 @@ describe("POST /api/leads", () => {
     state.duplicateError = null
     state.insertResult = { id: "lead-1", createdAt: "2026-01-01T00:00:00Z" }
     state.insertError = null
+    state.callbacks = []
+    spies.findRecentDuplicate.mockReset().mockImplementation(async () => {
+      if (state.duplicateError) throw state.duplicateError
+      return state.duplicateReference
+    })
+    spies.createLead.mockReset().mockImplementation(async () => {
+      if (state.insertError) throw state.insertError
+      return state.insertResult
+    })
+    spies.sendLeadConfirmation.mockReset()
+    spies.notifyAdmin.mockReset()
+    spies.postLeadToUsha.mockReset()
+    spies.scoreAndUpdateLead.mockReset()
   })
 
   afterEach(() => {
@@ -98,6 +131,12 @@ describe("POST /api/leads", () => {
     expect(res.status).toBe(200)
     expect((await res.json()).success).toBe(true)
     expect(errorSpy.mock.calls.some(([msg]) => String(msg).includes("LEAD INSERT FAILED"))).toBe(true)
+
+    expect(state.callbacks).toHaveLength(1)
+    await runBackground()
+    expect(spies.sendLeadConfirmation).toHaveBeenCalledTimes(1)
+    expect(spies.postLeadToUsha).toHaveBeenCalledTimes(1)
+    expect(spies.notifyAdmin).toHaveBeenCalledTimes(1)
   })
 
   it("still returns 200 when the duplicate lookup fails (Neon down)", async () => {
@@ -106,6 +145,14 @@ describe("POST /api/leads", () => {
     const res = await POST(makeReq(validLead))
     expect(res.status).toBe(200)
     expect((await res.json()).message).toBe("Lead submitted successfully")
+
+    // The insert is still attempted after a failed lookup.
+    expect(spies.createLead).toHaveBeenCalledTimes(1)
+    expect(state.callbacks).toHaveLength(1)
+    await runBackground()
+    expect(spies.sendLeadConfirmation).toHaveBeenCalledTimes(1)
+    expect(spies.postLeadToUsha).toHaveBeenCalledTimes(1)
+    expect(spies.notifyAdmin).toHaveBeenCalledTimes(1)
   })
 
   it("still returns 200 (email-only) when the database is not configured", async () => {
@@ -113,5 +160,14 @@ describe("POST /api/leads", () => {
     vi.spyOn(console, "warn").mockImplementation(() => {})
     const res = await POST(makeReq(validLead))
     expect(res.status).toBe(200)
+
+    // Not configured means the store is never queried, but the emails and the USHA post still go out.
+    expect(spies.findRecentDuplicate).not.toHaveBeenCalled()
+    expect(spies.createLead).not.toHaveBeenCalled()
+    expect(state.callbacks).toHaveLength(1)
+    await runBackground()
+    expect(spies.sendLeadConfirmation).toHaveBeenCalledTimes(1)
+    expect(spies.postLeadToUsha).toHaveBeenCalledTimes(1)
+    expect(spies.notifyAdmin).toHaveBeenCalledTimes(1)
   })
 })
