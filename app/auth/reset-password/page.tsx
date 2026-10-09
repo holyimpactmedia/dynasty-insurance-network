@@ -17,20 +17,31 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token") || ""
   // Better Auth sends an expired or used link here as ?error=INVALID_TOKEN.
-  const linkInvalid = !token || searchParams.get("error") === "INVALID_TOKEN"
+  const [tokenRejected, setTokenRejected] = useState(false)
+  const linkInvalid = !token || searchParams.get("error") === "INVALID_TOKEN" || tokenRejected
   const router = useRouter()
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
     setLoading(true)
     setError(null)
-    const { error } = await authClient.resetPassword({ newPassword: password, token })
-    if (error) {
-      setError(error.message || "This reset link is invalid or expired.")
+    try {
+      const { error } = await authClient.resetPassword({ newPassword: password, token })
+      if (error) {
+        // A used or expired token gets the same clear message and a way forward.
+        if (error.code === "INVALID_TOKEN") {
+          setTokenRejected(true)
+          return
+        }
+        setError(error.message || "Could not update the password. Please try again.")
+        return
+      }
+      router.push("/auth/login")
+    } catch {
+      setError("Could not reach the server. Check your connection and try again.")
+    } finally {
       setLoading(false)
-      return
     }
-    router.push("/auth/login")
   }
 
   return (

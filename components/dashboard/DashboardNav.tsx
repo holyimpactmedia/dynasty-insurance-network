@@ -38,9 +38,17 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
-    await authClient.signOut()
-    router.push("/auth/login")
-    router.refresh()
+    try {
+      const { error } = await authClient.signOut()
+      if (error) throw new Error(error.message || "sign-out failed")
+      router.push("/auth/login")
+      router.refresh()
+    } catch (error) {
+      // The session may still be valid: never navigate as if signed out.
+      console.error("[auth] sign-out failed", error)
+      setIsLoggingOut(false)
+      window.alert("Sign-out did not complete. Check your connection and try again.")
+    }
   }
 
   // Admin-only nav: agent and routing items removed (USHA Marketplace handles lead distribution)
