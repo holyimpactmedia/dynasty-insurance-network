@@ -20,7 +20,7 @@
 Every task's requirements implicitly include these.
 
 - **Brand:** Dynasty only. No visible "Union" string, no `components/union`, no `unionprivatehealthcare`, no Union design tokens (`text-navy`, `bg-navy`, `bg-red`, `bg-surface`, `bg-surface-2`, `border-line`, `text-body`, `text-success`, `text-ink-muted`, `font-display`, `text-steel`). Enforced by `pnpm check:guards` from Task 2.
-- **Legal-reviewed copy is frozen:** no change to `app/page.tsx`, `app/layout.tsx`, `app/terms/page.tsx`, `app/privacy/page.tsx`, any funnel page or layout (`app/{individual,family,cobra,ppo,self-employed,business}/**`), `components/Footer.tsx`, `components/ExitIntentDialog.tsx`, `lib/email/sendLeadConfirmation.ts`. Enforced by `pnpm check:guards`. Only Task 13 may touch them, and only with the allow-listed lines it names, after owner and legal approval.
+- **Legal-reviewed copy is frozen:** no change to `app/page.tsx`, `app/layout.tsx`, `app/terms/page.tsx`, `app/privacy/page.tsx`, any funnel page or layout (`app/{individual,family,cobra,ppo,self-employed,business}/**`), `components/Footer.tsx`, `components/ExitIntentDialog.tsx`, `lib/email/sendLeadConfirmation.ts`. Enforced by `pnpm check:guards`. Only Task 10c (one owner-approved word in the privacy policy, allow-listed as an exact replacement) and Task 13 (the allow-listed lines it names, after owner and legal approval) may touch them.
 - **No database schema change.** `drizzle/0000_purple_loa.sql` must stay byte-identical (sha256 `239762878eb2b7e070b7d9ccb507fb743e9431a7822455609e5900481df9a0dc`).
 - **Pinned versions (exact, `pnpm add -E`):** `better-auth@1.6.33`, `@better-auth/drizzle-adapter@1.6.33`, `drizzle-orm@0.45.2`, `pg@8.22.0`; dev: `drizzle-kit@0.31.10`, `@types/pg@8.20.0`, `tsx@4.22.4`, `eslint@9.39.4`, `eslint-config-next@16.0.10`. `zod` stays at `3.25.76`. pnpm is the only package manager.
 - **Source of ported code:** `origin/redesign/union-private-healthcare` at `84c4656`. "Copy from redesign" means `git show origin/redesign/union-private-healthcare:<path> > <path>`, then the listed edits.
@@ -75,11 +75,12 @@ Hard-stop class under the Gate Policy (Task 0): auth and access (Tasks 3, 5, 6, 
 - [x] **Task 9: Users and Settings.** Super-admin Users page with set-password-link invites, Settings page, nav entries. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-09-users-settings.md)
 - [x] **Task 10: Remove Supabase, document Neon.** Supabase code, migrations and packages deleted; `.env.example` and docs rewritten for Dynasty on Neon. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10-cleanup-docs.md)
 - [ ] **Task 10b: Lead-path resilience and a private TrustedForm claim (HARD STOP: compliance).** Query and intake time limits, one retry on a dropped connection, the TrustedForm claim as a server function with its outcome logged and the public route removed, the expired-link page pinned by a test. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10b-hardening.md)
+- [ ] **Task 10c: Privacy policy names Neon as the host (HARD STOP: compliance; owner-approved 2026-10-09).** One word in `app/privacy/page.tsx`; the guard allows exactly that replacement. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10c-privacy-host.md)
 - [ ] **Task 11: Preview verification (HARD STOP: keys).** Neon preview branch, Vercel preview env vars, browser and SQL verification. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-11-preview.md)
 - [ ] **Task 12: Production switch (HARD STOP: deploy).** Production env vars, merge, verify, rollback ready. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-12-production.md)
 - [ ] **Task 13: Meta tracking, off by default (HARD STOP: legal).** Kill switch, pixel and server events; funnel wiring only after the legal branch lands and the guard amendment is approved. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-13-meta.md)
 
-Tasks 0 to 10b ship as one release (Task 12). Task 13 ships separately and stays switched off until legal approves.
+Tasks 0 to 10c ship as one release (Task 12). Task 13 ships separately and stays switched off until legal approves.
 
 ## Owner decision before execution
 

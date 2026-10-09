@@ -31,7 +31,7 @@ The outage this plan repairs came from an unwatched free-tier database pausing. 
 
 Record the four answers in `docs/build-log.md`, with the compute math for the uptime check in Step 6.7 (its interval, the hours of compute it keeps awake per month, and the plan's allowance). If the plan is a free tier, say so plainly to the owner as a risk to stored TCPA records before continuing.
 
-Also confirm the owner's decision on the privacy policy's service-provider line (`app/privacy/page.tsx` names Supabase as a host; after this switch Neon stores consumer data). That file is legal-frozen: any edit goes through an owner-approved legal change, never this task.
+Also confirm the release carries Task 10c (the privacy policy names Neon, not Supabase, as a host; owner-approved 2026-10-09). If the merge day differs from the "Last Updated" date Task 10c set, update that date to the merge day in one commit before the pull request: the page line and the matching `ALLOWED_REPLACEMENTS` pair in `scripts/check-guards.mjs` together, then `pnpm check:guards`. The policy's section 14 promises the date moves with any change. Nothing else in the file changes.
 
 Then ask: "Ready to switch production to Neon? I will record the current deployment for rollback, set production `DATABASE_URL` (Neon `<PROD_BRANCH>`, pooled), a new `BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL` = `https://www.dynastyinsurancenetwork.com`, then open the pull request into `main`; `NEXT_PUBLIC_SITE_URL` is set in the same window as the merge. Campaigns paused?" Wait for a clear yes.
 
@@ -91,4 +91,4 @@ This returns the site to the pre-switch state (leads reach the admin inbox by em
 
 - [ ] **Step 8: After 7 clean days (owner decision)**
 
-Remove `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` from Vercel; the owner closes the Supabase project in the Supabase dashboard. Update `STATE.md` and `docs/build-log.md`.
+Remove `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` from Vercel; the owner closes the Supabase project in the Supabase dashboard. Remove the two Task 10c pairs from `ALLOWED_REPLACEMENTS` in `scripts/check-guards.mjs` (they are inert once merged, and a stale allowance reads as permission later), leaving the empty object and its comment. Update `STATE.md` and `docs/build-log.md`.
