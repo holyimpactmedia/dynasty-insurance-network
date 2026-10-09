@@ -1,86 +1,46 @@
 # Database Schema
 
-Source of truth: [`supabase/migrations/`](../supabase/migrations). The generated TypeScript types live at [`lib/types/database.ts`](../lib/types/database.ts) and are regenerated with `supabase gen types typescript`.
+Source of truth: [`lib/db/schema/app.ts`](../lib/db/schema/app.ts), [`lib/db/schema/auth.ts`](../lib/db/schema/auth.ts) and the applied migration [`drizzle/0000_purple_loa.sql`](../drizzle/0000_purple_loa.sql). Database: Neon Postgres.
 
-## Migration workflow — Supabase CLI
+## Migration workflow (Drizzle)
 
 ```bash
-# one-time
-supabase init               # if supabase/config.toml does not exist
-supabase login              # uses a personal access token
-supabase link --project-ref gkrhzjhhcaykckypxygt
-
-# day-to-day
-supabase migration new <descriptive-name>   # creates a timestamped file
-# edit the file…
-supabase db push                            # applies it to the linked project
-supabase gen types typescript --linked > lib/types/database.ts
+pnpm db:generate   # new migration from schema changes
+pnpm db:migrate    # apply (uses DATABASE_URL_DIRECT)
+pnpm db:verify     # read-only assertions against the target database
 ```
 
-Never edit `supabase/migrations/<timestamp>_baseline.sql` after it ships. Every schema change is a new numbered migration file. The CLI handles ordering — we do not paste SQL into the dashboard by hand.
+Never edit a shipped migration. The trigger function and seed rows at the end of `0000_purple_loa.sql` were written by hand; drizzle-kit neither generates nor detects them.
 
-## Tables
+## Application tables
 
-### `leads` — the lead pass-through record
-Every column the consumer funnels POST plus the pipeline state. 32 columns total.
+### `leads`: the lead pass-through record (32 columns)
 
 | Group | Columns |
 |---|---|
-| Identity | `id` (uuid PK), `reference_number` (unique), `created_at`, `updated_at` |
+| Identity | `id` (uuid PK), `reference_number` (unique), `created_at`, `updated_at` (trigger-maintained) |
 | Contact | `first_name`, `last_name`, `email`, `phone`, `age`, `state` |
-| Qualification | `income_range`, `household_size`, `qualifying_event`, `priorities`, `quiz_answers` (jsonb) |
+| Qualification | `income_range`, `household_size`, `qualifying_event`, `priorities` (text; the PPO funnel's list is stored as JSON text), `quiz_answers` (jsonb) |
 | TCPA / TrustedForm | `tcpa_consent`, `tcpa_consent_at`, `trusted_form_cert_url` |
-| Attribution | `funnel_type` (default `private_health`), `utm_source/medium/campaign`, `ip_address` |
+| Attribution | `funnel_type` (default `private_health`), `utm_source`, `utm_medium`, `utm_campaign`, `ip_address` |
 | AI scoring | `ai_score`, `ai_score_reasons` (text[]), `predicted_close_rate`, `ai_scored_at` |
-| Marketplace | `sell_price` (default 28), `usha_status` (`pending`/`sent`/`failed`), `usha_sent_at`, `usha_lead_id` |
-| Legacy | `status` (defaults to `new`; kept for back-compat — no CRM pipeline is built on it) |
+| Marketplace | `sell_price` (default 28), `usha_status` (`pending`/`sent`/`failed`, check constraint), `usha_sent_at`, `usha_lead_id` |
+| Legacy | `status` (defaults to `new`) |
 
-Acquisition cost and gross margin are **not** stored per row. Acquisition cost is a portfolio number (ad spend ÷ leads); modeling it per row would bake a fictional number into the schema. The slider-based `ProjectionsCalculators` handles cost / ROI scenarios.
+Indexes support intake dedup (email), the dashboard ordering (created_at), and the marketplace and funnel filters; the exact list is in the migration and asserted by `db:verify`.
 
-### `profiles` — the authorization source of truth
-One row per `auth.users`. `role text not null default 'agent' check (role in ('agent','admin'))`. Writable **only** by the service role / SQL — there is no client-side write policy. Auto-provisioned by an `AFTER INSERT ON auth.users` trigger; existing users were backfilled in the baseline migration.
+Timestamps are `timestamptz`. The data layer ([`lib/data/lead-mapper.ts`](../lib/data/lead-mapper.ts)) returns them to the app as ISO 8601 strings.
 
-### `email_suppressions` — CAN-SPAM unsubscribe list
-`email text primary key`, `source text`, `suppressed_at timestamptz`. Written only by [`/api/unsubscribe`](../app/api/unsubscribe/route.ts) via service role.
+### `email_suppressions`: CAN-SPAM unsubscribe list
+`email` (PK), `source`, `suppressed_at`. Written by `/api/unsubscribe`.
 
-## Functions
+### `app_settings`: super admin settings
+`key` (PK), `value` (jsonb), `updated_at` (trigger-maintained). Rows: `projections_enabled` (read by the dashboard), `lead_intake_paused` (present, not read by this app).
 
-| Function | Use |
-|---|---|
-| `public.is_admin(uid uuid)` | `SECURITY DEFINER`, `SET search_path = public`. The recursion-safe admin check called by every RLS policy and by [`requireAdmin`](../lib/auth/requireAdmin.ts). |
-| `public.handle_new_user()` | Trigger function — auto-creates a `profiles` row for every new auth user with `role='agent'`. |
-| `public.set_updated_at()` | Trigger function — keeps `updated_at` fresh. |
+## Auth tables (Better Auth)
 
-## Aggregate RPCs (dashboard)
+`user` (includes the admin plugin's `role`, `banned`, `ban_reason`, `ban_expires`), `session`, `account` (holds password hashes), `verification` (holds reset and verification tokens). Defined in [`lib/db/schema/auth.ts`](../lib/db/schema/auth.ts).
 
-All `SECURITY INVOKER` (respect RLS — the admin's session). All bucketed in `America/New_York`.
+## Dashboard aggregates
 
-| RPC | Returns |
-|---|---|
-| `get_pipeline_stats()` | one row: `total_leads`, `leads_today`, `leads_month`, `sent_count`, `sent_revenue`, `sent_revenue_month`, `tcpa_verified` |
-| `get_daily_lead_counts()` | last 7 ET days: `(day date, count bigint)` |
-| `get_funnel_breakdown()` | per funnel: `(funnel_type, leads, sent, revenue)` |
-
-## Indexes
-
-- `leads (email)` — used by intake dedup
-- `leads (reference_number)` — implicit, from `UNIQUE`
-- `leads (created_at DESC)` — every dashboard list/order
-- `leads (usha_status)` — marketplace filter / sent count
-- `leads (funnel_type)` — funnel filter / breakdown
-
-## RLS policies
-
-Enabled on `leads`, `profiles`, `email_suppressions`. Service role bypasses RLS everywhere.
-
-| Table | Anon | Authenticated |
-|---|---|---|
-| `leads` | `INSERT` (public funnels) | `SELECT` if `is_admin(auth.uid())` |
-| `profiles` | — | `SELECT` if own row or admin; no `INSERT`/`UPDATE` |
-| `email_suppressions` | — | — (service-role only) |
-
-The `leads` table is in the `supabase_realtime` publication so the dashboard's subscription receives inserts/updates.
-
-## Common failure: `PGRST205`
-
-`Could not find the table 'public.leads' in the schema cache` means the migration was not applied. Run `supabase db push` against the project. The app's [`/api/health`](../app/api/health/route.ts) returns `503` in this state.
+Computed in [`lib/data/neon-store.ts`](../lib/data/neon-store.ts) (`getPipelineStats`, `getDailyLeadCounts`, `getFunnelBreakdown`), bucketed in `America/New_York` to match [`lib/time/ranges.ts`](../lib/time/ranges.ts).
