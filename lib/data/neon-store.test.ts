@@ -116,7 +116,7 @@ describe("neonStore", () => {
     const result = await neonStore.createLead(input)
     expect(h.calls.table).toBe(leads)
     expect(toColumnRow(h.calls.values!)).toStrictEqual(MAIN_ROW)
-    expect(result).toEqual({ id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06 15:04:05.9+00" })
+    expect(result).toEqual({ id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06T15:04:05.900Z" })
   })
 
   it("recordSuppression upserts into email_suppressions keyed on email, app-clock timestamp", async () => {

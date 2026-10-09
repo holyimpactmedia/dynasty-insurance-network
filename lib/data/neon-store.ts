@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm"
 import { requireNeonDb, getNeonDb } from "@/lib/db/client"
 import { appSettings, emailSuppressions, leads } from "@/lib/db/schema"
-import { neonRowToLead } from "./lead-mapper"
+import { neonRowToLead, toIsoTimestamp } from "./lead-mapper"
 import type { LeadFilters, PlatformStore } from "./types"
 
 function whereFor(filters: LeadFilters): SQL | undefined {
@@ -77,7 +77,7 @@ export const neonStore: PlatformStore = {
       quizAnswers: input.quizAnswers,
       status: "new",
     }).returning({ id: leads.id, createdAt: leads.createdAt })
-    return row ?? null
+    return row ? { id: row.id, createdAt: toIsoTimestamp(row.createdAt) } : null
   },
 
   async updateAiScore(id, update) {
@@ -171,7 +171,7 @@ export const neonStore: PlatformStore = {
   async getRecentLeadTimes(since) {
     const rows = await requireNeonDb().select({ createdAt: leads.createdAt }).from(leads)
       .where(gte(leads.createdAt, since)).orderBy(leads.createdAt)
-    return rows.map((row) => row.createdAt)
+    return rows.map((row) => toIsoTimestamp(row.createdAt))
   },
 
   async getSetting(key) {

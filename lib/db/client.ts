@@ -18,6 +18,12 @@ export function getNeonPool(): Pool | null {
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
     })
+    // An idle client whose socket the server closed emits "error" on the pool.
+    // Without a listener that is an uncaught exception that can crash the
+    // function instance. pg already drops the broken client; just log it.
+    globalForDatabase.dynastyPool.on("error", (error) => {
+      console.error("[db] idle client error", error.message)
+    })
   }
   return globalForDatabase.dynastyPool
 }
