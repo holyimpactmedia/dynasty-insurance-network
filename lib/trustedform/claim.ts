@@ -27,10 +27,31 @@ function redactWarning(warning: string): string {
     .replace(/\+?\d[\d\s().-]{5,}\d/g, "[redacted number]")
 }
 
-function certIdFrom(certUrl: string): string | null {
-  const last = certUrl.split(/[?#]/)[0].split("/").filter(Boolean).pop() ?? ""
+// The certificate id from a URL that is https on cert.trustedform.com, or a
+// fixed reason it cannot be used. The request itself always goes to the fixed
+// base URL, so a consumer-supplied URL can only ever name a certificate id.
+function certIdFrom(certUrl: unknown): { id: string } | { reason: string } {
+  if (typeof certUrl !== "string") return { reason: "certificate URL is not a string" }
+  let url: URL
+  try {
+    url = new URL(certUrl)
+  } catch {
+    return { reason: "certificate URL is not a TrustedForm https URL" }
+  }
+  if (url.protocol !== "https:" || url.host !== "cert.trustedform.com") {
+    return { reason: "certificate URL is not a TrustedForm https URL" }
+  }
+  const last = url.pathname.split("/").filter(Boolean).pop() ?? ""
   // Letters and digits only, so a crafted URL cannot reach any other TrustedForm path.
-  return /^[A-Za-z0-9]+$/.test(last) ? last : null
+  return /^[A-Za-z0-9]+$/.test(last) ? { id: last } : { reason: "certificate URL has no certificate id" }
+}
+
+function stringsOnly(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : []
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
 export async function claimTrustedFormCertificate(
@@ -39,8 +60,9 @@ export async function claimTrustedFormCertificate(
 ): Promise<ClaimResult> {
   const apiKey = env.TRUSTEDFORM_API_KEY
   if (!apiKey) return { status: "failed", reason: "TRUSTEDFORM_API_KEY is not set" }
-  const certId = certIdFrom(input.certUrl)
-  if (!certId) return { status: "failed", reason: "certificate URL has no certificate id" }
+  const cert = certIdFrom(input.certUrl)
+  if ("reason" in cert) return { status: "failed", reason: cert.reason }
+  const certId = cert.id
 
   const body: Record<string, unknown> = { reference: input.reference, required_scan_terms: TRUSTEDFORM_SCAN_TERMS }
   if (input.email) body.email = input.email
@@ -58,17 +80,23 @@ export async function claimTrustedFormCertificate(
       signal: AbortSignal.timeout(CLAIM_TIMEOUT_MS),
     })
     if (!response.ok) return { status: "failed", reason: `HTTP ${response.status}` }
-    const data = (await response.json()) as {
-      outcome?: string
-      warnings?: string[]
-      scans?: { required_found?: string[]; required_not_found?: string[] }
+    // A 2xx means TrustedForm accepted the claim, so an unreadable or oddly
+    // shaped body is "claimed, outcome unknown", never a failed claim: the
+    // intake reports that as a scan mismatch.
+    let data: unknown = null
+    try {
+      data = await response.json()
+    } catch {
+      data = null
     }
+    const parsed = isRecord(data) ? data : {}
+    const scans = isRecord(parsed.scans) ? parsed.scans : {}
     return {
       status: "claimed",
-      outcome: data.outcome ?? null,
-      warnings: (data.warnings ?? []).map(redactWarning),
-      requiredFound: data.scans?.required_found ?? [],
-      requiredNotFound: data.scans?.required_not_found ?? [],
+      outcome: typeof parsed.outcome === "string" ? parsed.outcome : null,
+      warnings: stringsOnly(parsed.warnings).map(redactWarning),
+      requiredFound: stringsOnly(scans.required_found),
+      requiredNotFound: stringsOnly(scans.required_not_found),
     }
   } catch (error) {
     const name = error instanceof Error ? error.name : "Error"

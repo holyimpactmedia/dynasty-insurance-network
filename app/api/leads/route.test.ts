@@ -174,6 +174,39 @@ describe("POST /api/leads", () => {
     expect(spies.notifyAdmin).toHaveBeenCalledTimes(1)
   })
 
+  it("logs LEAD INSERT FAILED when the insert resolves no row (reference collision with a different lead)", async () => {
+    state.insertResult = null
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const res = await POST(makeReq(validLead))
+    expect(res.status).toBe(200)
+    expect(errorSpy.mock.calls.some(([msg]) => String(msg).includes("LEAD INSERT FAILED"))).toBe(true)
+
+    await runBackground()
+    expect(spies.sendLeadConfirmation).toHaveBeenCalledTimes(1)
+    expect(spies.postLeadToUsha).toHaveBeenCalledTimes(1)
+    expect(spies.notifyAdmin).toHaveBeenCalledTimes(1)
+    expect(spies.postLeadToUsha.mock.calls[0][0]).toBeNull()
+  })
+
+  it("an unreadable request body returns 500 and the log carries no part of the body", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    // V8 quotes the start of an unparseable body in the SyntaxError message.
+    const raw = "jane.doe@example.com 5550100 not json"
+    const res = await POST(
+      new NextRequest("http://localhost/api/leads", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-forwarded-for": "1.2.3.4" },
+        body: raw,
+      }),
+    )
+    expect(res.status).toBe(500)
+    const logged = errorSpy.mock.calls.map((args) => args.map((arg) => inspect(arg, { depth: 6 })).join(" ")).join("\n")
+    expect(logged).toContain("Error processing lead submission")
+    expect(logged).not.toContain("jane.doe")
+    expect(logged).not.toContain("5550100")
+    expect(logged).not.toContain("not json")
+  })
+
   describe("logs carry no consumer email or phone", () => {
     const PII_LEAD = { ...validLead, phone: "5550100" }
     // drizzle 0.45 wraps a driver error in a message that quotes the statement and its parameters.

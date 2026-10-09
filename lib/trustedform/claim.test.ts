@@ -85,6 +85,71 @@ describe("claimTrustedFormCertificate", () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
+  it("fails without calling TrustedForm when the certificate URL is not a string", async () => {
+    const fetchMock = stubFetch(jsonResponse({}))
+    for (const certUrl of [42, null, undefined, {}, ["https://cert.trustedform.com/abc123"]]) {
+      const result = await claimTrustedFormCertificate({ ...INPUT, certUrl: certUrl as unknown as string }, { TRUSTEDFORM_API_KEY: KEY })
+      expect(result).toEqual({ status: "failed", reason: "certificate URL is not a string" })
+    }
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it("fails without calling TrustedForm unless the URL is https on cert.trustedform.com", async () => {
+    const fetchMock = stubFetch(jsonResponse({}))
+    const notTrustedForm = [
+      "https://evil.example/abc123",
+      "https://cert.trustedform.com.evil.example/abc123",
+      "https://evil.example/cert.trustedform.com/abc123",
+      "http://cert.trustedform.com/abc123",
+      "https://cert.trustedform.com:8443/abc123",
+      "not a url",
+    ]
+    for (const certUrl of notTrustedForm) {
+      const result = await claimTrustedFormCertificate({ ...INPUT, certUrl }, { TRUSTEDFORM_API_KEY: KEY })
+      expect(result, certUrl).toEqual({ status: "failed", reason: "certificate URL is not a TrustedForm https URL" })
+    }
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it("still claims a valid certificate URL that carries a query string", async () => {
+    const fetchMock = stubFetch(jsonResponse({ outcome: "success" }))
+    const result = await claimTrustedFormCertificate({ ...INPUT, certUrl: `${CERT}?ref=1` }, { TRUSTEDFORM_API_KEY: KEY })
+    expect(result.status).toBe("claimed")
+    expect(fetchMock.mock.calls[0][0]).toBe(`https://cert.trustedform.com/${CERT_ID}`)
+  })
+
+  it("reports a 2xx with a body that is not JSON as claimed with an unknown outcome", async () => {
+    stubFetch(new Response("not json", { status: 201 }))
+    const result = await claimTrustedFormCertificate(INPUT, { TRUSTEDFORM_API_KEY: KEY })
+    expect(result).toEqual({ status: "claimed", outcome: null, warnings: [], requiredFound: [], requiredNotFound: [] })
+  })
+
+  it("reports a 2xx whose JSON body is not an object as claimed with an unknown outcome", async () => {
+    for (const body of ["null", "[]", '"claimed"', "7"]) {
+      stubFetch(new Response(body, { status: 201 }))
+      const result = await claimTrustedFormCertificate(INPUT, { TRUSTEDFORM_API_KEY: KEY })
+      expect(result, body).toEqual({ status: "claimed", outcome: null, warnings: [], requiredFound: [], requiredNotFound: [] })
+    }
+  })
+
+  it("keeps only well-formed fields from an odd 2xx body", async () => {
+    stubFetch(
+      jsonResponse({
+        outcome: 5,
+        warnings: "oops",
+        scans: { required_found: [1, "x"], required_not_found: "none" },
+      }),
+    )
+    const result = await claimTrustedFormCertificate(INPUT, { TRUSTEDFORM_API_KEY: KEY })
+    expect(result).toEqual({ status: "claimed", outcome: null, warnings: [], requiredFound: ["x"], requiredNotFound: [] })
+  })
+
+  it("drops non-string warnings before redacting the rest", async () => {
+    stubFetch(jsonResponse({ outcome: "success", warnings: [1, null, "email does not match: jane.doe@example.com"] }))
+    const result = await claimTrustedFormCertificate(INPUT, { TRUSTEDFORM_API_KEY: KEY })
+    expect(result.status === "claimed" && result.warnings).toEqual(["email does not match: [redacted email]"])
+  })
+
   it("reports an HTTP error status as a failed claim", async () => {
     stubFetch(new Response("not found", { status: 404 }))
     const result = await claimTrustedFormCertificate(INPUT, { TRUSTEDFORM_API_KEY: KEY })

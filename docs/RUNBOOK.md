@@ -74,7 +74,12 @@ Wire it into an uptime check at an interval well above Neon's scale-to-zero dela
 
 The funnels keep working: the consumer sees success, and the confirmation email, admin email and USHA post still go out. The intake waits at most 10 s on the database before answering, and the duplicate lookup gets at most 3 s of that so it cannot starve the insert. Each query is also capped at 8 s on the client side (`query_timeout` in [`lib/db/client.ts`](../lib/db/client.ts)), which bounds the dashboard CSV export and sign-in queries too: a query that needs longer fails instead of hanging. A pooled connection that Neon closed gets one retry of the insert (the unique reference number makes that safe). A failed write is logged as `LEAD INSERT FAILED` (or `LEAD DEDUP LOOKUP FAILED`); with `DATABASE_URL` missing or set to the public placeholder, the line is the error `LEAD NOT STORED`. Such a lead exists only in the admin notification email.
 
-Tradeoff: a database slower than the budget can leave a lead unstored while its emails still go out (a late insert may still land afterward, without its id for the background steps). Search the logs for `LEAD INSERT FAILED` and `LEAD NOT STORED` after any Neon incident.
+Tradeoff: a database slower than the budget can leave a lead unstored while its emails still go out (a late insert may still land afterward, without its id for the background steps). Two consequences to know:
+
+- A duplicate lookup slower than 3 s lets a repeat submission through, so the emails and the flag-gated USHA post can go out twice for one person.
+- A background retry can store the row after `LEAD INSERT FAILED` was logged, so check for the `reference_number` before a manual restore. A duplicate restore fails safely on the unique index.
+
+Search the logs for `LEAD INSERT FAILED` and `LEAD NOT STORED` after any Neon incident. `LEAD INSERT FAILED` with "insert returned no row" means the reference number was already taken by a different lead, so nothing was stored for this one.
 
 Restoring one is an owner-approved SQL insert into `leads` on the production branch that copies the original values from that admin email: `reference_number`, name, email, phone, age, state, funnel, income, household, qualifying event, priorities, UTM fields, the consent time (`tcpa_consent_at`), `ip_address` and `trusted_form_cert_url`, with `tcpa_consent = true` (the intake refuses any lead without consent). Never re-submit the lead through a public funnel: that records your IP address, a new consent time and a new or missing TrustedForm certificate as if the consumer had consented again. The quiz answers are not in the admin email and cannot be restored.
 

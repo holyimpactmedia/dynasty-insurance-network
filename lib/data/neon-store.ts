@@ -39,18 +39,27 @@ function whereFor(filters: LeadFilters): SQL | undefined {
 
 // node-postgres reports a socket the server closed in several ways; drizzle
 // 0.45 wraps the driver error, so look at `cause` too.
-const CONNECTION_ERROR_CODES = new Set(["ECONNRESET", "EPIPE", "ETIMEDOUT", "57P01"])
+// 57P01/02/03: the server is shutting down, crashed or still starting up.
+// Any code in class 08 is a SQLSTATE connection exception.
+const CONNECTION_ERROR_CODES = new Set(["ECONNRESET", "EPIPE", "ETIMEDOUT", "57P01", "57P02", "57P03"])
 const CONNECTION_ERROR_TEXT = /connection terminated|connection error|socket hang up|ECONNRESET/i
 
 function driverError(error: unknown): { code?: string; constraint?: string; message?: string } {
   const outer = (error ?? {}) as { cause?: unknown; message?: string }
-  const inner = (outer.cause ?? outer) as { code?: string; constraint?: string; message?: string }
-  return { code: inner.code, constraint: inner.constraint, message: `${outer.message ?? ""} ${inner.message ?? ""}` }
+  const cause = outer.cause && typeof outer.cause === "object" ? (outer.cause as { code?: string; constraint?: string; message?: string }) : undefined
+  // With a cause, the outer message is drizzle's "Failed query ... params: ..."
+  // text, which quotes consumer-typed values; only the driver's own message is
+  // safe to pattern match.
+  const source = cause ?? (outer as { code?: string; constraint?: string; message?: string })
+  return { code: source.code, constraint: source.constraint, message: source.message ?? "" }
 }
 
 function isConnectionError(error: unknown): boolean {
   const { code, message } = driverError(error)
-  return (code !== undefined && CONNECTION_ERROR_CODES.has(code)) || CONNECTION_ERROR_TEXT.test(message ?? "")
+  return (
+    (code !== undefined && (CONNECTION_ERROR_CODES.has(code) || code.startsWith("08"))) ||
+    CONNECTION_ERROR_TEXT.test(message ?? "")
+  )
 }
 
 function isReferenceConflict(error: unknown): boolean {

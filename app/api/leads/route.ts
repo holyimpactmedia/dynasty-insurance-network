@@ -180,6 +180,10 @@ export async function POST(request: NextRequest) {
         }), startedAt + LEAD_DB_BUDGET_MS, 'lead insert')
         if (insertResult) {
           data = { id: insertResult.id, created_at: insertResult.createdAt }
+        } else {
+          // The store found the reference already taken by a different lead, so
+          // nothing was stored for this one. Never leave that unlogged.
+          console.error('LEAD INSERT FAILED:', 'insert returned no row', { referenceNumber })
         }
       } catch (error) {
         // Loud, not silent: the lead form must not break, but a failed insert
@@ -310,7 +314,9 @@ export async function POST(request: NextRequest) {
       message: 'Lead submitted successfully',
     })
   } catch (error) {
-    console.error('Error processing lead submission:', error)
+    // Never log the error itself: a SyntaxError message quotes the start of the
+    // consumer's body.
+    console.error('Error processing lead submission:', error instanceof Error ? error.name : 'unknown')
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -23,7 +23,7 @@ TrustedForm is a TCPA compliance platform that:
 - Duration on form (fraud detection)
 
 **Features:**
-- Automatic certificate claiming after form submission
+- Automatic certificate claiming after form submission, server side, by the lead intake (see "Server-side claim" below)
 - Compliance badge on thank you page
 - Certificate URL storage for compliance audit
 - Subsidy estimates only shown after consent verification
@@ -58,76 +58,38 @@ TrustedForm is a TCPA compliance platform that:
 
 ## Implementation Details
 
-### API Integration
+### Server-side claim
 
-**Endpoint:** `POST /api/trustedform/claim`
+The lead intake ([`app/api/leads/route.ts`](app/api/leads/route.ts)) claims the certificate in its background work, after the consumer's response has been sent, by calling `claimTrustedFormCertificate` in [`lib/trustedform/claim.ts`](lib/trustedform/claim.ts) directly.
 
-**Request Body:**
-```json
-{
-  "certUrl": "https://cert.trustedform.com/xxxxx",
-  "email": "user@example.com",
-  "phone": "5125551234",
-  "reference": "HC-1234",
-  "vendor": "Dynasty Health Insurance"
-}
+There is no public claim route and no client-side claim hook. The claim uses `TRUSTEDFORM_API_KEY` and runs server side only, so nobody else can spend Dynasty's claims or read its certificates. Do not add an endpoint or a browser call for it.
+
+```ts
+const claim = await claimTrustedFormCertificate({
+  certUrl: trustedFormCertUrl, // https://cert.trustedform.com/<id>, from the funnel's hidden field
+  reference: referenceNumber,
+  email: normalizedEmail,
+  phone,
+})
 ```
 
-**Response:**
-```json
-{
-  "certId": "xxxxx",
-  "certUrl": "https://cert.trustedform.com/xxxxx",
-  "claimedAt": "2026-02-23T10:30:00Z",
-  "outcome": "success",
-  "isCompliant": true,
-  "browser": "Chrome 120.0",
-  "operatingSystem": "Windows 10",
-  "ipGeo": {
-    "city": "Austin",
-    "state": "TX",
-    "country_code": "US"
-  },
-  "expiresAt": "2026-02-26T10:30:00Z",
-  "warnings": [],
-  "scanResults": {
-    "requiredFound": ["I agree to the terms"],
-    "requiredNotFound": [],
-    "forbiddenFound": []
-  }
-}
-```
+What the function does:
+- Accepts only an `https` URL on `cert.trustedform.com` whose last path segment is letters and digits. Anything else is a failed claim and TrustedForm is not called.
+- Sends the reference, email, phone and `required_scan_terms` to that certificate, with a 10 second timeout. It never throws.
+- Returns `{ status: "claimed", outcome, warnings, requiredFound, requiredNotFound }` or `{ status: "failed", reason }`. A claimed certificate whose response body cannot be read is reported as claimed with an unknown outcome.
+- Replaces anything that looks like an email address or a phone number in TrustedForm's warnings before anything logs them.
 
-### Client-Side Hook: `useTrustedForm`
+### Log lines
 
-**Usage:**
-```tsx
-import { useTrustedForm, getTrustedFormCertId } from "@/lib/hooks/useTrustedForm"
+The intake logs the outcome of every claim to the Vercel runtime logs (no email address or phone number is ever logged):
 
-export function MyForm() {
-  const { claimCertificate } = useTrustedForm()
+| Log line | Meaning |
+|---|---|
+| `TRUSTEDFORM CLAIM OK` | claimed, and every required phrase was found on the page snapshot |
+| `TRUSTEDFORM SCAN MISMATCH` | claimed, but a required phrase was not found or the outcome was not `success`; TrustedForm keeps the certificate, but the evidence is weaker |
+| `TRUSTEDFORM CLAIM FAILED` | not claimed (API key missing, unusable certificate URL, TrustedForm error or timeout); an unclaimed certificate expires |
 
-  const handleSubmit = async () => {
-    const certId = getTrustedFormCertId()
-    
-    try {
-      const compliance = await claimCertificate({
-        certUrl: `https://cert.trustedform.com/${certId}`,
-        email: formData.email,
-        phone: formData.phone,
-        reference: "HC-1234",
-        vendor: "Dynasty Health Insurance",
-      })
-      
-      console.log("Certified:", compliance.isCompliant)
-    } catch (error) {
-      console.error("Certification failed:", error)
-    }
-  }
-
-  return <form onSubmit={handleSubmit}>...</form>
-}
-```
+See `docs/RUNBOOK.md` ("TrustedForm claims") for how to read and act on these.
 
 ### Components
 
@@ -174,36 +136,25 @@ TrustedForm will provide you with a Form ID for each funnel:
 - Healthcare Quiz: `healthcare-quote-quiz`
 - Agent Recruiting: `agent-recruitment-app`
 
-### 4. Configure Required Scan Terms
-In `/api/trustedform/claim/route.ts`, update the required_scan_terms to match your actual TCPA language:
-
-```tsx
-claimBody.required_scan_terms = [
-  "I agree to be contacted",
-  "I authorize phone calls",
-  // Add your actual consent language
-]
-```
+### 4. Required Scan Terms
+The phrases TrustedForm must find on the consent page live in `TRUSTEDFORM_SCAN_TERMS` in `lib/trustedform/claim.ts`. Each one must appear verbatim in the approved consent text of every live funnel, and `lib/trustedform/claim.test.ts` fails if one is missing from `app/<funnel>/page.tsx`. Counsel's documents are the source of truth for that text, so change a phrase only together with an approved legal change.
 
 ## Data Storage & Privacy
 
 ### What Gets Stored
-When a certificate is claimed, we store:
-- Certificate ID
-- Certificate URL
-- Timestamp of claim
-- Compliance outcome
-- Browser/OS information
-- Geographic data (city, state)
-- Lead fingerprints (SHA1 hashes, not raw data)
+For each lead we store, on the `leads` row:
+- The certificate URL (`trusted_form_cert_url`)
+- The consent time (`tcpa_consent_at`) and IP address
+
+The claim result (outcome, warnings, scan results) is logged, not stored, and the logs keep no email address or phone number. TrustedForm itself keeps the certificate, the page snapshot, the browser/OS and geographic data, and the lead fingerprints (SHA1 hashes, not raw data).
 
 ### What Gets Transmitted
 - Form data is transmitted to TrustedForm during submission
-- Only summaries are sent to your backend
+- The claim sends TrustedForm the lead's reference number, email and phone, and the required scan terms
 - Full data is available via TrustedForm's portal
 
 ### Compliance
-- Certificates are automatically claimed within 72 hours
+- The intake claims each certificate in the background right after the response; TrustedForm's claim window is 72 hours
 - Data retention follows ACA requirements (5+ years)
 - Fingerprinting is SHA1 hashed (not reversible)
 
@@ -228,11 +179,17 @@ To prepare for regulatory audit:
 ## Troubleshooting
 
 ### Certificate Not Claiming
-**Issue:** `Failed to claim certificate: 401`
-- **Fix:** Check TRUSTEDFORM_API_KEY is correct and set
+**Issue:** `TRUSTEDFORM CLAIM FAILED: HTTP 401` in the Vercel runtime logs
+- **Fix:** Check TRUSTEDFORM_API_KEY is correct and set for that environment
 
-**Issue:** `Certificate has expired`
-- **Fix:** TrustedForm has 72-hour claim window. Claim immediately after submission.
+**Issue:** `TRUSTEDFORM CLAIM FAILED: TRUSTEDFORM_API_KEY is not set`
+- **Fix:** Add the key to that Vercel environment and redeploy
+
+**Issue:** `Certificate has expired` (an HTTP 4xx from TrustedForm)
+- **Fix:** TrustedForm has 72-hour claim window. The intake claims right after submission, so an expired certificate usually means the claim failed earlier; search the logs for `TRUSTEDFORM CLAIM FAILED`
+
+**Issue:** `TRUSTEDFORM SCAN MISMATCH` lists a required phrase
+- **Fix:** The page snapshot did not contain that phrase. Compare the funnel's consent text with `TRUSTEDFORM_SCAN_TERMS` (the test in `lib/trustedform/claim.test.ts` should have caught this)
 
 ### Form Not Tracking
 **Issue:** No certificate ID captured

@@ -181,6 +181,37 @@ describe("neonStore", () => {
       expect(h.calls.insertRuns).toBe(2)
     })
 
+    it("does not retry because a consumer value in the statement parameters reads like a connection error", async () => {
+      // drizzle's outer message quotes the parameters, which hold consumer-typed text.
+      const outer = Object.assign(new Error("Failed query: insert into leads\nparams: HL-1,connection error,a@b.com"), {
+        cause: { code: "23502", message: "null value in column" },
+      })
+      h.calls.returningScript = [reject(outer)]
+      await expect(neonStore.createLead(input)).rejects.toThrow()
+      expect(h.calls.insertRuns).toBe(1)
+    })
+
+    it("retries on any SQLSTATE class 08 connection exception", async () => {
+      h.calls.returningScript = [
+        reject(wrapped({ code: "08006", message: "server closed the session" })),
+        resolveRow({ id: STORED.id, createdAt: "2026-10-06 15:04:05.9+00" }),
+      ]
+      expect(await neonStore.createLead(input)).toEqual(STORED)
+      expect(h.calls.insertRuns).toBe(2)
+    })
+
+    it("retries when the server is shutting down or starting up (57P02, 57P03)", async () => {
+      for (const code of ["57P02", "57P03"]) {
+        h.calls.insertRuns = 0
+        h.calls.returningScript = [
+          reject(wrapped({ code, message: "server state changed" })),
+          resolveRow({ id: STORED.id, createdAt: "2026-10-06 15:04:05.9+00" }),
+        ]
+        expect(await neonStore.createLead(input)).toEqual(STORED)
+        expect(h.calls.insertRuns).toBe(2)
+      }
+    })
+
     it("does not retry a non-connection error", async () => {
       h.calls.returningScript = [reject(wrapped({ code: "23502", message: "null value in column" }))]
       await expect(neonStore.createLead(input)).rejects.toThrow()
