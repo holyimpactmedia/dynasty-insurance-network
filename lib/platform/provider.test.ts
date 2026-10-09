@@ -81,6 +81,10 @@ describe("isPlatformConfigured fails closed", () => {
       })
     })
   }
+
+  it("is false when neither BETTER_AUTH_URL nor NEXT_PUBLIC_SITE_URL is set", () => {
+    expect(isPlatformConfigured({ DATABASE_URL: "postgresql://x", BETTER_AUTH_SECRET: "s".repeat(32) })).toBe(false)
+  })
 })
 
 describe("auth secret and database never fall back to placeholders when deployed", () => {
@@ -103,6 +107,10 @@ describe("auth secret and database never fall back to placeholders when deployed
         const env = { VERCEL_ENV, NEXT_PHASE: "phase-production-build" }
         expect(resolveAuthSecret(env)).toBe(DORMANT_SECRET)
         expect(resolveDatabaseUrl(env)).toBe(DORMANT_DATABASE_URL)
+      })
+      it("does not exempt other Next phases", () => {
+        expect(() => resolveAuthSecret({ VERCEL_ENV, NEXT_PHASE: "phase-production-server" })).toThrow(/BETTER_AUTH_SECRET/)
+        expect(() => resolveDatabaseUrl({ VERCEL_ENV, NEXT_PHASE: "phase-production-server" })).toThrow(/DATABASE_URL/)
       })
     })
   }
