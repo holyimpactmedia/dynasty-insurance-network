@@ -1,8 +1,5 @@
-// Canonical Lead type matching the Supabase `leads` table.
-// usha_status / usha_sent_at / usha_lead_id require these columns to exist in Supabase:
-//   ALTER TABLE leads ADD COLUMN usha_status text;
-//   ALTER TABLE leads ADD COLUMN usha_sent_at timestamptz;
-//   ALTER TABLE leads ADD COLUMN usha_lead_id text;
+// Canonical Lead type for a row of the `leads` table (Drizzle schema in
+// lib/db/schema/app.ts; rows are mapped by lib/data/lead-mapper.ts).
 
 export interface Lead {
   id: string

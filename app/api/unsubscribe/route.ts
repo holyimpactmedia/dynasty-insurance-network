@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/admin'
+import { getPlatformStore } from '@/lib/data/store'
 
 // CAN-SPAM-compliant unsubscribe endpoint.
 //
@@ -9,11 +9,18 @@ import { createClient } from '@/lib/supabase/admin'
 //   Returns 200 with no body. Mailbox providers (Gmail, Yahoo, Apple) call
 //   this directly without user confirmation.
 //
-// Both paths attempt to write to an `email_suppressions` row. If Supabase is
+// Both paths attempt to write to an `email_suppressions` row. If the database is
 // not configured or the table is missing, we still return success to the
 // requester - CAN-SPAM is satisfied as long as the unsubscribe is honored
 // within 10 business days, and the suppression list can be backfilled from
 // logs if needed.
+
+const HTML_ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
+
+// The email query value is attacker-controlled; never write it into HTML raw.
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (ch) => HTML_ESCAPES[ch])
+}
 
 async function recordSuppression(email: string, source: string) {
   if (!email) return
@@ -21,18 +28,9 @@ async function recordSuppression(email: string, source: string) {
   console.log('[unsubscribe] suppression recorded', { email: lower, source })
 
   try {
-    const supabase = createClient()
-    if (!supabase) return
-    await supabase
-      .from('email_suppressions')
-      .upsert(
-        {
-          email: lower,
-          source,
-          suppressed_at: new Date().toISOString(),
-        },
-        { onConflict: 'email' },
-      )
+    const store = await getPlatformStore()
+    if (!store.isConfigured()) return
+    await store.recordSuppression(lower, source)
   } catch (err) {
     console.error('[unsubscribe] failed to write suppression row', err)
   }
@@ -43,7 +41,7 @@ export async function GET(request: NextRequest) {
   await recordSuppression(email, 'link-click')
 
   const display = email
-    ? `the address ${email}`
+    ? `the address ${escapeHtml(email)}`
     : 'your address'
 
   return new NextResponse(

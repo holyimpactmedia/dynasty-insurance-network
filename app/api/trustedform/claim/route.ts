@@ -40,10 +40,12 @@ export async function POST(request: NextRequest) {
     if (reference) claimBody.reference = reference
     if (vendor) claimBody.vendor = vendor
 
-    // Add required TCPA scan terms
+    // Phrases TrustedForm must find on the page the consumer saw. Each appears
+    // verbatim in the approved consent text of every live funnel (pinned by
+    // app/api/trustedform/claim/route.test.ts); keep them in sync with legal's text.
     claimBody.required_scan_terms = [
-      'I agree to the terms',
-      'I consent to be contacted',
+      'consent to be contacted by Holy Impact Media',
+      'Reply STOP to opt out of SMS',
     ]
 
     const response = await fetch(`${TRUSTEDFORM_API_BASE}/${certId}`, {

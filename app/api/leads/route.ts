@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse, after } from 'next/server'
-import { createClient } from '@/lib/supabase/admin'
+import { getPlatformStore } from '@/lib/data/store'
 import { sendLeadConfirmation } from '@/lib/email/sendLeadConfirmation'
 import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
 import { postLeadToUsha } from '@/lib/usha/postLead'
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedEmail = String(email).toLowerCase().trim()
-    const supabase = createClient()
+    const store = await getPlatformStore()
     const referenceNumber = generateReferenceNumber()
     const tcpaConsentAt = new Date().toISOString()
     const resolvedFunnelType = funnelType || 'private_health'
@@ -85,85 +85,96 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    if (!supabase) {
-      console.warn('Supabase admin client not configured. Lead sent via email only.', { referenceNumber })
+    if (!store.isConfigured()) {
+      console.warn('Platform database not configured. Lead sent via email only.', { referenceNumber })
     } else {
       // Duplicate check: same email submitted recently => idempotent success.
+      // A failed lookup must not block intake: carry on to the insert, as the
+      // Supabase version did when its lookup returned an error.
       const since = new Date(Date.now() - DEDUP_WINDOW_MS).toISOString()
-      const { data: dup } = await supabase
-        .from('leads')
-        .select('reference_number')
-        .eq('email', normalizedEmail)
-        .gte('created_at', since)
-        .limit(1)
-        .maybeSingle()
+      let duplicateReference: string | null = null
+      try {
+        duplicateReference = await store.findRecentDuplicate(normalizedEmail, since)
+      } catch (error) {
+        console.error('LEAD DEDUP LOOKUP FAILED (continuing):', error, { referenceNumber })
+      }
 
-      if (dup) {
+      if (duplicateReference) {
         console.log('Duplicate lead submission ignored:', { email: normalizedEmail })
         return NextResponse.json({
           success: true,
-          referenceNumber: (dup as { reference_number: string }).reference_number,
+          referenceNumber: duplicateReference,
           message: 'Lead already received',
         })
       }
 
-      const { data: insertResult, error } = await supabase
-        .from('leads')
-        .insert({
-          reference_number: referenceNumber,
-          first_name: firstName,
-          last_name: lastName,
+      // The Supabase insert went through JSON, which stored a non-numeric age
+      // as null and an array (the PPO funnel's `priorities`) as JSON text. The
+      // Postgres driver does neither: NaN fails the integer column and an array
+      // becomes a Postgres array literal. Normalize so stored values match.
+      const parsedAge = age ? parseInt(age, 10) : null
+      const storedAge = Number.isNaN(parsedAge) ? null : parsedAge
+      const storedPriorities = Array.isArray(priorities)
+        ? JSON.stringify(priorities)
+        : priorities || null
+
+      try {
+        const insertResult = await store.createLead({
+          referenceNumber,
+          firstName,
+          lastName,
           email: normalizedEmail,
           phone: phone || null,
-          age: age ? parseInt(age, 10) : null,
+          age: storedAge,
           state: state || null,
-          income_range: incomeRange || null,
-          household_size: householdSize || null,
-          qualifying_event: qualifyingEvent || null,
-          priorities: priorities || null,
-          tcpa_consent: tcpaConsent,
-          tcpa_consent_at: tcpaConsentAt,
-          trusted_form_cert_url: trustedFormCertUrl || null,
-          funnel_type: resolvedFunnelType,
-          utm_source: utmSource || null,
-          utm_medium: utmMedium || null,
-          utm_campaign: utmCampaign || null,
-          ip_address: ipAddress,
-          quiz_answers: quizAnswers ?? null,
-          status: 'new',
+          incomeRange: incomeRange || null,
+          householdSize: householdSize || null,
+          qualifyingEvent: qualifyingEvent || null,
+          priorities: storedPriorities,
+          tcpaConsent,
+          tcpaConsentAt,
+          trustedFormCertUrl: trustedFormCertUrl || null,
+          funnelType: resolvedFunnelType,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          ipAddress,
+          quizAnswers: quizAnswers ?? null,
         })
-        .select()
-        .single()
-
-      if (error) {
+        if (insertResult) {
+          data = { id: insertResult.id, created_at: insertResult.createdAt }
+        }
+      } catch (error) {
         // Loud, not silent: the lead form must not break, but a failed insert
         // is an operational problem, not a routine fallback.
         console.error('LEAD INSERT FAILED (continuing with notifications):', error, { referenceNumber })
-      } else if (insertResult) {
-        data = insertResult
       }
     }
 
     // ── Post-response pipeline ──────────────────────────────────────────────
     // after() runs once the response is sent but keeps the function alive for
-    // the work, so on Vercel these integrations actually complete (a bare
-    // fire-and-forget promise can be frozen/killed after the response).
+    // the work, so on Vercel these integrations actually complete.
     after(async () => {
       // 1. Claim the TrustedForm certificate (TCPA compliance evidence).
+      //    Field names must match app/api/trustedform/claim/route.ts. An
+      //    unclaimed certificate expires, so a failed claim is logged loudly.
       if (trustedFormCertUrl) {
         try {
-          await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
+          const claim = await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              certificateUrl: trustedFormCertUrl,
-              leadId: data.id,
+              certUrl: trustedFormCertUrl,
+              reference: referenceNumber,
               email: normalizedEmail,
               phone,
             }),
           })
+          if (!claim.ok) {
+            console.error('TRUSTEDFORM CLAIM FAILED:', claim.status, { referenceNumber })
+          }
         } catch (err) {
-          console.error('TrustedForm claim error:', err)
+          console.error('TRUSTEDFORM CLAIM FAILED:', err, { referenceNumber })
         }
       }
 
@@ -228,7 +239,7 @@ export async function POST(request: NextRequest) {
         console.error('Admin notification email error:', err)
       }
 
-      // 4. Score the lead with AI (updates the lead record in Supabase).
+      // 4. Score the lead with AI (updates the lead in the database).
       try {
         await scoreAndUpdateLead({
           id: data.id,

@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from "vitest"
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 
 // Shared, mutable mock state (hoisted so the vi.mock factory can close over it).
 const state = vi.hoisted(() => ({
-  dupRow: null as null | { reference_number: string },
-  insertResult: { id: "lead-1", created_at: "2026-01-01T00:00:00Z" } as
-    | { id: string; created_at: string }
-    | null,
+  configured: true,
+  duplicateReference: null as string | null,
+  duplicateError: null as unknown,
+  insertResult: { id: "lead-1", createdAt: "2026-01-01T00:00:00Z" } as { id: string; createdAt: string } | null,
   insertError: null as unknown,
 }))
 
@@ -15,25 +15,18 @@ vi.mock("next/server", async (importOriginal) => {
   return { ...actual, after: vi.fn() }
 })
 
-// Fake Supabase admin client: supports the dedup select chain and the insert chain.
-vi.mock("@/lib/supabase/admin", () => ({
-  createClient: () => ({
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          gte: () => ({
-            limit: () => ({
-              maybeSingle: async () => ({ data: state.dupRow, error: null }),
-            }),
-          }),
-        }),
-      }),
-      insert: () => ({
-        select: () => ({
-          single: async () => ({ data: state.insertResult, error: state.insertError }),
-        }),
-      }),
-    }),
+// Fake platform store: the three methods the intake route calls.
+vi.mock("@/lib/data/store", () => ({
+  getPlatformStore: async () => ({
+    isConfigured: () => state.configured,
+    findRecentDuplicate: async () => {
+      if (state.duplicateError) throw state.duplicateError
+      return state.duplicateReference
+    },
+    createLead: async () => {
+      if (state.insertError) throw state.insertError
+      return state.insertResult
+    },
   }),
 }))
 
@@ -54,9 +47,15 @@ const validLead = { firstName: "A", lastName: "B", email: "a@b.com", tcpaConsent
 describe("POST /api/leads", () => {
   beforeEach(() => {
     __resetRateLimit()
-    state.dupRow = null
-    state.insertResult = { id: "lead-1", created_at: "2026-01-01T00:00:00Z" }
+    state.configured = true
+    state.duplicateReference = null
+    state.duplicateError = null
+    state.insertResult = { id: "lead-1", createdAt: "2026-01-01T00:00:00Z" }
     state.insertError = null
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it("rejects missing required fields with 400", async () => {
@@ -76,7 +75,7 @@ describe("POST /api/leads", () => {
   })
 
   it("dedupes a repeat email and returns the existing reference", async () => {
-    state.dupRow = { reference_number: "HL-EXISTING" }
+    state.duplicateReference = "HL-EXISTING"
     const res = await POST(makeReq(validLead, "9.9.9.9"))
     expect(res.status).toBe(200)
     const json = await res.json()
@@ -90,5 +89,29 @@ describe("POST /api/leads", () => {
     }
     const res = await POST(makeReq({ ...validLead, email: "over@b.com" }, "7.7.7.7"))
     expect(res.status).toBe(429)
+  })
+
+  it("still returns 200 and logs loudly when the insert fails", async () => {
+    state.insertError = new Error("insert failed")
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const res = await POST(makeReq(validLead))
+    expect(res.status).toBe(200)
+    expect((await res.json()).success).toBe(true)
+    expect(errorSpy.mock.calls.some(([msg]) => String(msg).includes("LEAD INSERT FAILED"))).toBe(true)
+  })
+
+  it("still returns 200 when the duplicate lookup fails (Neon down)", async () => {
+    state.duplicateError = new Error("connection refused")
+    vi.spyOn(console, "error").mockImplementation(() => {})
+    const res = await POST(makeReq(validLead))
+    expect(res.status).toBe(200)
+    expect((await res.json()).message).toBe("Lead submitted successfully")
+  })
+
+  it("still returns 200 (email-only) when the database is not configured", async () => {
+    state.configured = false
+    vi.spyOn(console, "warn").mockImplementation(() => {})
+    const res = await POST(makeReq(validLead))
+    expect(res.status).toBe(200)
   })
 })
