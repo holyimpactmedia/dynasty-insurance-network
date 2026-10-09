@@ -11,12 +11,13 @@ export function SetupRequired({ page }: { page: string }) {
           <Database className="w-8 h-8 text-[#D4AF37]" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-white">Supabase Not Configured</h1>
+          <h1 className="text-2xl font-bold text-white">Database Not Configured</h1>
           <p className="text-gray-400">
-            The {page} dashboard needs Supabase environment variables to load. Set
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">NEXT_PUBLIC_SUPABASE_URL</code>
+            The {page} screen needs the database and sign-in settings to load. Set
+            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">DATABASE_URL</code>,
+            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">BETTER_AUTH_SECRET</code>
             and
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
+            <code className="mx-1 px-1.5 py-0.5 rounded bg-white/10 text-[#D4AF37] text-xs">BETTER_AUTH_URL</code>
             in your environment, then redeploy.
           </p>
         </div>
@@ -27,7 +28,7 @@ export function SetupRequired({ page }: { page: string }) {
               <ExternalLink className="w-4 h-4 ml-2" />
             </a>
           </Button>
-          <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
+          <Button asChild variant="outline" className="bg-transparent border-white/20 text-white hover:bg-white/10">
             <Link href="/">Back to Home</Link>
           </Button>
         </div>

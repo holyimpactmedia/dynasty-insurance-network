@@ -1,19 +1,19 @@
-import { createClient } from "@/lib/supabase/server"
 import DashboardNav from "@/components/dashboard/DashboardNav"
 import { SetupRequired } from "@/components/dashboard/SetupRequired"
 import { requireAdmin } from "@/lib/auth/requireAdmin"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Graceful empty state when Supabase env vars are missing.
-  const supabase = await createClient()
-  if (!supabase) return <SetupRequired page="dashboard" />
+  // Fail closed: a missing DATABASE_URL, BETTER_AUTH_SECRET or site URL renders
+  // the setup screen instead of a login that cannot work.
+  if (!isPlatformConfigured()) return <SetupRequired page="dashboard" />
 
-  // Authoritative gate: authenticated AND role 'admin' in the profiles table.
-  // Redirects non-admins; never returns otherwise.
+  // Authoritative gate: authenticated AND an admin/superadmin role on the
+  // Better Auth session. Redirects non-admins; never returns otherwise.
   const { user, profile } = await requireAdmin()
 
   const userName =

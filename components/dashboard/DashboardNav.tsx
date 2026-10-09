@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter, usePathname } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { authClient } from "@/lib/auth/client"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -38,8 +38,7 @@ export default function DashboardNav({ userRole, userName, userEmail }: Dashboar
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    await authClient.signOut()
     router.push("/auth/login")
     router.refresh()
   }
