@@ -13,6 +13,7 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
+    "check:guards": "node scripts/check-guards.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:verify": "tsx --env-file-if-exists=.env.local scripts/verify-neon-schema.ts",
