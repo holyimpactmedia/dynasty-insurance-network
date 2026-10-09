@@ -41,19 +41,16 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts"
-import { createClient } from "@/lib/supabase/client"
 import { AIScoreBadge } from "@/components/dashboard/AIScoreBadge"
 import { LeadDetailDrawer } from "@/components/dashboard/LeadDetailDrawer"
-import { toCsv } from "@/lib/csv"
 import type { Lead } from "@/lib/types/lead"
 import { FUNNEL_LABELS } from "@/lib/types/lead"
 
-const LEAD_COLUMNS =
-  "id, reference_number, first_name, last_name, email, phone, age, state, " +
-  "income_range, household_size, qualifying_event, priorities, tcpa_consent, " +
-  "tcpa_consent_at, trusted_form_cert_url, funnel_type, utm_source, utm_medium, " +
-  "utm_campaign, ip_address, quiz_answers, status, ai_score, ai_score_reasons, " +
-  "predicted_close_rate, sell_price, usha_status, usha_sent_at, usha_lead_id, created_at"
+// Polling replaces Supabase Realtime. Both polls run only while the tab is
+// visible; a focus refresh covers a returning admin. Kept slow on purpose: each
+// poll wakes the Neon database, and this dashboard does not need seconds-fresh data.
+const LEADS_POLL_MS = 30_000
+const STATS_POLL_MS = 60_000
 
 interface DashboardStats {
   totalLeads: number
@@ -136,11 +133,6 @@ function StatCard({
   )
 }
 
-// Strips characters that would break a PostgREST `.or()` filter expression.
-function sanitizeSearch(q: string): string {
-  return q.replace(/[(),"%]/g, " ").trim()
-}
-
 // ── component ────────────────────────────────────────────────────────────────
 
 export default function AdminDashboardClient({
@@ -163,7 +155,10 @@ export default function AdminDashboardClient({
   // matchMedia effect below narrows it to mobile on small screens.
   const [pageSize, setPageSize] = useState(pageSizeDesktop)
   const [loading, setLoading] = useState(false)
-  const [loadError, setLoadError] = useState(errored)
+  // Separate flags so a good stats refresh never hides a failed lead load
+  // (or the reverse). Either one shows the banner.
+  const [leadsError, setLeadsError] = useState(errored)
+  const [statsError, setStatsError] = useState(errored)
 
   // Drawer
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
@@ -175,72 +170,83 @@ export default function AdminDashboardClient({
   const [filterMarketplace, setFilterMarketplace] = useState("all")
   const [filterMinScore, setFilterMinScore] = useState("0")
 
-  const filtersActive =
-    search !== "" ||
-    filterFunnel !== "all" ||
-    filterMarketplace !== "all" ||
-    filterMinScore !== "0"
-
-  // Latest filter values for the realtime handler (avoids stale closures).
-  const filtersRef = useRef({ filtersActive, page })
-  filtersRef.current = { filtersActive, page }
-
-  // Current page size, readable inside subscriptions without a stale closure.
+  // Current page size, readable inside polling callbacks without stale closures.
   const pageSizeRef = useRef(pageSize)
-  pageSizeRef.current = pageSize
+  // In-flight requests. A user action aborts whatever is in flight; a
+  // background poll never aborts anything and skips its turn instead.
+  const pageAbortRef = useRef<AbortController | null>(null)
+  const statsAbortRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    pageSizeRef.current = pageSize
+  }, [pageSize])
+
+  // Abort anything still in flight when the dashboard unmounts.
+  useEffect(
+    () => () => {
+      pageAbortRef.current?.abort()
+      statsAbortRef.current?.abort()
+    },
+    [],
+  )
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
 
-  // Applies the active filters to a leads query builder.
-  const applyFilters = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (query: any) => {
-      const q = sanitizeSearch(search)
-      if (q) {
-        query = query.or(
-          [
-            `first_name.ilike.%${q}%`,
-            `last_name.ilike.%${q}%`,
-            `email.ilike.%${q}%`,
-            `phone.ilike.%${q}%`,
-            `reference_number.ilike.%${q}%`,
-          ].join(","),
-        )
-      }
-      if (filterFunnel !== "all") query = query.eq("funnel_type", filterFunnel)
-      if (filterMarketplace === "none") query = query.is("usha_status", null)
-      else if (filterMarketplace !== "all")
-        query = query.eq("usha_status", filterMarketplace)
-      const minScore = parseInt(filterMinScore, 10) || 0
-      if (minScore > 0) query = query.gte("ai_score", minScore)
-      return query
+  // Active filters as /api/admin/leads query params. The server validates and
+  // sanitizes them (lib/api/lead-filters.ts, lib/data/neon-store.ts).
+  const buildQuery = useCallback(
+    (targetPage: number, size: number) => {
+      const params = new URLSearchParams({
+        page: String(targetPage),
+        pageSize: String(size),
+      })
+      // The API rejects searches over 120 characters; trim instead of erroring.
+      const q = search.trim().slice(0, 120)
+      if (q) params.set("search", q)
+      if (filterFunnel !== "all") params.set("funnel", filterFunnel)
+      if (filterMarketplace !== "all") params.set("marketplaceStatus", filterMarketplace)
+      if (filterMinScore !== "0") params.set("minScore", filterMinScore)
+      return params
     },
     [search, filterFunnel, filterMarketplace, filterMinScore],
   )
 
+  // silent = background poll: no spinner, and it never interrupts a request
+  // the user started (pagination, filters, Refresh).
   const loadPage = useCallback(
-    async (targetPage: number, size?: number) => {
+    async (targetPage: number, size?: number, silent = false) => {
+      if (silent && pageAbortRef.current) return
       const effSize = size ?? pageSizeRef.current
-      setLoading(true)
-      const supabase = createClient()
-      const from = targetPage * effSize
-      const base = supabase
-        .from("leads")
-        .select(LEAD_COLUMNS, { count: "exact" })
-      const { data, count, error } = await applyFilters(base)
-        .order("created_at", { ascending: false })
-        .range(from, from + effSize - 1)
-      if (error) {
-        setLoadError(true)
-      } else {
-        setLeads((data as unknown as Lead[]) ?? [])
-        setTotalCount(count ?? 0)
+      pageAbortRef.current?.abort()
+      const controller = new AbortController()
+      pageAbortRef.current = controller
+      if (!silent) setLoading(true)
+      try {
+        const response = await fetch(`/api/admin/leads?${buildQuery(targetPage, effSize)}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        })
+        if (!response.ok) throw new Error(`Lead query failed (${response.status})`)
+        const result = (await response.json()) as { items: Lead[]; total: number }
+        setLeads(result.items)
+        // Keep an open drawer in sync with fresh data.
+        setSelectedLead((current) =>
+          current ? result.items.find((l) => l.id === current.id) ?? current : current,
+        )
+        setTotalCount(result.total)
         setPage(targetPage)
-        setLoadError(false)
+        setLeadsError(false)
+      } catch (error) {
+        if ((error as Error).name === "AbortError") return
+        setLeadsError(true)
+      } finally {
+        if (pageAbortRef.current === controller) {
+          pageAbortRef.current = null
+          setLoading(false)
+        }
       }
-      setLoading(false)
     },
-    [applyFilters],
+    [buildQuery],
   )
 
   // Responsive page size: 25 on phones, 50 on desktop. The server fetched the
@@ -271,136 +277,77 @@ export default function AdminDashboardClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filterFunnel, filterMarketplace, filterMinScore])
 
-  // ── realtime ─────────────────────────────────────────────────────────────────
+  // ── live updates ─────────────────────────────────────────────────────────────
+  // The visible page refreshes every 30s while the tab is visible, and right
+  // away when the window regains focus.
   useEffect(() => {
-    const supabase = createClient()
-    const channel = supabase
-      .channel("admin-leads-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "leads" },
-        (payload) => {
-          const newLead = payload.new as Lead
-          // A new lead always means +1 total and +1 today.
-          setStats((prev) => ({
-            ...prev,
-            totalLeads: prev.totalLeads + 1,
-            leadsToday: prev.leadsToday + 1,
-          }))
-          setTotalCount((c) => c + 1)
-          // Only fold it into the visible list on the unfiltered first page.
-          const { filtersActive: fa, page: p } = filtersRef.current
-          if (fa || p !== 0) return
-          setLeads((prev) => {
-            if (prev.some((l) => l.id === newLead.id)) return prev // dedup
-            return [newLead, ...prev].slice(0, pageSizeRef.current) // cap
-          })
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "leads" },
-        (payload) => {
-          const updated = payload.new as Lead
-          setLeads((prev) =>
-            prev.map((l) => (l.id === updated.id ? { ...l, ...updated } : l)),
-          )
-          setSelectedLead((prev) =>
-            prev?.id === updated.id ? { ...prev, ...updated } : prev,
-          )
-        },
-      )
-      .subscribe()
+    const poll = () => {
+      if (document.visibilityState === "visible") void loadPage(page, undefined, true)
+    }
+    const interval = window.setInterval(poll, LEADS_POLL_MS)
+    window.addEventListener("focus", poll)
     return () => {
-      supabase.removeChannel(channel)
+      window.clearInterval(interval)
+      window.removeEventListener("focus", poll)
     }
-    // Subscribe once; the handler reads the current page size from pageSizeRef.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // ── refresh ──────────────────────────────────────────────────────────────────
-  const handleRefresh = useCallback(async () => {
-    setLoading(true)
-    const supabase = createClient()
-    const [{ data: statsRows }, { data: daily }, { data: funnel }] =
-      await Promise.all([
-        supabase.rpc("get_pipeline_stats"),
-        supabase.rpc("get_daily_lead_counts"),
-        supabase.rpc("get_funnel_breakdown"),
-      ])
-    const s = (statsRows as
-      | {
-          total_leads: number
-          leads_today: number
-          sent_count: number
-          tcpa_verified: number
-        }[]
-      | null)?.[0]
-    if (s) {
-      setStats({
-        totalLeads: s.total_leads,
-        leadsToday: s.leads_today,
-        sentToMarketplace: s.sent_count,
-        tcpaVerified: s.tcpa_verified,
-      })
-    }
-    if (Array.isArray(daily)) {
-      // Re-key the RPC rows onto the existing 7-day labels.
-      const map = new Map(
-        (daily as { day: string; count: number }[]).map((r) => [r.day, Number(r.count)]),
-      )
-      setDailyData((prev) =>
-        prev.map((d) => ({ ...d, leads: map.get(d.day) ?? d.leads })),
-      )
-    }
-    if (Array.isArray(funnel)) setFunnels(funnel as FunnelRow[])
-    await loadPage(page)
   }, [loadPage, page])
 
+  // ── refresh ──────────────────────────────────────────────────────────────────
+  // Stats, 7-day chart and funnels from /api/admin/stats. silent = background poll.
+  const refreshStats = useCallback(async (silent = false) => {
+    if (silent && statsAbortRef.current) return
+    statsAbortRef.current?.abort()
+    const controller = new AbortController()
+    statsAbortRef.current = controller
+    try {
+      const response = await fetch("/api/admin/stats", {
+        cache: "no-store",
+        signal: controller.signal,
+      })
+      if (!response.ok) throw new Error(`Stats query failed (${response.status})`)
+      const result = (await response.json()) as {
+        stats: DashboardStats
+        dailyData: DailyCount[]
+        funnels: FunnelRow[]
+      }
+      setStats(result.stats)
+      setDailyData(result.dailyData)
+      setFunnels(result.funnels)
+      setStatsError(false)
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") setStatsError(true)
+    } finally {
+      if (statsAbortRef.current === controller) statsAbortRef.current = null
+    }
+  }, [])
+
+  // Refresh button: stats and the current page together.
+  const handleRefresh = useCallback(() => {
+    void refreshStats()
+    void loadPage(page)
+  }, [refreshStats, loadPage, page])
+
+  // Stats poll: every 60s while the tab is visible, and on window focus.
+  useEffect(() => {
+    const poll = () => {
+      if (document.visibilityState === "visible") void refreshStats(true)
+    }
+    const interval = window.setInterval(poll, STATS_POLL_MS)
+    window.addEventListener("focus", poll)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener("focus", poll)
+    }
+  }, [refreshStats])
+
   // ── CSV export (full filtered dataset, not just the visible page) ───────────
-  const handleExport = useCallback(async () => {
-    const supabase = createClient()
-    const base = supabase.from("leads").select(LEAD_COLUMNS)
-    const { data, error } = await applyFilters(base).order("created_at", {
-      ascending: false,
-    })
-    if (error || !data) return
-    const rows = (data as unknown as Lead[]).map((l) => [
-      l.reference_number,
-      l.first_name,
-      l.last_name,
-      l.email,
-      l.phone ?? "",
-      l.age ?? "",
-      l.state ?? "",
-      FUNNEL_LABELS[l.funnel_type ?? ""] ?? l.funnel_type ?? "",
-      l.income_range ?? "",
-      l.household_size ?? "",
-      l.qualifying_event ?? "",
-      l.ai_score ?? "",
-      l.usha_status ?? "",
-      l.tcpa_consent ? "yes" : "no",
-      l.utm_source ?? "",
-      l.utm_campaign ?? "",
-      new Date(l.created_at).toISOString(),
-    ])
-    const csv = toCsv(
-      [
-        "Reference", "First Name", "Last Name", "Email", "Phone", "Age",
-        "State", "Funnel", "Income Range", "Household Size", "Qualifying Event",
-        "AI Score", "Marketplace Status", "TCPA Consent", "UTM Source",
-        "UTM Campaign", "Submitted At",
-      ],
-      rows,
-    )
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `dynasty-leads-${new Date().toISOString().slice(0, 10)}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, [applyFilters])
+  // Built server-side by /api/admin/export with the same filters.
+  const handleExport = useCallback(() => {
+    const params = buildQuery(0, 1)
+    params.delete("page")
+    params.delete("pageSize")
+    window.location.assign(`/api/admin/export?${params}`)
+  }, [buildQuery])
 
   const weeklyAvg =
     dailyData.length > 0
@@ -428,7 +375,7 @@ export default function AdminDashboardClient({
         </div>
       </div>
 
-      {loadError && (
+      {(leadsError || statsError) && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           Some data failed to load. Numbers below may be incomplete. Try Refresh.

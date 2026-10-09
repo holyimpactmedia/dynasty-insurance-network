@@ -13,15 +13,5 @@ export default defineConfig([
       "@next/next/no-html-link-for-pages": "off",
     },
   },
-  {
-    // Deferred, scoped to one file: server component reassigns `errored` inside Promise.all async closures; fixing it means restructuring the data loading, not a mechanical edit. Task 8 replaces this file; remove this override then.
-    files: ["app/dashboard/admin/page.tsx"],
-    rules: { "react-hooks/immutability": "off" },
-  },
-  {
-    // Deferred, scoped to one file: writes filtersRef/pageSizeRef during render so realtime handlers never see stale values; moving them into effects changes timing. Task 8 replaces this file; remove this override then.
-    files: ["components/dashboard/AdminDashboardClient.tsx"],
-    rules: { "react-hooks/refs": "off" },
-  },
   globalIgnores([".next/**", "node_modules/**", "drizzle/meta/**"]),
 ])
