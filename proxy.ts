@@ -1,12 +1,23 @@
-import { type NextRequest } from "next/server"
-import { updateSession } from "@/lib/supabase/middleware"
+import { type NextRequest, NextResponse } from "next/server"
+import { getSessionCookie } from "better-auth/cookies"
+import { isPlatformConfigured } from "@/lib/platform/provider"
 
 export async function proxy(request: NextRequest) {
-  return await updateSession(request)
+  // Optimistic redirect only. Layouts and APIs perform authoritative checks.
+  // Unconfigured platform: skip the redirect so the dashboard layout renders
+  // SetupRequired instead of a login form that cannot succeed.
+  if (
+    request.nextUrl.pathname.startsWith("/dashboard") &&
+    isPlatformConfigured() &&
+    !getSessionCookie(request)
+  ) {
+    const login = new URL("/auth/login", request.url)
+    login.searchParams.set("redirectTo", request.nextUrl.pathname)
+    return NextResponse.redirect(login)
+  }
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif)$|api/leads|api/agent-applications|api/trustedform).*)",
-  ],
+  matcher: ["/dashboard/:path*"],
 }
