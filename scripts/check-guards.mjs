@@ -51,7 +51,7 @@ for (const line of diff.split("\n")) {
   }
   if (!inHunk) {
     // Mode and binary changes have no hunk lines; any of them is a change.
-    if (/^(Binary files |old mode |new mode )/.test(line)) problems.push(`frozen file changed (${currentFile}): ${line}`)
+    if (/^(Binary files |old mode |new mode |new file mode |deleted file mode )/.test(line)) problems.push(`frozen file changed (${currentFile}): ${line}`)
     continue
   }
   if (!line.startsWith("+") && !line.startsWith("-")) continue
