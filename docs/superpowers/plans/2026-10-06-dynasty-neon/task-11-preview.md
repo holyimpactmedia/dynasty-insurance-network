@@ -164,10 +164,10 @@ vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f inspect <newest-preview-url> | grep
 
 - [ ] **Step 9: Preview-only env vars for this branch (values never printed)**
 
-Using the alias from Step 8 as `<ALIAS>`:
+Using the alias from Step 8 as `<ALIAS>`. First confirm the connection string's SSL mode without printing it: `npx neonctl@latest connection-string preview --pooled | grep -o 'sslmode=[a-z-]*'` must print `sslmode=require` (the `sed` below turns it into `verify-full`); anything else, stop and adjust the `sed`.
 
 ```bash
-npx neonctl@latest connection-string preview --pooled | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add DATABASE_URL preview feat/dynasty-neon
+npx neonctl@latest connection-string preview --pooled | sed 's/sslmode=require/sslmode=verify-full/' | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add DATABASE_URL preview feat/dynasty-neon
 openssl rand -base64 48 | tr -d '\n' | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add BETTER_AUTH_SECRET preview feat/dynasty-neon
 printf 'https://<ALIAS>' | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add BETTER_AUTH_URL preview feat/dynasty-neon
 printf 'https://<ALIAS>' | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add NEXT_PUBLIC_SITE_URL preview feat/dynasty-neon
@@ -180,15 +180,16 @@ For `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `ADMIN_EMAIL`, pipe the values fro
 grep '^RESEND_API_KEY=' .env.local | cut -d= -f2- | tr -d '\n' | vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env add RESEND_API_KEY preview feat/dynasty-neon
 ```
 
-(repeat with `RESEND_FROM_EMAIL` and `ADMIN_EMAIL`). Then list names only to confirm: `vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env ls preview feat/dynasty-neon`. Redeploy so the build picks them up: `vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f redeploy <newest-preview-url>`.
+(repeat with `RESEND_FROM_EMAIL`, `ADMIN_EMAIL`, `TRUSTEDFORM_API_KEY` and `ANTHROPIC_API_KEY`; without the TrustedForm key the preview cannot verify the claim, and without the Anthropic key it cannot verify AI scoring). Check presence first without printing a value: `grep -c '^TRUSTEDFORM_API_KEY=.' .env.local` prints `1` or `0`. A missing key is reported to the owner, not invented. Then list names only to confirm: `vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f env ls preview feat/dynasty-neon`. Redeploy so the build picks them up: `vercel --scope team_3shOdpxgvnWaaNDkNwSH2s6f redeploy <newest-preview-url>`.
 
 - [ ] **Step 10: Deployed preview checks (owner signs in)**
 
-1. `curl -s https://<ALIAS>/api/health` returns `{"status":"ok","provider":"neon"}`.
+1. `curl -s https://<ALIAS>/api/health` returns `{"status":"ok","provider":"neon"}`. If Vercel Deployment Protection answers 401, open the same URL in the owner's browser (signed in to Vercel) instead, or use a Protection Bypass for Automation secret the owner creates; never turn protection off without the owner's yes.
 2. Owner action (their own account; Claude never types their password): open `https://<ALIAS>/auth/forgot-password`, request a reset for their email, use the emailed link, set a password, sign in. Confirm the dashboard and the six test leads from Step 7.
-3. Owner submits one lead through any funnel with their own email: the consumer confirmation email and the admin notification email arrive; the lead appears on the dashboard.
+3. Owner submits one lead through any funnel with their own email: the consumer confirmation email and the admin notification email arrive; the lead appears on the dashboard. Within minutes (runtime logs are kept only for the plan's retention window), in the Vercel runtime logs for that request, `TRUSTEDFORM CLAIM OK` appears and lists both consent phrases (this is the positive check: the line must be present; `TRUSTEDFORM SCAN MISMATCH` or `TRUSTEDFORM CLAIM FAILED` stops the task).
 4. Owner, on the Users page, invites a second address they control: the green "Invite sent" appears, the invite email arrives, its link opens the set-password page, and the new account can sign in (proves the invite-sent signal is accurate on a real deployment).
 5. Screenshot (Claude, read-only): `/auth/login`, a funnel thank-you page, desktop and mobile.
+6. Stale-connection check: leave the preview untouched for at least 10 minutes (past Neon's 5-minute scale-to-zero), then the owner submits one more lead. It appears on the dashboard, and the runtime logs show no `LEAD INSERT FAILED` for it. A `LEAD INSERT FAILED` here means the Task 10b retry did not recognize the real error: stop, read the logged error's shape, and fix the classifier before Task 12.
 
 - [ ] **Step 11: Commit the test-user script**
 

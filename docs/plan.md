@@ -13,7 +13,7 @@
 
 **Spec:** [`docs/superpowers/specs/2026-10-05-dynasty-neon-design.md`](superpowers/specs/2026-10-05-dynasty-neon-design.md) (owner-approved 2026-10-06). Executors read the spec and their task file.
 
-**Gate status:** written 2026-10-06. `/pressure-test`: CLEAR AFTER FIXES (C1 TrustedForm claim, C2 Neon durability, H1 unsubscribe link, H2 compute wake-ups). `/senior-review`: GO WITH CHANGES (same fixes plus a repo rulebook and slower polling). All fixes are folded into the slices below (deviations 9 to 12). Premise observed. **Approved by the owner on 2026-10-08:** single release (no live traffic), Tasks 3 to 9 approved as one batch, executed subagent-driven (fresh implementer and reviewer per slice). Tasks 11, 12 and 13 still wait for their own yes. Rebased onto `main` after the legal merge (`62197a4`).
+**Gate status:** written 2026-10-06. `/pressure-test`: CLEAR AFTER FIXES (C1 TrustedForm claim, C2 Neon durability, H1 unsubscribe link, H2 compute wake-ups). `/senior-review`: GO WITH CHANGES (same fixes plus a repo rulebook and slower polling). All fixes are folded into the slices below (deviations 9 to 12). Premise observed. **Approved by the owner on 2026-10-08:** single release (no live traffic), Tasks 3 to 9 approved as one batch, executed subagent-driven (fresh implementer and reviewer per slice). Tasks 11, 12 and 13 still wait for their own yes. Rebased onto `main` after the legal merge (`62197a4`). **Amended 2026-10-09:** Tasks 0 to 10 done; the final whole-branch review passed with fixes, so Task 10b is added and Tasks 11 and 12 gain checks (deviation 13). The amendment takes `/pressure-test` and `/senior-review` and waits for the owner's yes.
 
 ## Global Constraints
 
@@ -35,11 +35,11 @@ Every task's requirements implicitly include these.
 
 Failure modes the spec implies that ordinary happy-path tests would miss. Each has its pinning test in the owning task.
 
-1. **Neon is down when a consumer submits a funnel.** Expected: the form still succeeds and the admin email, consumer email and USHA post still go out (today's behavior). Pinned in Task 7 (`dedup lookup fails` and `insert fails` route tests).
+1. **Neon is down or hung when a consumer submits a funnel.** Expected: the form still succeeds and the admin email, consumer email and USHA post still go out (today's behavior). Pinned in Task 7 (`dedup lookup fails` and `insert fails` route tests) and Task 10b (a lookup or insert that never returns).
 2. **PPO `priorities` (a JS array) and a non-numeric `age`.** Expected: stored exactly as the Supabase insert stored them (`'["nationwide"]'`, `NULL`), never a Postgres array literal or a failed insert that loses the TCPA record. Pinned in Task 7 parity tests plus a preview SQL check in Task 11.
 3. **A deployed environment missing `BETTER_AUTH_SECRET` or `DATABASE_URL`, or holding the public placeholder values.** Expected: setup screen, `503` from `/api/auth/*`, never a session signed with the placeholder. Pinned in Tasks 3 and 5.
 4. **An `admin` (not `superadmin`) trying Users, Settings, `update-user {role}` or `admin/set-role`.** Expected: 403 or 400 and the stored role unchanged. Pinned in Task 9 route tests and a live check in Task 11.
-5. **An expired or reused set-password or reset link.** Expected: a clear "invalid or expired" message with a path to request a new link, not a dead disabled button. Pinned in Task 6 (page) and checked in the browser in Task 11.
+5. **An expired or reused set-password or reset link.** Expected: a clear "invalid or expired" message with a path to request a new link, not a dead disabled button. Pinned in Task 10b (page test) and checked in the browser in Task 11.
 
 ## Deviations from the spec (approve with the plan)
 
@@ -55,6 +55,7 @@ Failure modes the spec implies that ordinary happy-path tests would miss. Each h
 10. **Dashboard polling is 30 s (leads) and 60 s (stats)** instead of the redesign's 8 and 15 s, plus refresh on window focus: each poll wakes the database.
 11. **Task 12 is gated on the owner confirming the Neon plan, restore window and compute allowance**, checks the consumer email's unsubscribe link end to end, and sets up a 5-minute uptime check.
 12. **Task 0 adds a repo `CLAUDE.md` (Gate Policy) and `STATE.md`**, which `/next` and the hard stops depend on.
+13. **Task 10b (added 2026-10-09 after the final whole-branch review).** A hung query could hold the consumer's response until the function limit (no emails, no record); a stale pooled connection could drop the consent record; the TrustedForm claim's outcome was never logged and its public route would let anyone spend Dynasty's claims once the key is set; Review Focus 5 had no automated test. Tradeoff accepted: past the 10 s intake budget (the duplicate lookup gets at most 3 s of it) a slow database can leave a lead unstored while its emails still go out; the admin email holds it and the RUNBOOK gives the restore. Gate on 2026-10-09: `/pressure-test` CLEAR AFTER FIXES (warning redaction, outside-caller check before deleting the route, log retention, reference plus email match, SSL-mode check), `/senior-review` GO WITH CHANGES (split budget, the tradeoff stated, the idle-check stop rule); all folded in. Premise unobserved (found by reading); the Task 11 idle check is the first real look. Task 11 and 12 gain matching checks: TrustedForm and Anthropic keys on the preview, a logged `TRUSTEDFORM CLAIM OK` as the positive check, a stale-connection check after 10 idle minutes, `sslmode=verify-full`, a Firewall rate-limit rule, a production reset-link and sign-out round trip, and an uptime interval of 15 to 30 minutes with its compute math (a 5-minute check would keep Neon awake all month, so deviation 11's "5-minute" is superseded).
 
 ## Slices
 
@@ -73,11 +74,12 @@ Hard-stop class under the Gate Policy (Task 0): auth and access (Tasks 3, 5, 6, 
 - [x] **Task 8: Dashboard on admin APIs.** `/api/admin/{leads,stats,export}`, polling client, admin and projections pages; every admin route proven to answer 401 without a session. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-08-dashboard.md)
 - [x] **Task 9: Users and Settings.** Super-admin Users page with set-password-link invites, Settings page, nav entries. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-09-users-settings.md)
 - [x] **Task 10: Remove Supabase, document Neon.** Supabase code, migrations and packages deleted; `.env.example` and docs rewritten for Dynasty on Neon. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10-cleanup-docs.md)
+- [ ] **Task 10b: Lead-path resilience and a private TrustedForm claim (HARD STOP: compliance).** Query and intake time limits, one retry on a dropped connection, the TrustedForm claim as a server function with its outcome logged and the public route removed, the expired-link page pinned by a test. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-10b-hardening.md)
 - [ ] **Task 11: Preview verification (HARD STOP: keys).** Neon preview branch, Vercel preview env vars, browser and SQL verification. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-11-preview.md)
 - [ ] **Task 12: Production switch (HARD STOP: deploy).** Production env vars, merge, verify, rollback ready. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-12-production.md)
 - [ ] **Task 13: Meta tracking, off by default (HARD STOP: legal).** Kill switch, pixel and server events; funnel wiring only after the legal branch lands and the guard amendment is approved. [task file](superpowers/plans/2026-10-06-dynasty-neon/task-13-meta.md)
 
-Tasks 0 to 10 ship as one release (Task 12). Task 13 ships separately and stays switched off until legal approves.
+Tasks 0 to 10b ship as one release (Task 12). Task 13 ships separately and stays switched off until legal approves.
 
 ## Owner decision before execution
 
