@@ -1,12 +1,21 @@
 // @vitest-environment node
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
-import { getTableColumns, getTableName } from "drizzle-orm"
+import { getTableColumns, getTableName, type SQL } from "drizzle-orm"
+import { PgDialect } from "drizzle-orm/pg-core"
 
 const h = vi.hoisted(() => {
   const calls = {
     table: undefined as unknown,
     values: undefined as Record<string, unknown> | undefined,
     conflict: undefined as { target: unknown; set: Record<string, unknown> } | undefined,
+    // How many times an insert was run to completion of `returning`.
+    insertRuns: 0,
+    // One entry per insert attempt, consumed in order; when empty the insert returns the default row.
+    returningScript: [] as Array<() => Promise<unknown>>,
+    // What select().from().where().limit() resolves to, and the where clause it was given.
+    selectRows: [] as unknown[],
+    selectWhere: undefined as unknown,
+    selectRuns: 0,
   }
   const db = {
     insert(table: unknown) {
@@ -15,11 +24,32 @@ const h = vi.hoisted(() => {
         values(values: Record<string, unknown>) {
           calls.values = values
           return {
-            returning: async () => [
-              { id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06 15:04:05.9+00" },
-            ],
+            returning: () => {
+              calls.insertRuns += 1
+              const next = calls.returningScript.shift()
+              return next
+                ? next()
+                : Promise.resolve([{ id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06 15:04:05.9+00" }])
+            },
             onConflictDoUpdate: async (conflict: { target: unknown; set: Record<string, unknown> }) => {
               calls.conflict = conflict
+            },
+          }
+        },
+      }
+    },
+    select() {
+      return {
+        from() {
+          return {
+            where(where: unknown) {
+              calls.selectWhere = where
+              return {
+                limit: async () => {
+                  calls.selectRuns += 1
+                  return calls.selectRows
+                },
+              }
             },
           }
         },
@@ -106,6 +136,11 @@ describe("neonStore", () => {
     h.calls.table = undefined
     h.calls.values = undefined
     h.calls.conflict = undefined
+    h.calls.insertRuns = 0
+    h.calls.returningScript = []
+    h.calls.selectRows = []
+    h.calls.selectWhere = undefined
+    h.calls.selectRuns = 0
   })
 
   afterEach(() => {
@@ -117,6 +152,86 @@ describe("neonStore", () => {
     expect(h.calls.table).toBe(leads)
     expect(toColumnRow(h.calls.values!)).toStrictEqual(MAIN_ROW)
     expect(result).toEqual({ id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06T15:04:05.900Z" })
+  })
+
+  describe("createLead on a dropped connection", () => {
+    const STORED = { id: "00000000-0000-4000-8000-000000000001", createdAt: "2026-10-06T15:04:05.900Z" }
+    const reject = (error: unknown) => () => Promise.reject(error)
+    const resolveRow = (row: unknown) => () => Promise.resolve([row])
+    // drizzle 0.45 wraps the driver error: message "Failed query: ...", the pg error as `cause`.
+    const wrapped = (cause: unknown) => Object.assign(new Error("Failed query: insert into leads"), { cause })
+
+    it("retries once when the pooled connection was terminated, and returns the stored row", async () => {
+      h.calls.returningScript = [
+        reject(new Error("Connection terminated unexpectedly")),
+        resolveRow({ id: "11111111-1111-4111-8111-111111111111", createdAt: "2026-10-06 15:04:05.9+00" }),
+      ]
+      const result = await neonStore.createLead(input)
+      expect(result).toEqual({ id: "11111111-1111-4111-8111-111111111111", createdAt: "2026-10-06T15:04:05.900Z" })
+      expect(h.calls.insertRuns).toBe(2)
+    })
+
+    it("retries once when drizzle wraps an ECONNRESET as the cause", async () => {
+      h.calls.returningScript = [
+        reject(wrapped({ code: "ECONNRESET", message: "read ECONNRESET" })),
+        resolveRow({ id: STORED.id, createdAt: "2026-10-06 15:04:05.9+00" }),
+      ]
+      const result = await neonStore.createLead(input)
+      expect(result).toEqual(STORED)
+      expect(h.calls.insertRuns).toBe(2)
+    })
+
+    it("does not retry a non-connection error", async () => {
+      h.calls.returningScript = [reject(wrapped({ code: "23502", message: "null value in column" }))]
+      await expect(neonStore.createLead(input)).rejects.toThrow()
+      expect(h.calls.insertRuns).toBe(1)
+    })
+
+    it("returns the existing row when the retry hits this lead's own reference number", async () => {
+      h.calls.returningScript = [
+        reject(new Error("Connection terminated unexpectedly")),
+        reject(wrapped({ code: "23505", constraint: "leads_reference_number_key", message: "duplicate key" })),
+      ]
+      h.calls.selectRows = [{ id: STORED.id, createdAt: "2026-10-06 15:04:05.9+00" }]
+      const result = await neonStore.createLead(input)
+      expect(result).toEqual(STORED)
+      expect(h.calls.insertRuns).toBe(2)
+      expect(h.calls.selectRuns).toBe(1)
+
+      // The lookup must match the reference number AND the email, so a collision
+      // with a different lead's reference can never be mistaken for this one.
+      const query = new PgDialect().sqlToQuery(h.calls.selectWhere as SQL)
+      expect(query.sql).toContain('"leads"."reference_number" = $1')
+      expect(query.sql).toContain('"leads"."email" = $2')
+      expect(query.params).toEqual([input.referenceNumber, input.email])
+    })
+
+    it("returns null when the reference belongs to a different lead", async () => {
+      h.calls.returningScript = [
+        reject(new Error("Connection terminated unexpectedly")),
+        reject(wrapped({ code: "23505", constraint: "leads_reference_number_key", message: "duplicate key" })),
+      ]
+      h.calls.selectRows = []
+      expect(await neonStore.createLead(input)).toBeNull()
+    })
+
+    it("rejects when the retry hits a unique violation on a different constraint", async () => {
+      h.calls.returningScript = [
+        reject(new Error("Connection terminated unexpectedly")),
+        reject(wrapped({ code: "23505", constraint: "leads_email_key", message: "duplicate key" })),
+      ]
+      await expect(neonStore.createLead(input)).rejects.toThrow()
+      expect(h.calls.selectRuns).toBe(0)
+    })
+
+    it("rejects when the retry fails again with another connection error (no third attempt)", async () => {
+      h.calls.returningScript = [
+        reject(new Error("Connection terminated unexpectedly")),
+        reject(new Error("Connection terminated unexpectedly")),
+      ]
+      await expect(neonStore.createLead(input)).rejects.toThrow()
+      expect(h.calls.insertRuns).toBe(2)
+    })
   })
 
   it("recordSuppression upserts into email_suppressions keyed on email, app-clock timestamp", async () => {

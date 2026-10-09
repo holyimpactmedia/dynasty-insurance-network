@@ -72,13 +72,23 @@ Wire it into an uptime check at an interval well above Neon's scale-to-zero dela
 
 ## Lead intake when the database is down
 
-The funnels keep working: the consumer sees success, and the confirmation email, admin email and USHA post still go out. A failed write is logged as `LEAD INSERT FAILED` (or `LEAD DEDUP LOOKUP FAILED`); with `DATABASE_URL` missing, the line is the warning `Platform database not configured. Lead sent via email only.` Such a lead exists only in the admin notification email.
+The funnels keep working: the consumer sees success, and the confirmation email, admin email and USHA post still go out. The intake waits at most 10 s on the database before answering, and the duplicate lookup gets at most 3 s of that so it cannot starve the insert. Each query is also capped at 8 s on the client side (`query_timeout` in [`lib/db/client.ts`](../lib/db/client.ts)), which bounds the dashboard CSV export and sign-in queries too: a query that needs longer fails instead of hanging. A pooled connection that Neon closed gets one retry of the insert (the unique reference number makes that safe). A failed write is logged as `LEAD INSERT FAILED` (or `LEAD DEDUP LOOKUP FAILED`); with `DATABASE_URL` missing or set to the public placeholder, the line is the error `LEAD NOT STORED`. Such a lead exists only in the admin notification email.
+
+Tradeoff: a database slower than the budget can leave a lead unstored while its emails still go out (a late insert may still land afterward, without its id for the background steps). Search the logs for `LEAD INSERT FAILED` and `LEAD NOT STORED` after any Neon incident.
 
 Restoring one is an owner-approved SQL insert into `leads` on the production branch that copies the original values from that admin email: `reference_number`, name, email, phone, age, state, funnel, income, household, qualifying event, priorities, UTM fields, the consent time (`tcpa_consent_at`), `ip_address` and `trusted_form_cert_url`, with `tcpa_consent = true` (the intake refuses any lead without consent). Never re-submit the lead through a public funnel: that records your IP address, a new consent time and a new or missing TrustedForm certificate as if the consumer had consented again. The quiz answers are not in the admin email and cannot be restored.
 
 ## TrustedForm claims
 
-Each lead's TrustedForm certificate is claimed first in the background work after the response, with a 10 s timeout. A failed claim is logged as `TRUSTEDFORM CLAIM FAILED` in the Vercel runtime logs; an unclaimed certificate expires, so search the logs for that line. When the lead carried a certificate URL, the absence of that line proves TrustedForm accepted the claim, not that the scan phrases matched: a claim that TrustedForm accepts but whose phrase scan fails still returns 201, because [`app/api/trustedform/claim/route.ts`](../app/api/trustedform/claim/route.ts) does not gate its status on `outcome` or the scan results, and the intake never reads them. Check the certificate in TrustedForm if in doubt. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text.
+Each lead's TrustedForm certificate is claimed first in the background work after the response, by [`lib/trustedform/claim.ts`](../lib/trustedform/claim.ts) with a 10 s timeout. There is no public route for it: the claim runs server side only, with `TRUSTEDFORM_API_KEY`. Search the Vercel runtime logs for:
+
+- `TRUSTEDFORM CLAIM FAILED`: the certificate was not claimed (key missing, unusable certificate URL, a TrustedForm error or a timeout), so it expires.
+- `TRUSTEDFORM SCAN MISMATCH`: the certificate was claimed, but a consent phrase was not found on the page snapshot (or the outcome was not `success`). TrustedForm keeps the certificate, but the evidence is weaker. The line lists the missing phrases and TrustedForm's warnings, with email addresses and numbers removed.
+- `TRUSTEDFORM CLAIM OK`: claimed and every phrase found; the line lists them.
+
+A lead that carried a certificate URL and has none of these lines means the background work did not finish; check the certificate in TrustedForm. The claim scans the consent page for "consent to be contacted by Holy Impact Media" and "Reply STOP to opt out of SMS"; keep those phrases in step with counsel's consent text ([`lib/trustedform/claim.test.ts`](../lib/trustedform/claim.test.ts) pins them against every funnel page).
+
+All of these log lines live only as long as the Vercel plan's runtime-log retention, so read them promptly or keep a log drain.
 
 ## USHA marketplace alerts
 

@@ -5,6 +5,7 @@ import { scoreAndUpdateLead } from '@/lib/ai/scoreLeadWithAI'
 import { postLeadToUsha } from '@/lib/usha/postLead'
 import { notifyAdmin } from '@/lib/email/notifyAdmin'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { claimTrustedFormCertificate } from '@/lib/trustedform/claim'
 
 // Generate a unique reference number for leads
 function generateReferenceNumber(): string {
@@ -18,9 +19,36 @@ function generateReferenceNumber(): string {
 // AI scoring / USHA / email.
 const DEDUP_WINDOW_MS = 10 * 60 * 1000
 
-// The claim runs before the consumer and admin emails in after(); a hung
-// TrustedForm call must not hold them back.
-const TRUSTEDFORM_CLAIM_TIMEOUT_MS = 10_000
+// The longest the intake waits on the database before answering. After it the
+// consumer still sees success and the emails still go out (Review Focus 1).
+// Tradeoff: a database slower than this loses the stored row (the admin email
+// still carries the lead; see docs/RUNBOOK.md for the restore). A late insert
+// may still land, without its id for the background steps.
+const LEAD_DB_BUDGET_MS = 10_000
+// The duplicate lookup is only an optimization, so it may not starve the insert.
+const DEDUP_LOOKUP_BUDGET_MS = 3_000
+
+function withinBudget<T>(work: Promise<T>, deadline: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`${label} ran past its database time budget`)),
+      Math.max(0, deadline - Date.now()),
+    )
+  })
+  return Promise.race([work, timeout]).finally(() => clearTimeout(timer))
+}
+
+// drizzle wraps a driver error in a message that quotes the whole statement and
+// its parameters, which here are the consumer's email and phone. Log what
+// identifies the failure and never the parameters.
+function describeDbError(error: unknown): { code?: string; message: string } {
+  if (!(error instanceof Error)) return { message: 'unknown error' }
+  const wrapped = 'query' in error || 'params' in error
+  const driver = wrapped && error.cause instanceof Error ? error.cause : undefined
+  const source = (wrapped ? driver : error) as (Error & { code?: string }) | undefined
+  return { code: source?.code, message: source?.message ?? 'database query failed' }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -90,21 +118,26 @@ export async function POST(request: NextRequest) {
     }
 
     if (!store.isConfigured()) {
-      console.warn('Platform database not configured. Lead sent via email only.', { referenceNumber })
+      console.error('LEAD NOT STORED: platform database not configured; lead sent via email only.', { referenceNumber })
     } else {
       // Duplicate check: same email submitted recently => idempotent success.
       // A failed lookup must not block intake: carry on to the insert, as the
       // Supabase version did when its lookup returned an error.
-      const since = new Date(Date.now() - DEDUP_WINDOW_MS).toISOString()
+      const startedAt = Date.now()
+      const since = new Date(startedAt - DEDUP_WINDOW_MS).toISOString()
       let duplicateReference: string | null = null
       try {
-        duplicateReference = await store.findRecentDuplicate(normalizedEmail, since)
+        duplicateReference = await withinBudget(
+          store.findRecentDuplicate(normalizedEmail, since),
+          startedAt + DEDUP_LOOKUP_BUDGET_MS,
+          'duplicate lookup',
+        )
       } catch (error) {
-        console.error('LEAD DEDUP LOOKUP FAILED (continuing):', error, { referenceNumber })
+        console.error('LEAD DEDUP LOOKUP FAILED (continuing):', describeDbError(error), { referenceNumber })
       }
 
       if (duplicateReference) {
-        console.log('Duplicate lead submission ignored:', { email: normalizedEmail })
+        console.log('Duplicate lead submission ignored:', { referenceNumber: duplicateReference })
         return NextResponse.json({
           success: true,
           referenceNumber: duplicateReference,
@@ -123,7 +156,7 @@ export async function POST(request: NextRequest) {
         : priorities || null
 
       try {
-        const insertResult = await store.createLead({
+        const insertResult = await withinBudget(store.createLead({
           referenceNumber,
           firstName,
           lastName,
@@ -144,14 +177,14 @@ export async function POST(request: NextRequest) {
           utmCampaign: utmCampaign || null,
           ipAddress,
           quizAnswers: quizAnswers ?? null,
-        })
+        }), startedAt + LEAD_DB_BUDGET_MS, 'lead insert')
         if (insertResult) {
           data = { id: insertResult.id, created_at: insertResult.createdAt }
         }
       } catch (error) {
         // Loud, not silent: the lead form must not break, but a failed insert
         // is an operational problem, not a routine fallback.
-        console.error('LEAD INSERT FAILED (continuing with notifications):', error, { referenceNumber })
+        console.error('LEAD INSERT FAILED (continuing with notifications):', describeDbError(error), { referenceNumber })
       }
     }
 
@@ -159,27 +192,32 @@ export async function POST(request: NextRequest) {
     // after() runs once the response is sent but keeps the function alive for
     // the work, so on Vercel these integrations actually complete.
     after(async () => {
-      // 1. Claim the TrustedForm certificate (TCPA compliance evidence).
-      //    Field names must match app/api/trustedform/claim/route.ts. An
-      //    unclaimed certificate expires, so a failed claim is logged loudly.
+      // 1. Claim the TrustedForm certificate (TCPA compliance evidence). An
+      //    unclaimed certificate expires, so failures are logged loudly, and a
+      //    claimed certificate whose consent phrases were not found is reported
+      //    too (TrustedForm keeps it, but the evidence is weaker).
       if (trustedFormCertUrl) {
         try {
-          const claim = await fetch(`${request.nextUrl.origin}/api/trustedform/claim`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              certUrl: trustedFormCertUrl,
-              reference: referenceNumber,
-              email: normalizedEmail,
-              phone,
-            }),
-            signal: AbortSignal.timeout(TRUSTEDFORM_CLAIM_TIMEOUT_MS),
+          const claim = await claimTrustedFormCertificate({
+            certUrl: trustedFormCertUrl,
+            reference: referenceNumber,
+            email: normalizedEmail,
+            phone,
           })
-          if (!claim.ok) {
-            console.error('TRUSTEDFORM CLAIM FAILED:', claim.status, { referenceNumber })
+          if (claim.status === 'failed') {
+            console.error('TRUSTEDFORM CLAIM FAILED:', claim.reason, { referenceNumber })
+          } else if (claim.outcome !== 'success' || claim.requiredNotFound.length > 0) {
+            console.error('TRUSTEDFORM SCAN MISMATCH:', {
+              referenceNumber,
+              outcome: claim.outcome,
+              requiredNotFound: claim.requiredNotFound,
+              warnings: claim.warnings,
+            })
+          } else {
+            console.log('TRUSTEDFORM CLAIM OK:', { referenceNumber, requiredFound: claim.requiredFound })
           }
         } catch (err) {
-          console.error('TRUSTEDFORM CLAIM FAILED:', err, { referenceNumber })
+          console.error('TRUSTEDFORM CLAIM FAILED:', err instanceof Error ? err.message : 'unknown error', { referenceNumber })
         }
       }
 

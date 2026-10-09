@@ -28,11 +28,11 @@ A lead crosses the system in five stages. Stage 1 (intake) blocks the response; 
 | Insert lead row | written through the Neon platform store (`getPlatformStore()` in [`lib/data/store.ts`](../lib/data/store.ts), `createLead`); persists every field the funnels send, including `quiz_answers` |
 | Schedule post-response work | `after(async () => { … })`, runs after the 200 is flushed |
 
-The response usually returns in well under a second; when Neon is waking from scale-to-zero the first request can take a few seconds. The funnel's "thank you" page never waits on AI scoring or USHA.
+The response usually returns in well under a second; when Neon is waking from scale-to-zero the first request can take a few seconds. The intake waits at most 10 s on the database (the duplicate lookup at most 3 s of it) before answering; past that the lead is not stored but the emails still go out. The funnel's "thank you" page never waits on AI scoring or USHA.
 
 ## Stage 2: TrustedForm certificate claim
 
-`POST` to [`/api/trustedform/claim`](../app/api/trustedform/claim/route.ts) with the cert URL. TCPA evidence. The self-fetch from `after()` runs as a separate function invocation; on a preview with Vercel Deployment Protection it is refused (401) unless a protection bypass is configured.
+`after()` calls `claimTrustedFormCertificate` in [`lib/trustedform/claim.ts`](../lib/trustedform/claim.ts) directly with the cert URL (no self-fetch, no public route). TCPA evidence. It logs `TRUSTEDFORM CLAIM OK`, `TRUSTEDFORM SCAN MISMATCH` or `TRUSTEDFORM CLAIM FAILED`; see [`docs/RUNBOOK.md`](RUNBOOK.md).
 
 ## Stage 3: Confirmation email
 

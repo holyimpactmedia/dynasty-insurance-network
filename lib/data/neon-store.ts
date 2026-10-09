@@ -37,6 +37,27 @@ function whereFor(filters: LeadFilters): SQL | undefined {
   return conditions.length ? and(...conditions) : undefined
 }
 
+// node-postgres reports a socket the server closed in several ways; drizzle
+// 0.45 wraps the driver error, so look at `cause` too.
+const CONNECTION_ERROR_CODES = new Set(["ECONNRESET", "EPIPE", "ETIMEDOUT", "57P01"])
+const CONNECTION_ERROR_TEXT = /connection terminated|connection error|socket hang up|ECONNRESET/i
+
+function driverError(error: unknown): { code?: string; constraint?: string; message?: string } {
+  const outer = (error ?? {}) as { cause?: unknown; message?: string }
+  const inner = (outer.cause ?? outer) as { code?: string; constraint?: string; message?: string }
+  return { code: inner.code, constraint: inner.constraint, message: `${outer.message ?? ""} ${inner.message ?? ""}` }
+}
+
+function isConnectionError(error: unknown): boolean {
+  const { code, message } = driverError(error)
+  return (code !== undefined && CONNECTION_ERROR_CODES.has(code)) || CONNECTION_ERROR_TEXT.test(message ?? "")
+}
+
+function isReferenceConflict(error: unknown): boolean {
+  const { code, constraint } = driverError(error)
+  return code === "23505" && constraint === "leads_reference_number_key"
+}
+
 export const neonStore: PlatformStore = {
   isConfigured: () => Boolean(getNeonDb()),
 
@@ -54,7 +75,8 @@ export const neonStore: PlatformStore = {
   },
 
   async createLead(input) {
-    const [row] = await requireNeonDb().insert(leads).values({
+    const db = requireNeonDb()
+    const insert = () => db.insert(leads).values({
       referenceNumber: input.referenceNumber,
       firstName: input.firstName,
       lastName: input.lastName,
@@ -77,6 +99,28 @@ export const neonStore: PlatformStore = {
       quizAnswers: input.quizAnswers,
       status: "new",
     }).returning({ id: leads.id, createdAt: leads.createdAt })
+
+    let rows: Awaited<ReturnType<typeof insert>>
+    try {
+      rows = await insert()
+    } catch (error) {
+      if (!isConnectionError(error)) throw error
+      // A pooled connection Neon closed while the instance was frozen fails on
+      // first use. One retry is safe: the unique reference number means a first
+      // attempt that did land cannot be inserted twice.
+      try {
+        rows = await insert()
+      } catch (retryError) {
+        if (!isReferenceConflict(retryError)) throw retryError
+        // The first attempt was stored before its connection dropped. Match the
+        // email too, so a collision with a different lead's reference is never
+        // mistaken for this lead.
+        rows = await db.select({ id: leads.id, createdAt: leads.createdAt }).from(leads)
+          .where(and(eq(leads.referenceNumber, input.referenceNumber), eq(leads.email, input.email)))
+          .limit(1)
+      }
+    }
+    const [row] = rows
     return row ? { id: row.id, createdAt: toIsoTimestamp(row.createdAt) } : null
   },
 

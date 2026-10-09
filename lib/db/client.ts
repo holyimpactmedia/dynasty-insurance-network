@@ -1,6 +1,7 @@
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres"
 import { Pool } from "pg"
 import * as schema from "@/lib/db/schema"
+import { DORMANT_DATABASE_URL } from "@/lib/platform/provider"
 
 type DynastyDatabase = NodePgDatabase<typeof schema>
 const globalForDatabase = globalThis as unknown as {
@@ -10,13 +11,18 @@ const globalForDatabase = globalThis as unknown as {
 
 export function getNeonPool(): Pool | null {
   const connectionString = process.env.DATABASE_URL
-  if (!connectionString) return null
+  // The public placeholder is never a real database (see lib/platform/provider.ts).
+  if (!connectionString || connectionString === DORMANT_DATABASE_URL) return null
   if (!globalForDatabase.dynastyPool) {
     globalForDatabase.dynastyPool = new Pool({
       connectionString,
       max: 5,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
+      // Client-side cap on any single query, so a hung connection cannot hold a
+      // request until the function time limit. It does not depend on the Neon
+      // pooler honoring a statement_timeout.
+      query_timeout: 8_000,
     })
     // An idle client whose socket the server closed emits "error" on the pool.
     // Without a listener that is an uncaught exception that can crash the

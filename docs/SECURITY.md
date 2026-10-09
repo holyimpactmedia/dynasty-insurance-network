@@ -48,6 +48,10 @@ Lead fields are untrusted. [`lib/csv.ts`](../lib/csv.ts) prefixes any cell start
 
 `/api/leads` is public and spends money per call. [`lib/rate-limit.ts`](../lib/rate-limit.ts) is an in-memory limiter (8 requests per 10 minutes per IP), best-effort across instances; the duplicate-email check in the route is the backstop. Better Auth's own rate limiting uses its default in-memory store, so it is also per instance.
 
+## TrustedForm
+
+TrustedForm claims run server side only, from the lead intake's background work. There is no public claim route, so nobody else can spend Dynasty's claims or read its certificates.
+
 ## Known limits
 
 - The app's single Neon role has full read and write on every table; a role limited to what the app needs would narrow the blast radius of a code bug.
